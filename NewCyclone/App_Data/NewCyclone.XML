@@ -955,18 +955,101 @@
         </member>
         <member name="T:NewCyclone.Models.SysDoc">
             <summary>
-            基础文档
+            系统基础文档
             </summary>
         </member>
-        <member name="T:NewCyclone.Models.SysDocImgRote">
+        <member name="P:NewCyclone.Models.SysDoc.Id">
             <summary>
-            带图集的文档
+            文档ID
             </summary>
         </member>
-        <member name="M:NewCyclone.Models.SysDocImgRote.#ctor">
+        <member name="P:NewCyclone.Models.SysDoc.createdBy">
             <summary>
-            构造方法
+            创建者
             </summary>
+        </member>
+        <member name="P:NewCyclone.Models.SysDoc.createdOn">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:NewCyclone.Models.SysDoc.modifiedBy">
+            <summary>
+            修改者
+            </summary>
+        </member>
+        <member name="P:NewCyclone.Models.SysDoc.modifiedOn">
+            <summary>
+            修改时间
+            </summary>
+        </member>
+        <member name="P:NewCyclone.Models.SysDoc.caption">
+            <summary>
+            标题
+            </summary>
+        </member>
+        <member name="P:NewCyclone.Models.SysDoc.isDeleted">
+            <summary>
+            是否已被标记为删除
+            </summary>s
+        </member>
+        <member name="P:NewCyclone.Models.SysDoc.cat">
+            <summary>
+            所属在类别
+            </summary>
+        </member>
+        <member name="M:NewCyclone.Models.SysDoc.#ctor(System.String)">
+            <summary>
+            使用ID构造文档基础项
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="T:NewCyclone.Models.WebDoc">
+            <summary>
+            网站文档
+            </summary>
+        </member>
+        <member name="P:NewCyclone.Models.WebDoc.fun">
+            <summary>
+            所属的功能模块描述
+            </summary>
+        </member>
+        <member name="P:NewCyclone.Models.WebDoc.describe">
+            <summary>
+            文档描述
+            </summary>
+        </member>
+        <member name="M:NewCyclone.Models.WebDoc.#ctor(System.String)">
+            <summary>
+            使用ID构造一个网站文档
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="T:NewCyclone.Models.WebDocPage">
+            <summary>
+            网页页面（图文信息）
+            </summary>
+        </member>
+        <member name="P:NewCyclone.Models.WebDocPage.seoTitle">
+            <summary>
+            seo标题
+            </summary>
+        </member>
+        <member name="P:NewCyclone.Models.WebDocPage.seoKeyWords">
+            <summary>
+            seo关键字
+            </summary>
+        </member>
+        <member name="P:NewCyclone.Models.WebDocPage.content">
+            <summary>
+            内容
+            </summary>
+        </member>
+        <member name="M:NewCyclone.Models.WebDocPage.#ctor(System.String)">
+            <summary>
+            使用ID构造网页页面文档（图文信息）
+            </summary>
+            <param name="id"></param>
         </member>
         <member name="T:NewCyclone.Models.SysExceptionType">
             <summary>
