@@ -234,3 +234,4 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+/NewCyclone/App_Data/NewCyclone.XML
