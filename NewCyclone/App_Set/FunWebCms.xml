@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArrayOfVMComboBox xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <VMComboBox>
+    <id>pic</id>
+    <text>图文</text>
+  </VMComboBox>
+  <VMComboBox>
+    <id>rote</id>
+    <text>轮播</text>
+  </VMComboBox>
+  <VMComboBox>
+    <id>product</id>
+    <text>产品</text>
+  </VMComboBox>
+</ArrayOfVMComboBox>

@@ -1,0 +1,55 @@
+﻿
+@{
+    Layout = null;
+    SysExcptionLog info = ViewBag.info;
+}
+<table class="formtable">
+    <tr>
+        <td class="t" style="width:80px;">时间</td>
+        <td>@info.createdOn.ToString("yyyy-MM-dd HH:mm")</td>
+    </tr>
+    <tr>
+        <td class="t">异常类型</td>
+        <td>@info.errorType.ToString()</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="t">异常内容</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @info.message
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="t">引发异常时的请求参数</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @info.condtion
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="t">引发异常的应用程序或对象的名称</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @info.source
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="t">引发当前异常的方法</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @info.targetSite
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="t">堆栈信息</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @info.stackTrace
+        </td>
+    </tr>
+</table>

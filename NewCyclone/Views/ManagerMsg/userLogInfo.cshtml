@@ -1,0 +1,47 @@
+﻿
+@{
+    Layout = null;
+    SysUserLog info = ViewBag.info;
+}
+<table class="formtable">
+    <tr>
+        <td class="t" style="width:80px;">时间</td>
+        <td>@info.createdOn.ToString("yyyy-MM-dd HH:mm")</td>
+    </tr>
+    <tr>
+        <td class="t">日志类型</td>
+        <td>@info.logType.ToString()</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="t">对应用户</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @info.userInfo.showName
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="t">内容</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @info.message
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="t">IP地址</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @info.ip
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="t">设备信息</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @info.device
+        </td>
+    </tr>
+</table>

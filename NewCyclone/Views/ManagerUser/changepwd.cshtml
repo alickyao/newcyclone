@@ -1,0 +1,59 @@
+﻿@{
+    string pageId = ViewBag.pageId;
+}
+
+<script>
+
+    $(document).ready(function(){
+        //验证扩展，检验两次密码是否输入一直
+        $.extend($.fn.validatebox.defaults.rules, {
+            equals: {
+                validator: function (value, param) {
+                    return value == $(param[0]).val();
+                },
+                message: '两次密码输入不一致'
+            }
+        });
+        //修改密码提交按钮
+        $("#@(pageId)UserChangePwdSubmitBtn").click(function () {
+
+            var btn = $(this);
+            if (btn.linkbutton("options").disabled == false) {
+                var from = $("#@(pageId)UserChangePwdForm");
+                var Reg = from.form('enableValidation').form('validate');
+                if (Reg) {
+                    btn.linkbutton("disable");
+                    var d = from.serializeObject();
+                    d.oldPwd = md5(d.oldPwd);
+                    d.newPwd = md5(d.newPwd);
+                    console.log(d);
+                    $.post("/api/ApiSysManagerUser/reSetNewPwd", d, function (json) {
+                        showmsg(json);
+                        btn.linkbutton("enable");
+                    });
+                }
+            }
+            return false;
+        });
+    });
+</script>
+<form id="@(pageId)UserChangePwdForm">
+    <table class="formtable">
+        <tr>
+            <td>当前密码：</td>
+            <td><input type="password" name="oldPwd" class="easyui-textbox" data-options="required:true" /></td>
+        </tr>
+        <tr>
+            <td>新密码：</td>
+            <td><input type="password" name="newPwd" id="UserChangeNewPassword" class="easyui-textbox" data-options="required:true,validType:'length[6,20]'" /></td>
+        </tr>
+        <tr>
+            <td>确认新密码：</td>
+            <td><input type="password" name="reNewPassword" class="easyui-textbox" required="required" validType="equals['#UserChangeNewPassword']" /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="@(pageId)UserChangePwdSubmitBtn">确认修改</a></td>
+        </tr>
+    </table>
+</form>

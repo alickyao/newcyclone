@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSysRoles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SysRoles>
+    <role>admin</role>
+    <cat>0</cat>
+    <name>管理员</name>
+    <discribe>系统管理员权限</discribe>
+  </SysRoles>
+  <SysRoles>
+    <role>user</role>
+    <cat>0</cat>
+    <name>工作人员</name>
+    <discribe>系统工作人员</discribe>
+  </SysRoles>
+  <SysRoles>
+    <role>member</role>
+    <cat>1</cat>
+    <name>会员</name>
+    <discribe>系统会员用户</discribe>
+  </SysRoles>
+</ArrayOfSysRoles>

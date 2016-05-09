@@ -1,0 +1,122 @@
+﻿@{
+    Layout = null;
+    string pageId = ViewBag.pageId;
+}
+<script>
+    $(document).ready(function () {
+        $.getJSON("/api/ApiSysManagerUser/getUserInfo?loginName=@(ViewBag.loginName)", function (json) {
+            json.isDisabled = json.isDisabled ? "true" : "false";
+
+            var form = $("#@(pageId)form");
+
+
+
+
+
+            $("#@(pageId)selectroles").combobox({
+                valueField: 'role',
+                textField: 'name',
+                url: '/api/ApiSysManagerUser/getRolsList?t=0',
+                method: 'get',
+                multiple: false,
+                editable: false,
+                required: true,
+                panelHeight: 'auto',
+                formatter: function (row) {
+                    return row.name + '[' + row.role + ']'
+                },
+                onLoadSuccess: function () {
+                    //查询栏赋值
+                    form.form("load", json);
+                }
+            });
+
+            //保存按钮
+            var btn = $("#@(pageId)submit");
+
+            btn.click(function () {
+                if (btn.linkbutton("options").disabled == false) {
+                    var Reg = form.form('enableValidation').form('validate');
+                    if (Reg) {
+                        btn.linkbutton("disable");
+                        var d = form.serializeObject();
+                        console.log(d);
+                        $.post("/api/ApiSysManagerUser/editUser?loginName=@ViewBag.loginName", d, function (json) {
+                            showmsg(json);
+                            btn.linkbutton("enable");
+                        });
+                    }
+                }
+                return false;
+            });
+
+            var setDisable = $("#@(pageId)setdisable");
+            setDisable.click(function () {
+                if (btn.linkbutton("options").disabled == false) {
+                    var Reg = form.form('enableValidation').form('validate');
+                    if (Reg) {
+                        btn.linkbutton("disable");
+                        var d = form.serializeObject();
+                        console.log(d);
+                        $.post("/api/ApiSysManagerUser/setDisable?loginName=@ViewBag.loginName", d, function (json) {
+                            showmsg(json);
+                            btn.linkbutton("enable");
+                        });
+                    }
+                }
+                return false;
+            });
+        })
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',split:true,title:'信息'" style="width: 300px; padding: 10px;">
+
+        <form id="@(pageId)form">
+            <table class="formtable">
+                <tr>
+                    <td>用户姓名</td>
+                    <td><input type="text" class="easyui-textbox" name="fullName" data-options="required:true,validType:'length[2,20]'" /></td>
+                </tr>
+                <tr>
+                    <td>角色</td>
+                    <td>
+                        <select class="easyui-combobox" name="role" style="width:150px;" id="@(pageId)selectroles"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>手机</td>
+                    <td><input type="text" class="easyui-textbox" name="mobilePhone" data-options="required:false" validType="mobile" /></td>
+                </tr>
+                <tr>
+                    <td>职务</td>
+                    <td>
+                        <input type="text" class="easyui-textbox" name="jobTitle" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="@(pageId)submit">保存用户信息</a></td>
+                </tr>
+            </table>
+            <table class="formtable" style="margin-top:10px;">
+                <tr>
+                    <td>禁用</td>
+                    <td><select name="isDisabled" class="easyui-combobox" data-options="panelHeight:'auto'">
+                            <option value="false">否</option>
+                            <option value="true">是</option>
+                        </select></td>
+                </tr>
+                <tr>
+                    <td>操作描述</td>
+                    <td><input class="easyui-textbox" name="describe" data-options="multiline:true" placeholder="请输入操作备注" style="width:153px;height:60px"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="@(pageId)setdisable">保存禁用状态</a></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'center',title:'日志',href:'/ManagerMsg/userLog?viewset=simp&loginName=@(ViewBag.loginName)&fkid=@(ViewBag.loginName)'"></div>
+</div>

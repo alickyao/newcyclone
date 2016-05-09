@@ -1,0 +1,257 @@
+﻿@{
+    /*
+        后台用户管理员维护界面，可新增编辑以及查询
+    */
+    Layout = null;
+    ViewModelSearchUserBaseRequest query = ViewBag.query;
+    string q = JsonConvert.SerializeObject(query);
+    string pageId = ViewBag.pageId;
+}
+<script>
+    $(document).ready(function () {
+        var request = $.parseJSON('@Html.Raw(q)');
+        var grid = $("#@(pageId)grid");
+
+        var query = $("#@(pageId)query");
+        query.css("height", query.find("form").height() + 37);
+
+        $("#@(pageId)selectroles").combobox({
+            valueField: 'role',
+            textField: 'name',
+            url: '/api/ApiSysManagerUser/getRolsList?t=0',
+            method: 'get',
+            multiple: true,
+            editable: false,
+            required: false,
+            panelHeight:'auto',
+            formatter: function (row) {
+                return row.name + '[' + row.role + ']'
+            },
+            onLoadSuccess: function () {
+                //查询栏赋值
+                query.find("form").form("load", request);
+            }
+        });
+
+        $("#@(pageId)querybtn").click(function () {
+            var d = query.find("form").serializeObject();
+            console.log(d);
+            request.roles = d.roles;
+            request.q = d.q;
+            request.page = 1;
+            loadGrid();
+            grid.datagrid('getPager').pagination({
+                pageNumber: 1
+            });
+        });
+
+        $("#@(pageId)clearquerybtn").click(function () {
+            query.find("form").form("clear");
+        });
+
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/ApiSysManagerUser/searchUserList", request, function (json) {
+                console.log(json);
+                grid.datagrid("loaded");
+                gridLoadData(grid, json);
+            });
+        }
+
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "loginName",
+            onDblClickRow: function (rowIndex, rowData) {
+                var dd = $("#@(pageId)edit");
+                dd.dialog({
+                    title: "用户：[" + rowData.fullName + "]",
+                    href: '/ManagerUser/editUser?loginName=' + rowData.loginName,
+                    onClose: function () {
+                        loadGrid();
+                    }
+                });
+                dd.dialog("open");
+            },
+            columns: [[
+                { field: 'loginName', title: '登录名' },
+                { field: 'fullName', title: '姓名' },
+                { field: 'mobilePhone', title: '手机' },
+                {
+                    field: 'roleInfo', title: '角色',
+                    formatter: function (value, row, index) {
+                        return value.name + "[" + value.role + "]";
+                    }
+                },
+                { field: 'jobTitle', title: '职务' },
+                {
+                    field: 'lastLoginTime', title: '最近登录',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'createdOn', title: '创建时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'isDisabled', title: '禁用', align: 'center', formatter: function (value, row, index) {
+                        return value ? "是" : "否";
+                    },
+                    styler: function (value, row, index) {
+                        return value ? "color:Red" : "";
+                    }
+                }
+            ]],
+            toolbar: [
+                {
+                    text: "新增",
+                    iconCls: "icon-add",
+                    handler: function () {
+                        var dd = $("#@(pageId)createnew");
+                        dd.dialog("open");
+                    }
+                },
+                {
+                    text: "删除",
+                    iconCls: "icon-clear",
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            $.messager.confirm('请确认', '确定删除用户:'+row.fullName+"?", function (r) {
+                                if (r) {
+                                    $.getJSON("/api/ApiSysManagerUser/delete?loginName=" + row.loginName, function (json) {
+                                        showmsg(json);
+                                        loadGrid();
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            ]
+        });
+
+        //翻页设置
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+
+        loadGrid();
+
+
+        //新增按钮
+        $("#@(pageId)submitbtn").click(function () {
+            var btn = $(this);
+
+            if (btn.linkbutton("options").disabled == false) {
+                var from = $("#@(pageId)createnew").find("form");
+                var Reg = from.form('enableValidation').form('validate');
+                if (Reg) {
+                    btn.linkbutton("disable");
+                    var d = from.serializeObject();
+                    console.log(d);
+                    $.post("/api/ApiSysManagerUser/createUser", d, function (json) {
+                        showmsg(json);
+                        btn.linkbutton("enable");
+                        loadGrid();
+                        from.form("clear");
+                    });
+                }
+            }
+
+        });
+        $("#@(pageId)clearbtn").click(function () {
+            $("#@(pageId)createnew").find("form").form("clear");
+        });
+
+
+    });
+</script>
+<div id="@(pageId)createnew" class="easyui-dialog dialogwin" data-options="inline:true,resizable:false,modal:true,closed:true,title:'新增'" style="width:450px; height:300px;">
+    <form>
+        <table class="formtable">
+            <tr>
+                <td>登录名</td>
+                <td><input type="text" class="easyui-textbox" name="loginname" data-options="required:true,validType:['length[5,50]','checkloginname']" /></td>
+            </tr>
+            <tr>
+                <td>角色</td>
+                <td>
+                    <select class="easyui-combobox" name="role" style="width:150px;" data-options="valueField:'role',textField:'name',url:'/api/ApiSysManagerUser/getRolsList?t=0',method:'get',editable:false,required:true,panelHeight:'auto',formatter:function(row){
+                                return row.name+'['+ row.role +']'
+                            }">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>姓名</td>
+                <td><input type="text" class="easyui-textbox" name="fullName" data-options="required:true,validType:'length[2,20]'" /></td>
+            </tr>
+            <tr>
+                <td>电话</td>
+                <td><input type="text" class="easyui-textbox" name="mobilePhone" data-options="required:false,validType:'mobile'" /></td>
+            </tr>
+            <tr>
+                <td>职务</td>
+                <td><input type="text" class="easyui-textbox" name="jobTitle" data-options="required:false" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="@(pageId)submitbtn">确认</a>&nbsp;&nbsp;<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" id="@(pageId)clearbtn">清空</a></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div id="@(pageId)edit" class="easyui-dialog dialogwin" data-options="inline:true,resizable:false,modal:true,closed:true,title:'新增'" style="width:80%;height:80%"></div>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div id="@(pageId)query" data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd;">
+        <form>
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>关键字</td>
+                                <td><input type="text" class="easyui-textbox" name="q" /></td>
+                                <td>角色</td>
+                                <td><select class="easyui-combobox" name="roles" style="width:150px;" id="@(pageId)selectroles" ></select></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" id="@(pageId)querybtn" >查询</a>
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" id="@(pageId)clearquerybtn">清空查询栏</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>

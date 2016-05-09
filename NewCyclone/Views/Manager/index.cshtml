@@ -1,0 +1,153 @@
+﻿
+@{
+    ViewBag.Title = "index";
+    Layout = "~/Views/Shared/EasyUiLayout.cshtml";
+    string userMenu = JsonConvert.SerializeObject(ViewBag.userMenu);
+    SysManagerUser userinfo = ViewBag.userinfo;
+    string pageId = ViewBag.pageId;
+}
+
+<script>
+    $(document).ready(function () {
+        //顶部搜索栏
+        $('#MainSerachTextBox').searchbox({
+            searcher: function (value, name) {
+                if (value != "") {
+                    switch (name) {
+                        case "User":
+                            $("#MainCenterTabs").tabs('add', {
+                                title: "会员用户检索",
+                                href: "/PCCCMembers/userlist?keyWords=" + value,
+                                closable: true
+                            });
+                            break;
+                        case "Order":
+                            $.messager.alert('Info', '订单检索暂未开放', 'info');
+                            break;
+                        case "Topic":
+                            $.messager.alert('Info', '文档检索暂未开放', 'info');
+                            break;
+                    }
+                }
+            },
+            menu: '#MainSerachTextBoxMenu',
+            prompt: '请输入关键字',
+            width: 204
+        });
+
+        //用户菜单
+        var userMenu = $.parseJSON('@Html.Raw(userMenu)');
+        if (userMenu.length > 0) {
+            //左侧菜单项目初始化
+            $('#MainLeftTreeMenuList').tree({
+                data: userMenu[0].children,
+                animate: true,
+                lines: true,
+                onClick: function (node) {
+                    console.log(node);
+                    if (node.url != null && node.url != "") {
+                        //判断标签是否已经被打开
+                        var opened = $("#MainCenterTabs").tabs('exists', node.text);
+                        if (!opened) {
+                            $("#MainCenterTabs").tabs('add', {
+                                title: node.text,
+                                href: node.url,
+                                closable: true,
+                                iconCls: node.icon
+                            });
+                        }
+                        else {
+                            $("#MainCenterTabs").tabs('select', node.text)
+                        }
+                    }
+                    else {
+                        console.log("菜单项未定义URL参数");
+                    }
+                }
+            });
+
+            //绑定顶部菜单点击事件
+            $(".LeftMenuChange").click(function () {
+                var index = $(this).attr("menuIndex");
+                $('#MainLeftTreeMenuList').tree({
+                    data: userMenu[index].children
+                });
+            });
+            $(".LeftMenuChange").first().click();
+        }
+
+
+        //加载工作台
+        $("#MainCenterTabs").tabs('add', {
+            title: "工作台",
+            href: "workTab",
+            closable: false,
+            iconCls: "icon-edit"
+        });
+        //修改密码按钮
+        $("#@(pageId)UserChangePwdBtn").click(function () {
+            var dd = $("#@(pageId)changePwdWin");
+            dd.dialog({
+                title: "修改密码",
+                href: "/ManagerUser/changepwd"
+            });
+            dd.dialog("open");
+        });
+        //用户信息按钮
+        $("#@(pageId)userInfoBtn").click(function () {
+            var dd = $("#@(pageId)userInfoWin");
+            dd.dialog({
+                title: "我的",
+                href: "/ManagerUser/userInfo"
+            });
+            dd.dialog("open");
+        });
+    });
+</script>
+
+<div id="@(pageId)changePwdWin" class="easyui-dialog dialogwin" title="修改密码" style="width:420px;height:200px" data-options="resizable:false,modal:true,closed:true">
+</div>
+<div id="@(pageId)userInfoWin" class="easyui-dialog dialogwin" title="我的" style="width:80%;height:80%" data-options="resizable:false,modal:true,closed:true">
+</div>
+
+<div data-options="region:'north',border:false" style="height: 63px;">
+    <div id="MainTitle">
+        <div id="TopLogo"><img src="~/Content/images/PCLogo.jpg" /></div>
+        <div id="TopNav">
+            <div id="MainSearch">
+                <input id="MainSerachTextBox" />
+                <div id="MainSerachTextBoxMenu">
+                    <div data-options="name:'User'">用户</div>
+                    <div data-options="name:'Order'">订单</div>
+                    <div data-options="name:'Topic'">文档</div>
+                </div>
+            </div>
+            <div class="easyui-panel" id="topMenulist" data-options="border:false">
+                <a href="javascript:void(0);" id="@(pageId)userInfoBtn" class="easyui-linkbutton" data-options="plain:true">您好：@(userinfo.fullName)&nbsp;[角色：@(userinfo.roleInfo.name)]</a>
+               @{
+                   int i = 0;
+                   foreach (SysMenu m in ViewBag.userMenu)
+                   {
+                    <a href="#" class="easyui-linkbutton LeftMenuChange" menuIndex="@i" data-options="group:'TopMenu',toggle:true,plain:true,selected:false,iconCls:'@m.icon'">@m.text</a>
+                           i++;
+                       }
+                   }
+                <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-lock'" id="@(pageId)UserChangePwdBtn">修改密码</a>
+                <a href="logout" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'">退出登录</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-options="region:'west',split:true,title:'导航'" style="width: 200px; padding: 10px;">
+    <div class="easyui-panel" id="MainLeftTreeMenu" data-options="border:false">
+        <ul id="MainLeftTreeMenuList"></ul>
+    </div>
+</div>
+<div data-options="region:'east',split:true,collapsed:true,title:'更多'" style="width: 200px; padding: 10px;">
+    <div id="MainEastBox"></div>
+</div>
+<div data-options="region:'south',border:false" style="height: 30px; background: #A9FACD; padding: 7px;">后台管理系统&nbsp;Power By Cyclone Group 2016,7181210@qq.com</div>
+<div data-options="region:'center'">
+    <div id="MainCenterTabs" data-options="border:false, fit:true" class="easyui-tabs"></div>
+</div>
+

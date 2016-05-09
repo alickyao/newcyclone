@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="GB2312"?>
+<CTOXML>
+
+<DataModels>
+  <TableCount>9</TableCount>
+  <Count>1</Count>
+</DataModels>
+
+
+<DataModels_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>系统基础与用户</Name>
+  <CreateDate>2016-04-25 11:45:59</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DefDbEngine>SQLSERVER</DefDbEngine>
+  <DbConnectStr>TCtMetaSqlsvrDb</DbConnectStr>
+</DataModels_item1>
+
+
+<DataModels_item1_item0>
+  <Count>9</Count>
+</DataModels_item1_item0>
+
+
+<DataModels_item1_item0_item1>
+  <CTVER>43543230</CTVER>
+  <Name>Db_DepDepmentSet</Name>
+  <Caption>部门信息</Caption>
+  <CreateDate>1899-12-30</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <GraphDesc>Left=16.00
+Top=159.00</GraphDesc>
+</DataModels_item1_item0_item1>
+
+
+<DataModels_item1_item0_item1_item0>
+  <Count>4</Count>
+</DataModels_item1_item0_item1_item0>
+
+
+<DataModels_item1_item0_item1_item0_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>Id</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DisplayName>部门ID</DisplayName>
+  <DataType>1</DataType>
+  <KeyFieldType>1</KeyFieldType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item1_item0_item1>
+
+
+<DataModels_item1_item0_item1_item0_item2>
+  <CTVER>43543230</CTVER>
+  <ID>2</ID>
+  <Name>name</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <DisplayName>部门名称</DisplayName>
+  <DataType>1</DataType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item1_item0_item2>
+
+
+<DataModels_item1_item0_item1_item0_item3>
+  <CTVER>43543230</CTVER>
+  <ID>3</ID>
+  <Name>Db_DepOrgId</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>3</OrderNo>
+  <DisplayName>关联的组织ID</DisplayName>
+  <DataType>1</DataType>
+  <KeyFieldType>3</KeyFieldType>
+  <RelateTable>Db_DepOrgSet</RelateTable>
+  <RelateField>Id</RelateField>
+  <IndexType>2</IndexType>
+  <Nullable>1</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+  <GraphDesc>P1=110.00,95.00
+P2=110.00,127.00
+P3=122.00,127.00
+P4=122.00,159.00
+HookP1=92.00,27.00
+HookP2=106.00,35.00
+Mod_OP1=0
+Mod_OP2=0
+Mod_CP=0
+Horz1=0
+Horz2=0</GraphDesc>
+</DataModels_item1_item0_item1_item0_item3>
+
+
+<DataModels_item1_item0_item1_item0_item4>
+  <CTVER>43543230</CTVER>
+  <ID>20</ID>
+  <Name>parentId</Name>
+  <CreateDate>2016-04-25 11:57:19</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>4</OrderNo>
+  <DisplayName>父部门ID</DisplayName>
+  <DataType>1</DataType>
+  <Nullable>1</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item1_item0_item4>
+
+
+<DataModels_item1_item0_item2>
+  <CTVER>43543230</CTVER>
+  <Name>Db_DepMemberDepartmentSet</Name>
+  <Caption>会员部门关系表</Caption>
+  <CreateDate>1899-12-30</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <GraphDesc>Left=300.00
+Top=158.00</GraphDesc>
+</DataModels_item1_item0_item2>
+
+
+<DataModels_item1_item0_item2_item0>
+  <Count>4</Count>
+</DataModels_item1_item0_item2_item0>
+
+
+<DataModels_item1_item0_item2_item0_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>Db_DepDepmentId</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DisplayName>部门ID</DisplayName>
+  <DataType>1</DataType>
+  <KeyFieldType>3</KeyFieldType>
+  <RelateTable>Db_DepDepmentSet</RelateTable>
+  <RelateField>Id</RelateField>
+  <Nullable>1</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+  <GraphDesc>P1=227.00,202.00
+P2=264.00,202.00
+P3=264.00,193.00
+P4=300.00,193.00
+HookP1=0.00,43.00
+HookP2=0.00,35.00
+Mod_OP1=0
+Mod_OP2=0
+Mod_CP=0
+Horz1=1
+Horz2=1</GraphDesc>
+</DataModels_item1_item0_item2_item0_item1>
+
+
+<DataModels_item1_item0_item2_item0_item2>
+  <CTVER>43543230</CTVER>
+  <ID>2</ID>
+  <Name>Db_SysMemberUser_loginName</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <DisplayName>会员的ID</DisplayName>
+  <DataType>1</DataType>
+  <KeyFieldType>3</KeyFieldType>
+  <RelateTable>Db_SysUserSet_Db_SysMemberUser</RelateTable>
+  <RelateField>loginName</RelateField>
+  <IndexType>2</IndexType>
+  <Nullable>1</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+  <GraphDesc>P1=464.00,298.00
+P2=464.00,263.00
+P3=532.00,263.00
+P4=532.00,228.00
+HookP1=75.00,27.00
+HookP2=232.00,43.00
+Mod_OP1=1
+Mod_OP2=1
+Mod_CP=0
+Horz1=0
+Horz2=0</GraphDesc>
+</DataModels_item1_item0_item2_item0_item2>
+
+
+<DataModels_item1_item0_item2_item0_item3>
+  <CTVER>43543230</CTVER>
+  <ID>3</ID>
+  <Name>createdOn</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>3</OrderNo>
+  <DisplayName>加入到部门的时间</DisplayName>
+  <DataType>4</DataType>
+  <Nullable>0</Nullable>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item2_item0_item3>
+
+
+<DataModels_item1_item0_item2_item0_item4>
+  <CTVER>43543230</CTVER>
+  <ID>39</ID>
+  <Name>isDisabled</Name>
+  <CreateDate>2016-04-25 12:01:49</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>4</OrderNo>
+  <DisplayName>是否已经在部门中禁用</DisplayName>
+  <DataType>5</DataType>
+  <Nullable>1</Nullable>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item2_item0_item4>
+
+
+<DataModels_item1_item0_item3>
+  <CTVER>43543230</CTVER>
+  <Name>Db_DepOrgSet</Name>
+  <Caption>会员组织表</Caption>
+  <CreateDate>1899-12-30</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>3</OrderNo>
+  <GraphDesc>Left=18.00
+Top=41.00</GraphDesc>
+</DataModels_item1_item0_item3>
+
+
+<DataModels_item1_item0_item3_item0>
+  <Count>2</Count>
+</DataModels_item1_item0_item3_item0>
+
+
+<DataModels_item1_item0_item3_item0_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>Id</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DisplayName>组织ID</DisplayName>
+  <DataType>1</DataType>
+  <KeyFieldType>1</KeyFieldType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item3_item0_item1>
+
+
+<DataModels_item1_item0_item3_item0_item2>
+  <CTVER>43543230</CTVER>
+  <ID>2</ID>
+  <Name>name</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <DisplayName>组织名称</DisplayName>
+  <DataType>1</DataType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item3_item0_item2>
+
+
+<DataModels_item1_item0_item4>
+  <CTVER>43543230</CTVER>
+  <Name>Db_SysExcpetionLogSet</Name>
+  <CreateDate>1899-12-30</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>4</OrderNo>
+  <GraphDesc>Left=756.00
+Top=24.00</GraphDesc>
+</DataModels_item1_item0_item4>
+
+
+<DataModels_item1_item0_item4_item0>
+  <Count>2</Count>
+</DataModels_item1_item0_item4_item0>
+
+
+<DataModels_item1_item0_item4_item0_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>Id</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DataType>2</DataType>
+  <KeyFieldType>1</KeyFieldType>
+  <DefaultValue>{auto_increment}</DefaultValue>
+  <Nullable>0</Nullable>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item4_item0_item1>
+
+
+<DataModels_item1_item0_item4_item0_item2>
+  <CTVER>43543230</CTVER>
+  <ID>2</ID>
+  <Name>createdOn</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <DataType>4</DataType>
+  <Nullable>0</Nullable>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item4_item0_item2>
+
+
+<DataModels_item1_item0_item5>
+  <CTVER>43543230</CTVER>
+  <Name>Db_SysRoleSet</Name>
+  <CreateDate>1899-12-30</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>5</OrderNo>
+  <GraphDesc>Left=22.00
+Top=544.00</GraphDesc>
+</DataModels_item1_item0_item5>
+
+
+<DataModels_item1_item0_item5_item0>
+  <Count>2</Count>
+</DataModels_item1_item0_item5_item0>
+
+
+<DataModels_item1_item0_item5_item0_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>roleName</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DataType>1</DataType>
+  <KeyFieldType>1</KeyFieldType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item5_item0_item1>
+
+
+<DataModels_item1_item0_item5_item0_item2>
+  <CTVER>43543230</CTVER>
+  <ID>2</ID>
+  <Name>describe</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <DataType>1</DataType>
+  <Nullable>0</Nullable>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item5_item0_item2>
+
+
+<DataModels_item1_item0_item6>
+  <CTVER>43543230</CTVER>
+  <Name>Db_SysUserDb_SysRole</Name>
+  <CreateDate>1899-12-30</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>6</OrderNo>
+  <GraphDesc>Left=22.00
+Top=441.00</GraphDesc>
+</DataModels_item1_item0_item6>
+
+
+<DataModels_item1_item0_item6_item0>
+  <Count>2</Count>
+</DataModels_item1_item0_item6_item0>
+
+
+<DataModels_item1_item0_item6_item0_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>Db_SysUser_loginName</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DataType>1</DataType>
+  <KeyFieldType>3</KeyFieldType>
+  <RelateTable>Db_SysUserSet</RelateTable>
+  <RelateField>loginName</RelateField>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+  <GraphDesc>P1=200.00,380.00
+P2=200.00,416.00
+P3=34.00,416.00
+P4=34.00,441.00
+HookP1=177.00,54.00
+HookP2=12.00,23.00
+Mod_OP1=1
+Mod_OP2=1
+Mod_CP=1
+Horz1=0
+Horz2=0</GraphDesc>
+</DataModels_item1_item0_item6_item0_item1>
+
+
+<DataModels_item1_item0_item6_item0_item2>
+  <CTVER>43543230</CTVER>
+  <ID>2</ID>
+  <Name>Db_SysRole_roleName</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <DataType>1</DataType>
+  <KeyFieldType>3</KeyFieldType>
+  <RelateTable>Db_SysRoleSet</RelateTable>
+  <RelateField>roleName</RelateField>
+  <IndexType>2</IndexType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+  <GraphDesc>P1=205.00,571.00
+P2=279.00,571.00
+P3=279.00,571.00
+P4=279.00,495.00
+HookP1=9.00,27.00
+HookP2=257.00,35.00
+Mod_OP1=1
+Mod_OP2=1
+Mod_CP=1
+Horz1=1
+Horz2=0</GraphDesc>
+</DataModels_item1_item0_item6_item0_item2>
+
+
+<DataModels_item1_item0_item7>
+  <CTVER>43543230</CTVER>
+  <Name>Db_SysUserSet</Name>
+  <CreateDate>1899-12-30</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>7</OrderNo>
+  <GraphDesc>Left=23.00
+Top=326.00</GraphDesc>
+</DataModels_item1_item0_item7>
+
+
+<DataModels_item1_item0_item7_item0>
+  <Count>2</Count>
+</DataModels_item1_item0_item7_item0>
+
+
+<DataModels_item1_item0_item7_item0_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>loginName</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DataType>1</DataType>
+  <KeyFieldType>1</KeyFieldType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item7_item0_item1>
+
+
+<DataModels_item1_item0_item7_item0_item2>
+  <CTVER>43543230</CTVER>
+  <ID>2</ID>
+  <Name>createdOn</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <DataType>1</DataType>
+  <Nullable>0</Nullable>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item7_item0_item2>
+
+
+<DataModels_item1_item0_item8>
+  <CTVER>43543230</CTVER>
+  <Name>Db_SysUserSet_Db_SysManagerUser</Name>
+  <CreateDate>1899-12-30</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>8</OrderNo>
+  <GraphDesc>Left=387.00
+Top=437.00</GraphDesc>
+</DataModels_item1_item0_item8>
+
+
+<DataModels_item1_item0_item8_item0>
+  <Count>2</Count>
+</DataModels_item1_item0_item8_item0>
+
+
+<DataModels_item1_item0_item8_item0_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>fullName</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DataType>1</DataType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item8_item0_item1>
+
+
+<DataModels_item1_item0_item8_item0_item2>
+  <CTVER>43543230</CTVER>
+  <ID>2</ID>
+  <Name>loginName</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <DataType>1</DataType>
+  <KeyFieldType>3</KeyFieldType>
+  <RelateTable>Db_SysUserSet</RelateTable>
+  <RelateField>loginName</RelateField>
+  <IndexType>1</IndexType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+  <GraphDesc>P1=213.00,361.00
+P2=331.00,361.00
+P3=331.00,464.00
+P4=387.00,464.00
+HookP1=0.00,35.00
+HookP2=0.00,27.00
+Mod_OP1=0
+Mod_OP2=0
+Mod_CP=1
+Horz1=1
+Horz2=1</GraphDesc>
+</DataModels_item1_item0_item8_item0_item2>
+
+
+<DataModels_item1_item0_item9>
+  <CTVER>43543230</CTVER>
+  <Name>Db_SysUserSet_Db_SysMemberUser</Name>
+  <CreateDate>1899-12-30</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>9</OrderNo>
+  <GraphDesc>Left=389.00
+Top=298.00</GraphDesc>
+</DataModels_item1_item0_item9>
+
+
+<DataModels_item1_item0_item9_item0>
+  <Count>2</Count>
+</DataModels_item1_item0_item9_item0>
+
+
+<DataModels_item1_item0_item9_item0_item1>
+  <CTVER>43543230</CTVER>
+  <ID>1</ID>
+  <Name>nickName</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>1</OrderNo>
+  <DataType>1</DataType>
+  <Nullable>1</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+</DataModels_item1_item0_item9_item0_item1>
+
+
+<DataModels_item1_item0_item9_item0_item2>
+  <CTVER>43543230</CTVER>
+  <ID>2</ID>
+  <Name>loginName</Name>
+  <CreateDate>2016-04-25 11:46:17</CreateDate>
+  <ModifyDate>1899-12-30</ModifyDate>
+  <OrderNo>2</OrderNo>
+  <DataType>1</DataType>
+  <KeyFieldType>3</KeyFieldType>
+  <RelateTable>Db_SysUserSet</RelateTable>
+  <RelateField>loginName</RelateField>
+  <IndexType>1</IndexType>
+  <Nullable>0</Nullable>
+  <DataLength>50</DataLength>
+  <EditorReadOnly>0</EditorReadOnly>
+  <EditorEnabled>0</EditorEnabled>
+  <GraphDesc>P1=213.00,337.00
+P2=332.00,337.00
+P3=332.00,333.00
+P4=389.00,333.00
+HookP1=0.00,11.00
+HookP2=105.00,35.00
+Mod_OP1=0
+Mod_OP2=0
+Mod_CP=1
+Horz1=1
+Horz2=1</GraphDesc>
+</DataModels_item1_item0_item9_item0_item2>
+
+
+</CTOXML>

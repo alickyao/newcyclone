@@ -1,0 +1,71 @@
+﻿
+@{
+    Layout = null;
+    SysManagerUser user = ViewBag.user;
+    string s = JsonConvert.SerializeObject(user);
+    string pageId = ViewBag.pageId;
+}
+
+<script>
+    $(document).ready(function () {
+        var user = $.parseJSON('@Html.Raw(s)');
+        var form = $("#@(pageId)form");
+        form.form("load", user);
+        var btn = $("#@(pageId)submit");
+        btn.click(function () {
+            if (btn.linkbutton("options").disabled == false) {
+                var Reg = form.form('enableValidation').form('validate');
+                if (Reg) {
+                    btn.linkbutton("disable");
+                    var d = form.serializeObject();
+                    console.log(d);
+                    $.post("/api/ApiSysManagerUser/editUser?loginName=@user.loginName", d, function (json) {
+                        showmsg(json);
+                        btn.linkbutton("enable");
+                    });
+                }
+            }
+            return false;
+        });
+    });
+</script>
+
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',split:true,title:'信息'" style="width: 300px; padding: 10px;">
+        <form id="@(pageId)form">
+            <table class="formtable">
+                <tr>
+                    <td>姓名</td>
+                    <td><input type="text" class="easyui-textbox" name="fullName" data-options="required:true,validType:'length[2,20]'" /></td>
+                </tr>
+                <tr>
+                    <td>手机</td>
+                    <td><input type="text" class="easyui-textbox" name="mobilePhone" data-options="required:false" validType="mobile" /></td>
+                </tr>
+                <tr>
+                    <td>角色</td>
+                    <td>@user.roleInfo.ToString()<input type="hidden" value="@user.role" name="role" /></td>
+                </tr>
+                <tr>
+                    <td>职务</td>
+                    <td>
+                        @user.jobTitle
+                        <input type="hidden" name="jobTitle" value="@user.jobTitle" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>最近登陆</td>
+                    <td>@(user.lastLoginTime.HasValue ? user.lastLoginTime.Value.ToString("yy年MM月dd日 HH:mm") : "从未登陆")</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="@(pageId)submit">确认修改</a></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'center',title:'日志',href:'/ManagerMsg/userLog?viewset=simp&loginName=@(user.loginName)&fkid=@(user.loginName)'"></div>
+</div>
+
+

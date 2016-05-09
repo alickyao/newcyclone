@@ -1,0 +1,36 @@
+﻿
+@{
+    Layout = null;
+    string fun = ViewBag.fun;
+    string pageId = ViewBag.pageId;
+}
+
+<script>
+    $(document).ready(function () {
+        var tree = $("#@(pageId)tree");
+        $.getJSON("/api/ApiSysCatTree/getTreelist?fun=@fun", function (json) {
+            tree.tree({
+                data:json.result,
+                animate: true,
+                lines: true,
+                formatter: function (node) {
+                    return node.name;
+                },
+                onClick: function (node) {
+                    console.log(node);
+                }
+            });
+        });
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div id="@(pageId)tree" data-options="region:'west',border:false,title:'类别',split:true,iconCls:'icon-more'" style="padding:5px; background:#fdfdfd; width:200px;">
+        <div id="@(pageId)tree">
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        
+    </div>
+</div>
+

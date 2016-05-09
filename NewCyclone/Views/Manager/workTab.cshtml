@@ -1,0 +1,154 @@
+﻿
+@{
+    string pageId = SysHelp.getNewId("HHmmss");
+    string type = JsonConvert.SerializeObject(SysHelp.getEnumList(typeof(SysMessageType)));
+    string q = JsonConvert.SerializeObject(new VMMsgSearchMsgRequest() {
+        page = 1,
+        pageSize =10,
+        msgType = new List<int>() {
+            0,1,2
+        }
+    });
+}
+<script>
+    $(document).ready(function () {
+        var grid = $("#@(pageId)msgGrid");
+        var msgtype = $.parseJSON('@Html.Raw(type)');
+        var request = $.parseJSON('@Html.Raw(q)');
+
+        var selecttype = $("#@(pageId)msgType");
+
+        selecttype.combobox({
+            valueField: "id",
+            textField: "text",
+            data: msgtype,
+            panelHeight:"auto",
+            editable: false,
+            multiple: true,
+            onHidePanel: function () {
+                var v = selecttype.combobox("getValues");
+                request.msgType = v;
+                loadGrid();
+            }
+        });
+        selecttype.combobox("setValues", request.msgType);
+
+        function loadGrid() {
+            grid.datagrid("loading");
+            $.post("/api/ApiSysMsg/searchMsgList", request, function (json) {
+                grid.datagrid("loaded");
+                if (json.code == 0) {
+                    grid.datagrid("loadData", json.result);
+                }
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: false,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+                var dd = $("#@(pageId)dd");
+                var title = "";
+                var url = "";
+                switch (rowData.msgType) {
+                    case 0://通知
+                        
+                        break;
+                    case 1://日志
+                        title = "日志详情"
+                        url = "/ManagerMsg/userLogInfo/" + rowData.Id;
+                        break;
+                    case 2://异常
+                        title = "异常详情"
+                        url = "/ManagerMsg/exceptionLogInfo/" + rowData.Id;
+                        break;
+                }
+                if (url != "") {
+                    dd.dialog({
+                        title: title,
+                        href: url
+                    });
+                    dd.dialog("open");
+                }
+            },
+            columns: [[
+                {
+                    field: 'Id', title: 'ID',
+                },
+                {
+                    field: 'msgTypeicon', title: '', align: 'center', formatter: function (value, row, index) {
+                        switch (row.msgType) {
+                            case 0://通知
+                                return "<img src='/Content/themes/icons/tip.png' style='margin-top:4px;' />"
+                                break;
+                            case 1://日志
+                                return "<img src='/Content/themes/icons/pencil.png' style='margin-top:4px;' />"
+                                break;
+                            case 2://异常
+                                return "<img src='/Content/themes/icons/no.png' style='margin-top:4px;' />"
+                                break;
+                        }
+                    }
+                },
+                {
+                    field: 'msgType', title: '类型', align: 'center', formatter: function (value, row, index) {
+                        return msgtype[value].text;
+                    }
+                },
+                {
+                    field: 'createdOn', title: '创建时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'message', title: '消息'
+                }
+            ]],
+            toolbar: "#@(pageId)tb"
+        });
+
+        //翻页设置
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+
+        loadGrid();
+
+        window.setInterval(loadGrid, 30000);
+    });
+</script>
+<div id="@(pageId)dd" class="easyui-dialog" data-options="inline:true,resizable:false,modal:true,closed:true" style="width:80%;height:80%; padding:5px;"></div>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:false" style="padding:2px;">
+        <table>
+            <tr>
+                <td>默认后台主界面</td>
+                <td>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div data-options="region:'south',border:false,split:true,title:'系统消息'" style="height:250px;">
+        <table id="@(pageId)msgGrid">
+        </table>
+        <div id="@(pageId)tb">
+            <select id="@(pageId)msgType" style="width:200px;"></select>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="18c7aa0d4e654162b4f8e15508ba929e" Name="Diagram1" >
+        <EntityTypeShape EntityType="SysModel.Db_SysRole" Width="1.5" PointX="0.5" PointY="0.5" />
+        <EntityTypeShape EntityType="SysModel.Db_SysUser" Width="1.75" PointX="0.5" PointY="0.5" />
+        <EntityTypeShape EntityType="SysModel.Db_ManagerUser" Width="2" PointX="3.125" PointY="1.25" IsExpanded="true" />
+        <InheritanceConnector EntityType="SysModel.Db_ManagerUser" />
+        <EntityTypeShape EntityType="SysModel.Db_MemberUser" Width="2" PointX="0.5" PointY="3.875" />
+        <InheritanceConnector EntityType="SysModel.Db_MemberUser" />
+        <AssociationConnector Association="SysModel.Db_SysUserDb_SysRole" />
+        <EntityTypeShape EntityType="SysModel.Db_SysMsg" Width="1.5" PointX="8.875" PointY="0.5" />
+        <EntityTypeShape EntityType="SysModel.Db_SysExceptionLog" Width="2.25" PointX="8.125" PointY="2.875" />
+        <InheritanceConnector EntityType="SysModel.Db_SysExceptionLog" />
+        <EntityTypeShape EntityType="SysModel.Db_SysUserLog" Width="2.25" PointX="5.75" PointY="0.5" />
+        <InheritanceConnector EntityType="SysModel.Db_SysUserLog" />
+        <EntityTypeShape EntityType="SysModel.Db_SysTree" Width="1.5" PointX="0.5" PointY="5.875" />
+        <EntityTypeShape EntityType="SysModel.Db_SysMenu" Width="1.5" PointX="0.5" PointY="4" />
+        <InheritanceConnector EntityType="SysModel.Db_SysMenu" />
+        <AssociationConnector Association="SysModel.Db_SysRoleDb_SysMenu" />
+        <EntityTypeShape EntityType="SysModel.Db_CatTree" Width="1.5" PointX="2.75" PointY="5.875" />
+        <InheritanceConnector EntityType="SysModel.Db_CatTree" />
+        <EntityTypeShape EntityType="SysModel.Db_SysFileSet" Width="1.5" PointX="0.5" PointY="8.375" />
+        <EntityTypeShape EntityType="SysModel.Db_SysDoc" Width="1.5" PointX="5.5" PointY="8.375" />
+        <EntityTypeShape EntityType="SysModel.Db_SysDocCat" Width="1.5" PointX="3.375" PointY="8.375" />
+        <AssociationConnector Association="SysModel.Db_SysDocDb_DocCat" />
+        <EntityTypeShape EntityType="SysModel.Db_SysDocFile" Width="1.5" PointX="3.375" PointY="10.75" />
+        <AssociationConnector Association="SysModel.Db_SysDocDb_DocFile" />
+        <EntityTypeShape EntityType="SysModel.Db_DocWeb" Width="1.5" PointX="7.75" PointY="8.375" />
+        <InheritanceConnector EntityType="SysModel.Db_DocWeb" />
+        <EntityTypeShape EntityType="SysModel.Db_WebPage" Width="1.5" PointX="10.125" PointY="8.375" />
+        <InheritanceConnector EntityType="SysModel.Db_WebPage" />
+        <EntityTypeShape EntityType="SysModel.Db_WebRote" Width="1.5" PointX="10.125" PointY="10.625" />
+        <InheritanceConnector EntityType="SysModel.Db_WebRote" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

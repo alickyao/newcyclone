@@ -1,0 +1,49 @@
+﻿body {
+    font-size:0.9em;
+    margin:1px;
+    padding:0;
+}
+
+
+/*
+    首页头部
+    */
+#MainTitle{
+    width:100%;
+    overflow:hidden;
+}
+    #MainTitle #TopLogo {
+        width:300px;
+        height:63px;
+        float:left;
+    }
+    #MainTitle #TopNav {
+        float:right;
+        padding-top:2px;
+    }
+        #MainTitle #TopNav #MainSearch {
+            text-align:right;
+            margin-bottom:2px;
+        }
+    #MainTitle #topMenulist {
+        padding: 5px; border:1px solid #dedede; border-bottom:none; border-right:none;
+        border-top-left-radius:3px;
+        background-color:#fcfcfc
+    }
+
+.dialogwin {
+    padding:5px;
+}
+
+.formtable {
+    border-collapse:collapse;
+    border:1px dashed #ccc;
+}
+    .formtable td {
+        padding:5px;
+        border:1px dashed #ccc;
+    }
+    .formtable .t {
+        font-weight:bold;
+        background:#efefef;
+    }

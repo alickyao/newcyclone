@@ -1,0 +1,181 @@
+﻿
+@{
+    Layout = null;
+    string pageId = ViewBag.pageId;
+    string fun = ViewBag.fun;
+}
+
+<script>
+    $(document).ready(function () {
+
+        var grid = $("#@(pageId)grid");
+
+        function loadGrid() {
+            grid.treegrid("unselectAll");
+            grid.treegrid("loading");
+            $.getJSON("/api/ApiSysCatTree/getTreeList?fun=@fun", function (json) {
+                console.log(json);
+                grid.treegrid("loaded");
+                grid.treegrid("loadData", json.result);
+                editRow = undefined;
+            });
+        }
+
+        var editRow = undefined;//当前正在编辑的行的ID
+
+        grid.treegrid({
+            rownumbers: false,
+            animate: true,
+            collapsible: true,
+            fitColumns: false,
+            striped: true,
+            fit: true,
+            idField: 'Id',
+            treeField: 'name',
+            lines: true,
+            border: false,
+            onDblClickRow: function (row) {
+                grid.treegrid("unselect", row.Id);
+            },
+            columns: [[
+                    { title: 'Id', field: 'Id',width:'110' },
+                    { title: '名称', field: 'name', width:'250', editor: { type: "textbox", options: { required: true } } },
+                    { title: '排序', field: 'sort', width:'40',align:'center', editor: { type: "numberbox", options: { required: false } } },
+                    {
+                        title: '创建时间', field: 'createOn',width:'120', align: 'right', formatter: function (value) {
+                            if (value != null) {
+                                return new Date(value).Format("yyyy-MM-dd hh:mm");
+                            }
+                        }
+                    }
+            ]],
+            toolbar: [
+                {
+                    text: "新增",
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        if (editRow == undefined) {
+                            var srow = grid.treegrid("getSelected");
+                            var parentid = "";
+                            var d = {
+                                Id: '',
+                                name: '',
+                                sort: 0,
+                                fun : "@fun"
+                            };
+                            if (srow != null) {
+                                parentid = srow.Id;
+                                d.fun = null
+                            }
+                            grid.treegrid("append", {
+                                parent: parentid,
+                                data: [d]
+                            }).treegrid("beginEdit", "").treegrid("select", "");
+                            editRow = "";
+                        }
+                    }
+                },
+                {
+                    text: "编辑",
+                    iconCls: 'icon-edit',
+                    handler: function () {
+                        if (editRow == undefined) {
+                            var srow = grid.treegrid("getSelected");
+                            if (srow != null) {
+                                grid.treegrid("beginEdit", srow.Id);
+                                editRow = srow.Id;
+                            }
+                            else {
+                                $.messager.alert('您的操作有误', "请选中需要编辑的节点", 'error');
+                            }
+                        }
+                    }
+                },
+                {
+                    text: "撤销编辑",
+                    iconCls: 'icon-undo',
+                    handler: function () {
+                        if (editRow != undefined) {
+                            grid.treegrid("cancelEdit", editRow);
+                            if (editRow == "") {
+                                grid.treegrid("remove", editRow);
+                            }
+                            editRow = undefined;
+                        }
+                    }
+                },
+                {
+                    text: "保存",
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        if (editRow != undefined) {
+                            var Reg = grid.treegrid("validateRow", editRow);
+                            if (Reg) {
+                                grid.treegrid("endEdit", editRow);
+                                var row = grid.treegrid("find", editRow);
+                                console.log(row);
+                                $.post("/api/ApiSysCatTree/editCatTree", row, function (json) {
+                                    if (json.code == 0) {
+                                        grid.treegrid("update", {
+                                            id: editRow, row: json.result
+                                        });
+                                        editRow = undefined;
+                                    }
+                                    else {
+                                        showmsg(json);
+                                    }
+                                });
+                            }
+                        }
+                        else {
+                            $.messager.alert('您的操作有误', "没有数据需要保存", 'error');
+                        }
+                    }
+                },
+                {
+                    text: "删除",
+                    iconCls: 'icon-clear',
+                    handler: function () {
+                        if (editRow == undefined) {
+                            var srow = grid.treegrid("getSelected");
+                            if (srow != null) {
+                                $.messager.confirm('请确认', '确定将节点:【' + srow.name + "】标记为删除？", function (r) {
+                                    if (r) {
+                                        $.getJSON("/api/ApiSysCatTree/delCatTree/" + srow.Id, function (json) {
+                                            showmsg(json);
+                                            loadGrid();
+                                        });
+                                    }
+                                });
+                            }
+                            else {
+                                $.messager.alert('您的操作有误', "请先选择需要删除的节点", 'error');
+                            }
+                        }
+                        else {
+                            $.messager.alert("提示", "请先保存或退出编辑模式", "info");
+                        }
+                    }
+                },
+                {
+                    text: '刷新',
+                    iconCls: 'icon-reload',
+                    handler: function () {
+                        if (editRow == undefined) {
+                            loadGrid();
+                        }
+                        else {
+                            $.messager.alert("提示", "请先保存或退出编辑模式", "info");
+                        }
+                    }
+                }
+            ]
+        });
+        loadGrid();
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>

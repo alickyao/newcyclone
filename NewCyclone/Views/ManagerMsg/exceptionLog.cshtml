@@ -1,0 +1,149 @@
+﻿
+@{
+    Layout = null;
+    VMMsgSearchExceptionLogRequest condtion = ViewBag.condtion;
+    string q = JsonConvert.SerializeObject(condtion);
+    string pageId = ViewBag.PageId;
+
+    List<VMComboBox> etype = SysHelp.getEnumList(typeof(SysExceptionType));
+    string t = JsonConvert.SerializeObject(etype);
+}
+
+
+<script>
+    $(document).ready(function () {
+        var grid = $("#@(pageId)grid");
+        var request = $.parseJSON('@Html.Raw(q)');
+        var errorType = $.parseJSON('@Html.Raw(t)');
+
+        var query = $("#@(pageId)query");
+        query.css("height", query.find("form").height() + 42);
+
+        $("#@(pageId)selectType").combobox({
+            valueField: "id",
+            textField: "text",
+            data: errorType,
+            editable: false
+        });
+
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/ApiSysMsg/searchExceptionLog", request, function (json) {
+                grid.datagrid("loaded");
+                console.log(json);
+                gridLoadData(grid, json);
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: false,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onClickRow: function (rowIndex, rowData) {
+                var infowin = $("#@(pageId)info");
+                infowin.panel({
+                    href: '/ManagerMsg/exceptionLogInfo/' + rowData.Id
+                });
+                infowin.panel("refresh");
+            },
+            columns: [[
+                {
+                    field: 'Id', title: 'ID',
+                },
+                {
+                    field: 'errorType', title: '类型', align: 'center', formatter: function (value, row, index) {
+                        return errorType[value].text;
+                    }
+                },
+                {
+                    field: 'createdOn', title: '创建时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'message', title: '错误信息'
+                },
+                {
+                    field: 'source',title:'对象/应用程序'
+                },
+                {
+                    field: 'targetSite',title:'引发异常的方法'
+                }
+            ]]
+        });
+
+        //翻页设置
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+        loadGrid();
+
+        //查询栏
+        $("#@(pageId)searchbtn").click(function () {
+            var d = $("#@(pageId)searchform").serializeObject();
+            request.page = 1;
+            request.type = d.type;
+            request.beginDate = d.beginDate;
+            request.endDate = d.endDate;
+            loadGrid();
+            grid.datagrid('getPager').pagination({
+                pageNumber: 1
+            });
+        });
+        $("#@(pageId)clearsearchbtn").click(function () {
+            $("#@(pageId)searchform").form("clear");
+        });
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+
+    <div id="@(pageId)query" data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd;">
+        <form id="@(pageId)searchform">
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>类型:</td>
+                                <td><select class="easyui-combobox" id="@(pageId)selectType" name="type" panelHeight="auto" style="width:100px"></select></td>
+                                <td>开始时间:</td>
+                                <td><input type="text" class="easyui-datebox" name="beginDate" style="width:100px;" data-options="editable:false" /></td>
+                                <td>结束时间:</td>
+                                <td><input type="text" class="easyui-datebox" name="endDate" style="width:100px;" data-options="editable:false" /></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td><a href="#" class="easyui-linkbutton" iconCls="icon-search" id="@(pageId)searchbtn">查询</a></td>
+                    <td><a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)clearsearchbtn">清空查询栏</a></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'center',border:false">
+        
+        <div class="easyui-layout" data-options="fit:true" >
+            <div data-options="region:'east',border:false,title:'详情',split:true" style="width:400px;">
+                <div id="@(pageId)info" class="easyui-panel" data-options="fit:true,border:false" style="padding:5px;"></div>
+            </div>
+            <div data-options="region:'center',border:false">
+                <table id="@(pageId)grid"></table>
+            </div>
+        </div>
+    </div>
+</div>
