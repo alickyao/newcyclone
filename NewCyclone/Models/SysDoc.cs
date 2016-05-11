@@ -185,6 +185,13 @@ namespace NewCyclone.Models
                         seoTitle = condtion.seoTitle
                     };
 
+                    //分类
+                    foreach (string cat in condtion.catTreeIds) {
+                        d.Db_DocCat.Add(new Db_SysDocCat()
+                        {
+                            Db_CatTreeId = cat
+                        });
+                    }
                     var newrow = db.Db_SysDocSet.Add(d);
                     db.SaveChanges();
                     return new WebDocPage(newrow.Id);
@@ -203,7 +210,7 @@ namespace NewCyclone.Models
     public class VMEditWebDocPageRequest {
 
         /// <summary>
-        /// 主键
+        /// 主键  新建是 调用 SysHelp.getNewId()
         /// </summary>
         public string Id { get; set; }
         /// <summary>
