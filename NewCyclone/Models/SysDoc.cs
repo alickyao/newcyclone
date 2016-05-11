@@ -5,6 +5,7 @@ using System.Web;
 using NewCyclone.DataBase;
 using System.Data.Entity;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace NewCyclone.Models
 {
@@ -154,6 +155,11 @@ namespace NewCyclone.Models
         /// <returns></returns>
         public static WebDocPage edit(VMEditWebDocPageRequest condtion) {
             SysValidata.valiData(condtion);
+
+            if (condtion.catTreeIds.Count == 0) {
+                throw new SysException("所在分类必选", condtion);
+            }
+
             using (var db = new SysModelContainer()) {
 
                 if (string.IsNullOrEmpty(condtion.Id)) {
@@ -178,6 +184,7 @@ namespace NewCyclone.Models
                         seoKeyWords = condtion.seoKeyWords,
                         seoTitle = condtion.seoTitle
                     };
+
                     var newrow = db.Db_SysDocSet.Add(d);
                     db.SaveChanges();
                     return new WebDocPage(newrow.Id);
@@ -230,9 +237,15 @@ namespace NewCyclone.Models
         /// </summary>
         public string content { get; set; }
 
+        private HashSet<string> _catTreeIds = new HashSet<string>();
+
         /// <summary>
         /// 所在分类
         /// </summary>
-        public HashSet<string> catTreeIds { get; set; }
+        [Required]
+        public HashSet<string> catTreeIds {
+            get { return _catTreeIds; }
+            set { _catTreeIds = value; }
+        }
     }
 }

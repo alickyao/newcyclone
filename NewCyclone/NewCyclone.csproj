@@ -569,6 +569,7 @@
     <Compile Include="Controllers\ApiSysCatTreeController.cs" />
     <Compile Include="Controllers\ApiSysUserController.cs" />
     <Compile Include="Controllers\ApiTestController.cs" />
+    <Compile Include="Controllers\ApiWebPagesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="DataBase\Db_CatTree.cs">
