@@ -258,6 +258,9 @@ namespace NewCyclone.Controllers
         public ActionResult editpic(VMEditWebDocPageRequest condtion, string pageId) {
             setPageId(pageId);
             ViewBag.condtion = condtion;
+            if (!string.IsNullOrEmpty(condtion.Id)) {
+                ViewBag.info = new WebDocPage(condtion.Id);
+            }
             return View();
         }
 

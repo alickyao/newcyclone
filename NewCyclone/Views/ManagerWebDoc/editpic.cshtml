@@ -1,5 +1,49 @@
 ﻿
 @{
     Layout = null;
+    VMEditWebDocPageRequest condtion = ViewBag.condtion;
+    WebDocPage info = null;
+    bool isEdit = false;
+    if (!string.IsNullOrEmpty(condtion.Id)) {
+        info = ViewBag.info;
+        isEdit = true;
+    }
+    string pageId = ViewBag.pageId;
 }
-图文
+<script>
+    $(document).ready(function () {
+        var isEdit = "@isEdit";
+    });
+</script>
+<form id="@(pageId)editform">
+    <table class="formtable" style="width:100%">
+        <tr>
+            <td class="t" style="width:80px;">标题</td>
+            <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" /></td>
+        </tr>
+        <tr>
+            <td class="t" style="width:80px;">发布时间</td>
+            <td><input type="text" class="easyui-datebox" name="showTime" /></td>
+        </tr>
+        <tr>
+            <td class="t">SEO标题</td>
+            <td><input type="text" class="easyui-textbox" name="seoTitle" style="width:250px;" /></td>
+        </tr>
+        <tr>
+            <td class="t">SEO关键字</td>
+            <td><input type="text" class="easyui-textbox" name="seoKeyWords" style="width:400px;" /></td>
+        </tr>
+        <tr>
+            <td class="t">所在分类</td>
+            <td><input type="text" class="easyui-combotree" name="catTreeIds" data-options="required:true" /></td>
+        </tr>
+        <tr>
+            <td class="t">描述</td>
+            <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:60px;" /></td>
+        </tr>
+        <tr>
+            <td class="t">正文</td>
+            <td><input type="text" class="easyui-textbox" name="content" data-options="multiline:true" style="width:500px; height:200px;" /></td>
+        </tr>
+    </table>
+</form>

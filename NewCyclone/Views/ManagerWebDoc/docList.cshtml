@@ -113,14 +113,25 @@
                     text: '保存',
                     iconCls:'icon-save',
                     handler: function () {
-
+                        var btn = $(this);
+                        var form = $("#@(pageId)editform");
+                        
+                        if (btn.linkbutton("options").disabled == false) {
+                            var Reg = form.form('enableValidation').form('validate');
+                            if (Reg) {
+                                btn.linkbutton("disable");
+                                var d = form.serializeObject();
+                                console.log(d);
+                                //btn.linkbutton("enable");
+                            }
+                        }
                     }
                 },
                 {
                     text: '取消',
                     iconCls: 'icon-clear',
                     handler: function () {
-
+                        dd.dialog("close");
                     }
                 }
             ]
