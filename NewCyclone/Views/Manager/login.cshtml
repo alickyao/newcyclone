@@ -12,7 +12,6 @@
                 <div class="panel-heading ">请登录</div>
                 <div class="panel-body">
                     <form class="form-horizontal" id="defaultForm">
-                        <div class="alert alert-danger" style="display: none;"></div>
                         <div class="form-group">
                             <label for="loginName" class="col-sm-2 control-label">登录名</label>
                             <div class="col-sm-10">
@@ -42,6 +41,7 @@
 <script>
     $(document).ready(function () {
 
+        toastr.options.positionClass = "toast-top-center";
         $('#loginResetBtn').click(function () {
             $('#defaultForm').data('bootstrapValidator').resetForm(true);
         });
@@ -94,10 +94,7 @@
                     window.location.href = "index";
                 }
                 else {
-                    $form.find(".alert").text(json.msg).show();
-                    //window.setTimeout(function () {
-                    //    $form.find(".alert").hide();
-                    //}, 3000);
+                    toastr.error(json.msg);
                     btn.button("reset");
                 }
             });

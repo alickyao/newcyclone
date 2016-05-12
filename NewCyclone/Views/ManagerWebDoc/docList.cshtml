@@ -1,0 +1,182 @@
+﻿
+@{
+    Layout = null;
+    VMSearchWebDocReqeust condtion = ViewBag.condtion;
+    string q = JsonConvert.SerializeObject(condtion);
+    string pageId = ViewBag.pageId;
+    List<VMComboBox> funlist = SysHelp.getSysSetList<List<VMComboBox>>("FunWebCms.xml");
+}
+<script>
+    $(document).ready(function () {
+        var request = $.parseJSON('@Html.Raw(q)');
+
+        var grid = $("#@(pageId)grid");
+
+        var query = $("#@(pageId)query");
+
+
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/ApiWebPages/searchWebDocList", request, function (json) {
+                console.log(json);
+                grid.datagrid("loaded");
+                gridLoadData(grid, json);
+            });
+        }
+
+        $("#@(pageId)selectfun").combobox({
+            valueField: 'id',
+            textField: 'text',
+            url: '/api/ApiWebPages/getfunlist',
+            method: 'get',
+            multiple: false,
+            editable: false,
+            required: false,
+            panelHeight: 'auto'
+        });
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            columns: [[
+                {
+                    field: 'Id', title: 'Id'
+                },
+                {
+                    field: 'fun', title: '类型', formatter(value, row, index) {
+                        return value.text;
+                    }
+                },
+                {
+                    field: 'caption', title: '标题'
+                },
+
+                {
+                    field: 'showTime', title: '发布时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd");
+                        }
+                    }
+                },
+                {
+                    field: 'createdOn', title: '创建时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'createdBy', title: '创建者',
+                    formatter: function (value, row, index) {
+                        return value.showName;
+                    }
+                },
+                {
+                    field: 'modifiedOn', title: '修改时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'modifiedBy', title: '修改者',
+                    formatter: function (value, row, index) {
+                        return value.showName;
+                    }
+                },
+                {
+                    field: 'describe', title: '描述'
+                }
+            ]],
+            toolbar: "#@(pageId)tb"
+        });
+        loadGrid();
+
+
+        //弹出框按钮定义
+        var dd = $("#@(pageId)dd");
+        dd.dialog({
+            buttons: [
+                {
+                    text: '保存',
+                    iconCls:'icon-save',
+                    handler: function () {
+
+                    }
+                },
+                {
+                    text: '取消',
+                    iconCls: 'icon-clear',
+                    handler: function () {
+
+                    }
+                }
+            ]
+        });
+
+    });
+</script>
+<div id="@(pageId)dd" class="easyui-dialog dialogwin" data-options="inline:true,resizable:false,modal:true,closed:true,title:'新增/编辑'" style="width:90%;height:90%">
+</div>
+<div class="easyui-layout" data-options="fit:true">
+    <div id="@(pageId)query" data-options="region:'north',border:false" style="padding:5px; background:#fdfdfd;">
+        <form>
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                               <td>关键字:</td>
+                               <td><input type="text" class="easyui-textbox" name="q" /></td>
+                               <td>类型:</td>
+                               <td>
+                                   <select class="easyui-combobox" name="fun" style="width:100px;" id="@(pageId)selectfun"></select>
+                               </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" id="@(pageId)querybtn">查询</a>
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" id="@(pageId)clearquerybtn">清空查询栏</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'center',border:false">
+        <div id="@(pageId)tb">
+            <a href="javascript:void(0)" class="easyui-menubutton"
+               data-options="menu:'#@(pageId)mm',iconCls:'icon-add'">新增</a>
+            <div id="@(pageId)mm" data-options="onClick:@(pageId)menuHandler" style="width:150px;">
+                @foreach (var s in funlist) {
+                    <div data-options="name:'@s.id'">@s.text</div>
+                }
+            </div>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-clear" plain="true">删除</a>
+        </div>
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>
+<script>
+    function @(pageId)menuHandler(item) {
+        var url = "/ManagerWebDoc/edit" + item.name + "?pageId=@(pageId)";
+        console.log(url);
+        $("#@(pageId)dd").dialog({
+            href: url,
+            title: '新增:' + item.text
+        });
+        $("#@(pageId)dd").dialog("open");
+    }
+</script>

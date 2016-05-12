@@ -30,6 +30,9 @@
                     $.post("/api/ApiSysManagerUser/reSetNewPwd", d, function (json) {
                         showmsg(json);
                         btn.linkbutton("enable");
+                        if (json.code == 0) {
+                            from.form("clear");
+                        }
                     });
                 }
             }

@@ -115,14 +115,12 @@
                                 var row = grid.treegrid("find", editRow);
                                 console.log(row);
                                 $.post("/api/ApiSysCatTree/editCatTree", row, function (json) {
+                                    showmsg(json);
                                     if (json.code == 0) {
                                         grid.treegrid("update", {
                                             id: editRow, row: json.result
                                         });
                                         editRow = undefined;
-                                    }
-                                    else {
-                                        showmsg(json);
                                     }
                                 });
                             }

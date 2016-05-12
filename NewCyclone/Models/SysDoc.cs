@@ -61,6 +61,7 @@ namespace NewCyclone.Models
             set { _cat = value; }
         }
 
+
         /// <summary>
         /// 使用ID构造文档基础项
         /// </summary>
@@ -78,6 +79,19 @@ namespace NewCyclone.Models
                 this.isDeleted = d.isDeleted;
 
                 this.cat = d.Db_DocCat.Select(p => new SysCatTree(p.Db_CatTreeId, false)).ToList();
+            }
+        }
+
+        /// <summary>
+        /// 删除（标记删除）
+        /// </summary>
+        public virtual void delete() {
+            using (var db = new SysModelContainer())
+            {
+                var d = db.Db_SysDocSet.Single(p => p.Id == this.Id);
+                d.isDeleted = true;
+                db.SaveChanges();
+                SysUserLog.saveLog("删除文档:" + this.caption, SysUserLogType.删除, this.Id);
             }
         }
     }
@@ -102,6 +116,11 @@ namespace NewCyclone.Models
         protected List<VMComboBox> funlist = SysHelp.getSysSetList<List<VMComboBox>>("FunWebCms.xml");
 
         /// <summary>
+        /// 展示的创建时间
+        /// </summary>
+        public DateTime showTime { get; set; }
+
+        /// <summary>
         /// 使用ID构造一个网站文档
         /// </summary>
         /// <param name="id"></param>
@@ -111,8 +130,38 @@ namespace NewCyclone.Models
                 var d = db.Db_SysDocSet.OfType<Db_DocWeb>().Single(p => p.Id == id);
                 this.fun = funlist.Single(p => p.id == d.fun);
                 this.describe = d.describe;
+                this.showTime = d.showTime;
             }
         }
+
+        /// <summary>
+        /// 检索网页文档
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponseList<WebDoc> searchWebDoc(VMSearchWebDocReqeust condtion) {
+            BaseResponseList<WebDoc> result = new BaseResponseList<WebDoc>();
+            using (var db = new SysModelContainer()) {
+                var list = (from c in db.Db_SysDocSet.OfType<Db_DocWeb>().AsEnumerable()
+                            where (string.IsNullOrEmpty(condtion.q) ? true : (c.caption.Contains(condtion.q) || c.describe.Contains(condtion.q)))
+                            && (condtion.catTreeIds.Count == 0 ? true : (condtion.catTreeIds.Intersect(c.Db_DocCat.Select(p => p.Db_CatTreeId)).Count() > 0 ? true : false))
+                            && (string.IsNullOrEmpty(condtion.fun) ? true : c.fun == condtion.fun)
+                            && (!c.isDeleted)
+                            orderby c.showTime descending
+                            select c.Id
+                            );
+                result.total = list.Count();
+                if (result.total > 0) {
+                    if (condtion.page > 0)
+                    {
+                        list = list.Skip(condtion.getSkip()).Take(condtion.pageSize);
+                    }
+                    result.rows = list.Select(p => new WebDoc(p)).ToList();
+                }
+            }
+            return result;
+        }
+
     }
 
     /// <summary>
@@ -182,7 +231,8 @@ namespace NewCyclone.Models
                         modifiedBy = HttpContext.Current.User.Identity.Name,
                         modifiedOn = DateTime.Now,
                         seoKeyWords = condtion.seoKeyWords,
-                        seoTitle = condtion.seoTitle
+                        seoTitle = condtion.seoTitle,
+                        showTime = condtion.showTime
                     };
 
                     //分类
@@ -194,10 +244,39 @@ namespace NewCyclone.Models
                     }
                     var newrow = db.Db_SysDocSet.Add(d);
                     db.SaveChanges();
+                    SysUserLog.saveLog(condtion, SysUserLogType.编辑, newrow.Id);
                     return new WebDocPage(newrow.Id);
                 }
                 else {
                     //编辑
+
+                    var d = db.Db_SysDocSet.OfType<Db_WebPage>().Single(p => p.Id == condtion.Id);
+
+                    //删除原来的的分类
+                    db.Db_SysDocCatSet.RemoveRange(d.Db_DocCat);
+                    db.SaveChanges();
+
+
+                    d.caption = condtion.caption;
+                    d.content = condtion.content;
+                    d.modifiedOn = DateTime.Now;
+                    d.modifiedBy = HttpContext.Current.User.Identity.Name;
+                    d.fun = condtion.fun;
+                    d.seoKeyWords = condtion.seoKeyWords;
+                    d.seoTitle = condtion.seoTitle;
+                    d.showTime = condtion.showTime;
+
+                    //分类
+                    foreach (string cat in condtion.catTreeIds)
+                    {
+                        d.Db_DocCat.Add(new Db_SysDocCat()
+                        {
+                            Db_CatTreeId = cat
+                        });
+                    }
+
+                    db.SaveChanges();
+
                     return new WebDocPage(condtion.Id);
                 }
             }
@@ -207,10 +286,10 @@ namespace NewCyclone.Models
     /// <summary>
     /// 创建/编辑网站图文文档请求
     /// </summary>
-    public class VMEditWebDocPageRequest {
+    public class VMEditWebDocPageRequest:ItoSysLogMesable {
 
         /// <summary>
-        /// 主键  新建是 调用 SysHelp.getNewId()
+        /// 主键  新建时 调用 SysHelp.getNewId() 或不填
         /// </summary>
         public string Id { get; set; }
         /// <summary>
@@ -223,6 +302,16 @@ namespace NewCyclone.Models
         /// </summary>
         [Required]
         public string fun { get; set; }
+
+        private DateTime _showTime = DateTime.Now;
+
+        /// <summary>
+        /// 展示的创建时间 默认为系统当前时间
+        /// </summary>
+        public DateTime showTime {
+            get { return _showTime; }
+            set { _showTime = value; }
+        }
 
         /// <summary>
         /// 文档描述
@@ -254,5 +343,41 @@ namespace NewCyclone.Models
             get { return _catTreeIds; }
             set { _catTreeIds = value; }
         }
+
+        /// <summary>
+        /// 生成日志文本
+        /// </summary>
+        /// <returns></returns>
+        public string toLogString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("新增/编辑图文消息:").Append(this.caption);
+            return sb.ToString();
+        }
+    }
+
+    /// <summary>
+    /// 检索网页文档请求参数
+    /// </summary>
+    public class VMSearchWebDocReqeust : BaseRequest {
+        /// <summary>
+        /// 关键字 模糊匹配文档的标题,描述
+        /// </summary>
+        public string q { get; set; }
+
+        private List<string> _catTreeIds = new List<string>();
+
+        /// <summary>
+        /// 分类
+        /// </summary>
+        public List<string> catTreeIds {
+            get { return _catTreeIds; }
+            set { _catTreeIds = value; }
+        }
+
+        /// <summary>
+        /// 功能ID
+        /// </summary>
+        public string fun { get; set; }
     }
 }

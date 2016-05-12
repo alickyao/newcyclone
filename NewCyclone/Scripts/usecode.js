@@ -244,7 +244,8 @@ $.fn.serializeObject = function () {
 //通用提示
 function showmsg(json) {
     if (json.code == 0) {
-        $.messager.alert('已完成', json.msg, 'info');
+        //$.messager.alert('已完成', json.msg, 'info');
+        toastr.info(json.msg);
     }
     else {
         $.messager.alert('发生异常', json.msg, 'error');

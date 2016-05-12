@@ -8,6 +8,9 @@
 <script>
     $(document).ready(function () {
         var tree = $("#@(pageId)tree");
+
+        var panel = $("#@(pageId)panel");
+
         $.getJSON("/api/ApiSysCatTree/getTreelist?fun=@fun", function (json) {
             tree.tree({
                 data:json.result,
@@ -17,7 +20,11 @@
                     return node.name;
                 },
                 onClick: function (node) {
-                    console.log(node);
+                    var s = "?catTreeIds=" + node.Id;
+                    $.each(node.childrenIdList, function (i, n) {
+                        s += "&catTreeIds=" + n;
+                    });
+                    panel.panel("refresh", "/ManagerWebDoc/docList" + s);
                 }
             });
         });
@@ -29,8 +36,8 @@
         <div id="@(pageId)tree">
         </div>
     </div>
-    <div data-options="region:'center',border:false">
-        
+    <div data-options="region:'center',border:false,title:'信息列表'">
+        <div id="@(pageId)panel" class="easyui-panel" data-options="fit:true,border:false"></div>
     </div>
 </div>
 

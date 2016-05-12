@@ -408,6 +408,7 @@
     <Content Include="Content\themes\metro\validatebox.css" />
     <Content Include="Content\themes\metro\window.css" />
     <Content Include="Content\themes\mobile.css" />
+    <Content Include="Content\toastr.css" />
     <Content Include="DataBase\SysModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SysModel.Context.cs</LastGenOutput>
@@ -531,6 +532,7 @@
     <Content Include="Scripts\locale\easyui-lang-tr.js" />
     <Content Include="Scripts\locale\easyui-lang-zh_CN.js" />
     <Content Include="Scripts\locale\easyui-lang-zh_TW.js" />
+    <Content Include="Scripts\toastr.min.js" />
     <Content Include="Scripts\usecode.js" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -693,6 +695,10 @@
     <Content Include="Views\ManagerMsg\exceptionLogInfo.cshtml" />
     <Content Include="Views\ManagerTree\catTreeList.cshtml" />
     <Content Include="Views\ManagerTree\catTreeGrid.cshtml" />
+    <Content Include="Views\ManagerWebDoc\docList.cshtml" />
+    <Content Include="Views\ManagerWebDoc\editpic.cshtml" />
+    <Content Include="Views\ManagerWebDoc\editrote.cshtml" />
+    <Content Include="Views\ManagerWebDoc\editproduct.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

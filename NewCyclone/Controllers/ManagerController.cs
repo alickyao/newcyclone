@@ -230,4 +230,51 @@ namespace NewCyclone.Controllers
             return View();
         }
     }
+
+    /// <summary>
+    /// 网页文档（图文消息，轮播等）
+    /// </summary>
+    public class ManagerWebDocController : MBaseController {
+
+        /// <summary>
+        /// 检索文档
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult docList(VMSearchWebDocReqeust condtion, string pageId)
+        {
+            setPageId(pageId);
+            ViewBag.condtion = condtion;
+            return View();
+        }
+
+        /// <summary>
+        /// 创建/编辑图文
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult editpic(VMEditWebDocPageRequest condtion, string pageId) {
+            setPageId(pageId);
+            ViewBag.condtion = condtion;
+            return View();
+        }
+
+        /// <summary>
+        /// 创建/编辑轮播
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult editrote() {
+            return View();
+        }
+
+        /// <summary>
+        /// 编辑产品
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult editproduct() {
+            return View();
+        }
+    }
 }

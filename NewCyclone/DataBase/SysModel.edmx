@@ -40,6 +40,7 @@
           <Property Name="fun" Type="nvarchar(max)" Nullable="false" />
           <Property Name="describe" Type="nvarchar(max)" />
           <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="showTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Db_SysDocSet_Db_WebPage">
           <Key>
@@ -486,6 +487,7 @@
         <EntityType Name="Db_DocWeb" BaseType="SysModel.Db_SysDoc" >
           <Property Name="fun" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="describe" Type="String" Unicode="true" FixedLength="false" MaxLength="Max" />
+          <Property Name="showTime" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Db_WebPage" BaseType="SysModel.Db_DocWeb" >
           <Property Name="seoTitle" Type="String" Unicode="true" FixedLength="false" MaxLength="Max" />
@@ -602,7 +604,8 @@
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_DocWeb)">
         <MappingFragment StoreEntitySet="Db_SysDocSet_Db_DocWeb">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="showTime" ColumnName="showTime" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="fun" ColumnName="fun" />
           <ScalarProperty Name="describe" ColumnName="describe" />
         </MappingFragment>
