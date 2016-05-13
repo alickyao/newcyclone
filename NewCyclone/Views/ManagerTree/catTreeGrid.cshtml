@@ -16,11 +16,8 @@
                 data:json.result,
                 animate: true,
                 lines: true,
-                formatter: function (node) {
-                    return node.name;
-                },
                 onClick: function (node) {
-                    var s = "?catTreeIds=" + node.Id;
+                    var s = "?catTreeIds=" + node.id;
                     $.each(node.childrenIdList, function (i, n) {
                         s += "&catTreeIds=" + n;
                     });

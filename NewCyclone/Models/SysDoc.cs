@@ -143,7 +143,7 @@ namespace NewCyclone.Models
             BaseResponseList<WebDoc> result = new BaseResponseList<WebDoc>();
             using (var db = new SysModelContainer()) {
                 var list = (from c in db.Db_SysDocSet.OfType<Db_DocWeb>().AsEnumerable()
-                            where (string.IsNullOrEmpty(condtion.q) ? true : (c.caption.Contains(condtion.q) || c.describe.Contains(condtion.q)))
+                            where (string.IsNullOrEmpty(condtion.q) ? true : (c.caption.Contains(condtion.q) || (c.describe == null ? false : c.describe.Contains(condtion.q))))
                             && (condtion.catTreeIds.Count == 0 ? true : (condtion.catTreeIds.Intersect(c.Db_DocCat.Select(p => p.Db_CatTreeId)).Count() > 0 ? true : false))
                             && (string.IsNullOrEmpty(condtion.fun) ? true : c.fun == condtion.fun)
                             && (!c.isDeleted)
@@ -265,6 +265,7 @@ namespace NewCyclone.Models
                     d.seoKeyWords = condtion.seoKeyWords;
                     d.seoTitle = condtion.seoTitle;
                     d.showTime = condtion.showTime;
+                    d.describe = condtion.describe;
 
                     //分类
                     foreach (string cat in condtion.catTreeIds)
@@ -333,13 +334,13 @@ namespace NewCyclone.Models
         /// </summary>
         public string content { get; set; }
 
-        private HashSet<string> _catTreeIds = new HashSet<string>();
+        private List<string> _catTreeIds = new List<string>();
 
         /// <summary>
         /// 所在分类
         /// </summary>
         [Required]
-        public HashSet<string> catTreeIds {
+        public List<string> catTreeIds {
             get { return _catTreeIds; }
             set { _catTreeIds = value; }
         }

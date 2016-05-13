@@ -2,48 +2,73 @@
 @{
     Layout = null;
     VMEditWebDocPageRequest condtion = ViewBag.condtion;
-    WebDocPage info = null;
-    bool isEdit = false;
-    if (!string.IsNullOrEmpty(condtion.Id)) {
-        info = ViewBag.info;
-        isEdit = true;
-    }
+    string q = JsonConvert.SerializeObject(condtion.catTreeIds);
     string pageId = ViewBag.pageId;
 }
 <script>
     $(document).ready(function () {
-        var isEdit = "@isEdit";
+        var treeSet = $.parseJSON('@Html.Raw(q)');
+        var selectcat = $("#@(pageId)selectcat");
+        var form = $("#@(pageId)editform");
+
+        var Editor = KindEditor.create("#@(pageId)content", {
+            uploadJson: '/File/upload?path=editor',//指定上传文件的服务器端程序。
+            fileManagerJson: '/Scripts/kindeditor/asp.net/file_manager_json.ashx',//指定浏览远程图片的服务器端程序。
+            allowFileManager: true,//true时显示浏览远程服务器按钮。
+            afterBlur: function () {
+                Editor.sync("#@(pageId)content");
+            }
+        });
+
+        //分类树
+        $.getJSON("/api/ApiSysCatTree/getTreelist?fun=webcms", function (json) {
+            selectcat.combotree({
+                data: json.result,
+                animate: true,
+                multiple: true,
+                editable: false,
+                cascadeCheck: false,
+                lines: true,
+                panelHeight: 'auto',
+                onLoadSuccess: function (node, data) {
+                    selectcat.combotree("setValues", treeSet);
+                }
+            });
+        });
+
     });
 </script>
 <form id="@(pageId)editform">
+    <input type="hidden" name="Id" value="@condtion.Id" />
+    <input type="hidden" name="fun" value="@condtion.fun" />
     <table class="formtable" style="width:100%">
         <tr>
             <td class="t" style="width:80px;">标题</td>
-            <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" /></td>
-        </tr>
-        <tr>
-            <td class="t" style="width:80px;">发布时间</td>
-            <td><input type="text" class="easyui-datebox" name="showTime" /></td>
-        </tr>
-        <tr>
-            <td class="t">SEO标题</td>
-            <td><input type="text" class="easyui-textbox" name="seoTitle" style="width:250px;" /></td>
-        </tr>
-        <tr>
-            <td class="t">SEO关键字</td>
-            <td><input type="text" class="easyui-textbox" name="seoKeyWords" style="width:400px;" /></td>
+            <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" value="@condtion.caption" /></td>
         </tr>
         <tr>
             <td class="t">所在分类</td>
-            <td><input type="text" class="easyui-combotree" name="catTreeIds" data-options="required:true" /></td>
+            <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="catTreeIds" data-options="required:true" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td class="t" style="width:80px;">发布时间</td>
+            <td><input type="text" class="easyui-datebox" name="showTime" value="@condtion.showTime" /></td>
+        </tr>
+        <tr>
+            <td class="t">SEO标题</td>
+            <td><input type="text" class="easyui-textbox" name="seoTitle" style="width:250px;" value="@condtion.seoTitle" /></td>
+        </tr>
+        <tr>
+            <td class="t">SEO关键字</td>
+            <td><input type="text" class="easyui-textbox" name="seoKeyWords" style="width:400px;" value="@condtion.seoKeyWords" /></td>
         </tr>
         <tr>
             <td class="t">描述</td>
-            <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:60px;" /></td>
+            <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:60px;" value="@condtion.describe" /></td>
         </tr>
         <tr>
             <td class="t">正文</td>
-            <td><input type="text" class="easyui-textbox" name="content" data-options="multiline:true" style="width:500px; height:200px;" /></td>
+            <td><textarea name="content" id="@(pageId)content" style="width: 100%; height: 400px;">@condtion.content</textarea></td>
         </tr>
     </table>
 </form>

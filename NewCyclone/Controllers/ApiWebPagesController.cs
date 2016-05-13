@@ -72,7 +72,7 @@ namespace NewCyclone.Controllers
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
-        public BaseResponse<WebDocPage> editWebPages(VMEditWebDocPageRequest condtion) {
+        public BaseResponse<WebDocPage> editpic(VMEditWebDocPageRequest condtion) {
             BaseResponse<WebDocPage> result = new BaseResponse<WebDocPage>();
             try
             {
@@ -95,7 +95,7 @@ namespace NewCyclone.Controllers
         /// <param name="id">图文内容的ID</param>
         /// <returns></returns>
         [HttpGet]
-        public BaseResponse<WebDocPage> getWebPageInfoById(string id) {
+        public BaseResponse<WebDocPage> getpic(string id) {
             BaseResponse<WebDocPage> result = new BaseResponse<WebDocPage>();
             try
             {

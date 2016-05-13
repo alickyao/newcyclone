@@ -22,7 +22,7 @@ namespace NewCyclone.Models
         /// <summary>
         /// ID
         /// </summary>
-        public string Id { get; internal set; }
+        public string id { get; internal set; }
 
         /// <summary>
         /// 当前递归的深度 默认从1 开始
@@ -84,8 +84,8 @@ namespace NewCyclone.Models
         private void setInfo() {
             using (var db = new SysModelContainer())
             {
-                var d = db.Db_SysTreeSet.Single(p => p.Id == Id);
-                this.Id = d.Id;
+                var d = db.Db_SysTreeSet.Single(p => p.Id == id);
+                this.id = d.Id;
                 this._parentId = d.parentId;
                 this.createOn = d.createdOn;
                 this.isDeleted = d.isDeleted;
@@ -95,8 +95,8 @@ namespace NewCyclone.Models
                 this.parent = getParent(this);
             }
             //设置当前节点的路径表达形式
-            this.path = "/" + this.Id + this.path;
-            this.rootId = this.Id;
+            this.path = "/" + this.id + this.path;
+            this.rootId = this.id;
             getNodePath(this._parentId);
         }
 
@@ -107,12 +107,12 @@ namespace NewCyclone.Models
         /// <param name="max">最大深度</param>
         /// <param name="now">当前深度</param>
         public SysTree(string Id, int max, int now) {
-            this.Id = Id;
+            this.id = Id;
             maxDep = max;
             nodeDep = now;
             setInfo();
             //获取子节点的ID集合
-            getChildIdList(this.Id, now);
+            getChildIdList(this.id, now);
             //获取子节点
             children = getChild(this);
         }
@@ -123,12 +123,12 @@ namespace NewCyclone.Models
         /// <param name="Id"></param>
         /// <param name="getchlid"></param>
         public SysTree(string Id,bool getchlid) {
-            this.Id = Id;
+            this.id = Id;
             setInfo();
             if (getchlid) {
                 //获取子节点
                 children = getChild(this);
-                getChildIdList(this.Id, 1);
+                getChildIdList(this.id, 1);
             }
         }
         /// <summary>
@@ -179,7 +179,7 @@ namespace NewCyclone.Models
         /// </summary>
         public void delete() {
             using (var db = new SysModelContainer()) {
-                var d = db.Db_SysTreeSet.Single(p => p.Id == this.Id);
+                var d = db.Db_SysTreeSet.Single(p => p.Id == this.id);
                 d.isDeleted = true;
                 db.SaveChanges();
             }
@@ -206,7 +206,7 @@ namespace NewCyclone.Models
         /// <summary>
         /// 名称
         /// </summary>
-        public string name { get; set; }
+        public string text { get; set; }
 
         /// <summary>
         /// 所属的功能标示
@@ -221,8 +221,8 @@ namespace NewCyclone.Models
         private void setInfo() {
             using (var db = new SysModelContainer())
             {
-                var d = db.Db_SysTreeSet.OfType<Db_CatTree>().Single(p => p.Id == Id);
-                this.name = d.name;
+                var d = db.Db_SysTreeSet.OfType<Db_CatTree>().Single(p => p.Id == id);
+                this.text = d.name;
                 this.fun = d.fun;
                 this.sort = d.sort;
             }
@@ -263,7 +263,7 @@ namespace NewCyclone.Models
                 using (var db = new SysModelContainer())
                 {
                     List<SysCatTree> child = (from c in db.Db_SysTreeSet.OfType<Db_CatTree>().AsEnumerable()
-                                              where (c.parentId == tree.Id)
+                                              where (c.parentId == tree.id)
                                               && (!c.isDeleted)
                                               orderby c.sort descending, c.name ascending
                                               select new SysCatTree(c.Id, maxDep, dep)).ToList();
@@ -298,7 +298,7 @@ namespace NewCyclone.Models
                 throw new SysException("添加/编辑根节点时，参数fun必填", condtion);
             }
 
-            if (string.IsNullOrEmpty(condtion.Id))
+            if (string.IsNullOrEmpty(condtion.id))
             {
                 //新增
                 using (var db = new SysModelContainer())
@@ -308,7 +308,7 @@ namespace NewCyclone.Models
                         fun = condtion.fun,
                         createdOn = DateTime.Now,
                         Id = SysHelp.getNewId(),
-                        name = condtion.name,
+                        name = condtion.text,
                         parentId = condtion._parentId,
                         isDeleted = false,
                         sort = condtion.sort
@@ -321,13 +321,13 @@ namespace NewCyclone.Models
             }
             else {
                 //编辑
-                SysCatTree tree = new SysCatTree(condtion.Id, false);
-                tree.name = condtion.name;
+                SysCatTree tree = new SysCatTree(condtion.id, false);
+                tree.text = condtion.text;
                 tree._parentId = condtion._parentId;
                 tree.fun = condtion.fun;
                 tree.sort = condtion.sort;
                 tree.save();
-                tree = new SysCatTree(condtion.Id, false);
+                tree = new SysCatTree(condtion.id, false);
                 return tree;
             }
         }
@@ -337,8 +337,8 @@ namespace NewCyclone.Models
         /// <returns></returns>
         private void save() {
             using (var db = new SysModelContainer()) {
-                var d = db.Db_SysTreeSet.OfType<Db_CatTree>().Single(p => p.Id == this.Id);
-                d.name = this.name;
+                var d = db.Db_SysTreeSet.OfType<Db_CatTree>().Single(p => p.Id == this.id);
+                d.name = this.text;
                 d.fun = this.fun;
                 d.parentId = this._parentId;
                 d.sort = this.sort;
@@ -376,13 +376,13 @@ namespace NewCyclone.Models
         /// 编辑时需要传入的节点的ID
         /// </summary>
         [StringLength(50)]
-        public string Id { get; set; }
+        public string id { get; set; }
 
         /// <summary>
         /// 节点的名称
         /// </summary>
         [Required(ErrorMessage ="节点名称不能为空")]
-        public string name { get; set; }
+        public string text { get; set; }
 
         /// <summary>
         /// 当前树所属的功能界面节点名称

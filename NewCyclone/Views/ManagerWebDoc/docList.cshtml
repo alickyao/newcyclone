@@ -59,7 +59,16 @@
                 {
                     field: 'caption', title: '标题'
                 },
-
+                {
+                    field: 'cat', title: '分类', formatter(value, row, index) {
+                        var s = "";
+                        $.each(row.cat, function (i, n) {
+                            s += n.text + ",";
+                        });
+                        s = s.substring(0, s.length - 1);
+                        return s;
+                    }
+                },
                 {
                     field: 'showTime', title: '发布时间',
                     formatter: function (value, row, index) {
@@ -100,9 +109,27 @@
                     field: 'describe', title: '描述'
                 }
             ]],
-            toolbar: "#@(pageId)tb"
+            toolbar: "#@(pageId)tb",
+            onDblClickRow: function (rowIndex, rowData) {
+                var url = "/ManagerWebDoc/edit" + rowData.fun.id + "?pageId=@(pageId)&Id="+rowData.Id;
+                console.log(url);
+                $("#@(pageId)dd").dialog({
+                    href: url,
+                    title: '编辑:' + rowData.fun.text + ',' + rowData.caption
+                });
+                $("#@(pageId)dd").dialog("open");
+            }
         });
         loadGrid();
+
+        //翻页设置
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
 
 
         //弹出框按钮定义
@@ -115,14 +142,25 @@
                     handler: function () {
                         var btn = $(this);
                         var form = $("#@(pageId)editform");
-                        
+
                         if (btn.linkbutton("options").disabled == false) {
                             var Reg = form.form('enableValidation').form('validate');
                             if (Reg) {
                                 btn.linkbutton("disable");
-                                var d = form.serializeObject();
-                                console.log(d);
-                                //btn.linkbutton("enable");
+                                
+                                window.setTimeout(function () {
+                                    var d = form.serializeObject();
+                                    console.log(d);
+                                    var url = "/api/ApiWebPages/edit" + d.fun;
+                                    $.post(url, d, function (json) {
+                                        showmsg(json);
+                                        btn.linkbutton("enable");
+                                        if (json.code == 0) {
+                                            dd.dialog("close");
+                                            loadGrid();
+                                        }
+                                    });
+                                }, 500);
                             }
                         }
                     }
@@ -137,6 +175,22 @@
             ]
         });
 
+        //搜索栏
+        $("#@(pageId)querybtn").click(function () {
+            var d = query.find("form").serializeObject();
+            console.log(d);
+            request.q = d.q;
+            request.fun = d.fun;
+            request.page = 1;
+            loadGrid();
+            grid.datagrid('getPager').pagination({
+                pageNumber: 1
+            });
+        });
+
+        $("#@(pageId)clearquerybtn").click(function () {
+            query.find("form").form("clear");
+        });
     });
 </script>
 <div id="@(pageId)dd" class="easyui-dialog dialogwin" data-options="inline:true,resizable:false,modal:true,closed:true,title:'新增/编辑'" style="width:90%;height:90%">
@@ -182,7 +236,7 @@
 </div>
 <script>
     function @(pageId)menuHandler(item) {
-        var url = "/ManagerWebDoc/edit" + item.name + "?pageId=@(pageId)";
+        var url = "/ManagerWebDoc/edit" + item.name + "?pageId=@(pageId)&catTreeId=@(condtion.catTreeIds[0])";
         console.log(url);
         $("#@(pageId)dd").dialog({
             href: url,

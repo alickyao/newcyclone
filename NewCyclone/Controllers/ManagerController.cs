@@ -252,15 +252,41 @@ namespace NewCyclone.Controllers
         /// <summary>
         /// 创建/编辑图文
         /// </summary>
-        /// <param name="condtion"></param>
-        /// <param name="pageId"></param>
+        /// <param name="Id">图文ID</param>
+        /// <param name="pageId">页面ID</param>
+        /// <param name="catTreeId">分类ID</param>
         /// <returns></returns>
-        public ActionResult editpic(VMEditWebDocPageRequest condtion, string pageId) {
+        public ActionResult editpic(string Id, string pageId, string catTreeId)
+        {
             setPageId(pageId);
-            ViewBag.condtion = condtion;
-            if (!string.IsNullOrEmpty(condtion.Id)) {
-                ViewBag.info = new WebDocPage(condtion.Id);
+            VMEditWebDocPageRequest condtion = new VMEditWebDocPageRequest();
+            if (!string.IsNullOrEmpty(Id))
+            {
+                //编辑
+                WebDocPage info = new WebDocPage(Id);
+                condtion = new VMEditWebDocPageRequest()
+                {
+                    caption = info.caption,
+                    content = info.content,
+                    describe = info.describe,
+                    fun = info.fun.id,
+                    Id = info.Id,
+                    seoKeyWords = info.seoKeyWords,
+                    seoTitle = info.seoTitle,
+                    showTime = info.showTime
+                };
+                foreach (var cat in info.cat) {
+                    condtion.catTreeIds.Add(cat.id);
+                }
             }
+            else {
+                condtion.Id = SysHelp.getNewId();
+                condtion.fun = "pic";
+                if (!string.IsNullOrEmpty(catTreeId)) {
+                    condtion.catTreeIds.Add(catTreeId);
+                }
+            }
+            ViewBag.condtion = condtion;
             return View();
         }
 

@@ -30,16 +30,16 @@
             fitColumns: false,
             striped: true,
             fit: true,
-            idField: 'Id',
-            treeField: 'name',
+            idField: 'id',
+            treeField: 'text',
             lines: true,
             border: false,
             onDblClickRow: function (row) {
-                grid.treegrid("unselect", row.Id);
+                grid.treegrid("unselect", row.id);
             },
             columns: [[
-                    { title: 'Id', field: 'Id',width:'110' },
-                    { title: '名称', field: 'name', width:'250', editor: { type: "textbox", options: { required: true } } },
+                    { title: 'Id', field: 'id',width:'110' },
+                    { title: '名称', field: 'text', width:'250', editor: { type: "textbox", options: { required: true } } },
                     { title: '排序', field: 'sort', width:'40',align:'center', editor: { type: "numberbox", options: { required: false } } },
                     {
                         title: '创建时间', field: 'createOn',width:'120', align: 'right', formatter: function (value) {
@@ -58,13 +58,13 @@
                             var srow = grid.treegrid("getSelected");
                             var parentid = "";
                             var d = {
-                                Id: '',
-                                name: '',
+                                id: '',
+                                text: '',
                                 sort: 0,
                                 fun : "@fun"
                             };
                             if (srow != null) {
-                                parentid = srow.Id;
+                                parentid = srow.id;
                                 d.fun = null
                             }
                             grid.treegrid("append", {
@@ -82,8 +82,8 @@
                         if (editRow == undefined) {
                             var srow = grid.treegrid("getSelected");
                             if (srow != null) {
-                                grid.treegrid("beginEdit", srow.Id);
-                                editRow = srow.Id;
+                                grid.treegrid("beginEdit", srow.id);
+                                editRow = srow.id;
                             }
                             else {
                                 $.messager.alert('您的操作有误', "请选中需要编辑的节点", 'error');
@@ -137,9 +137,9 @@
                         if (editRow == undefined) {
                             var srow = grid.treegrid("getSelected");
                             if (srow != null) {
-                                $.messager.confirm('请确认', '确定将节点:【' + srow.name + "】标记为删除？", function (r) {
+                                $.messager.confirm('请确认', '确定将节点:【' + srow.text + "】标记为删除？", function (r) {
                                     if (r) {
-                                        $.getJSON("/api/ApiSysCatTree/delCatTree/" + srow.Id, function (json) {
+                                        $.getJSON("/api/ApiSysCatTree/delCatTree/" + srow.id, function (json) {
                                             showmsg(json);
                                             loadGrid();
                                         });
