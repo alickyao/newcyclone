@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/09/2016 09:46:51
--- Generated from EDMX file: D:\project\git\studyCSharp\NewCyclone\NewCyclone\DataBase\SysModel.edmx
+-- Date Created: 05/13/2016 20:01:22
+-- Generated from EDMX file: E:\project\git\newcyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -18,10 +18,10 @@ GO
 -- --------------------------------------------------
 
 IF OBJECT_ID(N'[dbo].[FK_Db_SysDocDb_DocCat]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_DocCatSet] DROP CONSTRAINT [FK_Db_SysDocDb_DocCat];
+    ALTER TABLE [dbo].[Db_SysDocCatSet] DROP CONSTRAINT [FK_Db_SysDocDb_DocCat];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_SysDocDb_DocFile]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_DocFileSet] DROP CONSTRAINT [FK_Db_SysDocDb_DocFile];
+    ALTER TABLE [dbo].[Db_SysDocFileSet] DROP CONSTRAINT [FK_Db_SysDocDb_DocFile];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_SysUser]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_SysUser];
@@ -67,11 +67,11 @@ GO
 IF OBJECT_ID(N'[dbo].[Db_SysDocSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysDocSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_DocCatSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_DocCatSet];
+IF OBJECT_ID(N'[dbo].[Db_SysDocCatSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocCatSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_DocFileSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_DocFileSet];
+IF OBJECT_ID(N'[dbo].[Db_SysDocFileSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocFileSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_ManagerUser]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysUserSet_Db_ManagerUser];
@@ -219,16 +219,17 @@ GO
 -- Creating table 'Db_SysDocSet_Db_DocWeb'
 CREATE TABLE [dbo].[Db_SysDocSet_Db_DocWeb] (
     [fun] nvarchar(max)  NOT NULL,
-    [describe] nvarchar(max)  NOT NULL,
+    [describe] nvarchar(max)  NULL,
+    [showTime] datetime  NOT NULL,
     [Id] nvarchar(50)  NOT NULL
 );
 GO
 
 -- Creating table 'Db_SysDocSet_Db_WebPage'
 CREATE TABLE [dbo].[Db_SysDocSet_Db_WebPage] (
-    [seoTitle] nvarchar(max)  NOT NULL,
-    [seoKeyWords] nvarchar(max)  NOT NULL,
-    [content] nvarchar(max)  NOT NULL,
+    [seoTitle] nvarchar(max)  NULL,
+    [seoKeyWords] nvarchar(max)  NULL,
+    [content] nvarchar(max)  NULL,
     [Id] nvarchar(50)  NOT NULL
 );
 GO
