@@ -899,7 +899,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\kindeditor\attached\" />
-    <Folder Include="upload\editor\" />
     <Folder Include="Views\File\" />
   </ItemGroup>
   <ItemGroup>
