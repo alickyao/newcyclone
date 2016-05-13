@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/13/2016 20:01:22
+-- Date Created: 05/13/2016 20:36:42
 -- Generated from EDMX file: E:\project\git\newcyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
@@ -137,7 +137,8 @@ CREATE TABLE [dbo].[Db_SysFileSet] (
     [Id] varchar(50)  NOT NULL,
     [createdOn] datetime  NOT NULL,
     [filePath] varchar(max)  NOT NULL,
-    [fileName] nvarchar(max)  NOT NULL
+    [fileName] nvarchar(max)  NOT NULL,
+    [createdBy] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -243,6 +244,21 @@ CREATE TABLE [dbo].[Db_SysDocSet_Db_WebRote] (
 );
 GO
 
+-- Creating table 'Db_SysFileSet_Db_FileSort'
+CREATE TABLE [dbo].[Db_SysFileSet_Db_FileSort] (
+    [sort] int  NOT NULL,
+    [Id] varchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_SysFileSet_Db_FileInfo'
+CREATE TABLE [dbo].[Db_SysFileSet_Db_FileInfo] (
+    [title] nvarchar(max)  NULL,
+    [describe] nvarchar(max)  NULL,
+    [Id] varchar(50)  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -334,6 +350,18 @@ GO
 -- Creating primary key on [Id] in table 'Db_SysDocSet_Db_WebRote'
 ALTER TABLE [dbo].[Db_SysDocSet_Db_WebRote]
 ADD CONSTRAINT [PK_Db_SysDocSet_Db_WebRote]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_SysFileSet_Db_FileSort'
+ALTER TABLE [dbo].[Db_SysFileSet_Db_FileSort]
+ADD CONSTRAINT [PK_Db_SysFileSet_Db_FileSort]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_SysFileSet_Db_FileInfo'
+ALTER TABLE [dbo].[Db_SysFileSet_Db_FileInfo]
+ADD CONSTRAINT [PK_Db_SysFileSet_Db_FileInfo]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -439,6 +467,24 @@ ALTER TABLE [dbo].[Db_SysDocSet_Db_WebRote]
 ADD CONSTRAINT [FK_Db_WebRote_inherits_Db_DocWeb]
     FOREIGN KEY ([Id])
     REFERENCES [dbo].[Db_SysDocSet_Db_DocWeb]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Id] in table 'Db_SysFileSet_Db_FileSort'
+ALTER TABLE [dbo].[Db_SysFileSet_Db_FileSort]
+ADD CONSTRAINT [FK_Db_FileSort_inherits_Db_SysFileSet]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_SysFileSet]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Id] in table 'Db_SysFileSet_Db_FileInfo'
+ALTER TABLE [dbo].[Db_SysFileSet_Db_FileInfo]
+ADD CONSTRAINT [FK_Db_FileInfo_inherits_Db_FileSort]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_SysFileSet_Db_FileSort]
         ([Id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
 GO

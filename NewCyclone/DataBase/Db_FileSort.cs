@@ -12,12 +12,8 @@ namespace NewCyclone.DataBase
     using System;
     using System.Collections.Generic;
     
-    public partial class Db_SysFileSet
+    public partial class Db_FileSort : Db_SysFileSet
     {
-        public string Id { get; set; }
-        public System.DateTime createdOn { get; set; }
-        public string filePath { get; set; }
-        public string fileName { get; set; }
-        public string createdBy { get; set; }
+        public int sort { get; set; }
     }
 }

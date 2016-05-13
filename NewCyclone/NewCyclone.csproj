@@ -768,6 +768,12 @@
     <Compile Include="DataBase\Db_DocWeb.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataBase\Db_FileInfo.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\Db_FileSort.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataBase\Db_ManagerUser.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
@@ -828,6 +834,7 @@
     <Compile Include="Models\SysBase.cs" />
     <Compile Include="Models\SysDoc.cs" />
     <Compile Include="Models\SysException.cs" />
+    <Compile Include="Models\SysFile.cs" />
     <Compile Include="Models\SysMenu.cs" />
     <Compile Include="Models\SysMsg.cs" />
     <Compile Include="Models\SysTree.cs" />
