@@ -18,10 +18,13 @@ namespace NewCyclone.Controllers
         /// </summary>
         [HttpGet]
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse<List<VMComboBox>> test()
+        public BaseResponse<SysFileSort> test()
         {
-            BaseResponse<List<VMComboBox>> res = new BaseResponse<List<VMComboBox>>();
-            res.result = SysHelp.getSysSetList<List<VMComboBox>>("FunWebCms.xml");
+            BaseResponse<SysFileSort> res = new BaseResponse<SysFileSort>();
+            res.result = SysFileSort.create(new VMCreateFileSortRequest("/path/file.jpg")
+            {
+                sort = 0
+            });
             return res;
         }
     }

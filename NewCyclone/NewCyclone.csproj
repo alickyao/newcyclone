@@ -409,6 +409,9 @@
     <Content Include="Content\themes\metro\window.css" />
     <Content Include="Content\themes\mobile.css" />
     <Content Include="Content\toastr.css" />
+    <Content Include="Content\uploadify-cancel.png" />
+    <Content Include="Content\uploadify.css" />
+    <Content Include="Content\uploadify.swf" />
     <Content Include="DataBase\SysModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SysModel.Context.cs</LastGenOutput>
@@ -509,6 +512,8 @@
     <Content Include="Scripts\jquery.easyui-1.4.3.min.js" />
     <Content Include="Scripts\jquery.easyui.mobile-1.4.3.js" />
     <Content Include="Scripts\jquery.easyui.mobile-1.4.3.min.js" />
+    <Content Include="Scripts\jquery.uploadify.js" />
+    <Content Include="Scripts\jquery.uploadify.min.js" />
     <Content Include="Scripts\kindeditor\kindeditor-min.js" />
     <Content Include="Scripts\kindeditor\kindeditor.js" />
     <Content Include="Scripts\kindeditor\lang\ar.js" />
@@ -754,6 +759,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\ApiSysFileController.cs" />
     <Compile Include="Controllers\ApiSysMsgController.cs" />
     <Compile Include="Controllers\ApiSysCatTreeController.cs" />
     <Compile Include="Controllers\ApiSysUserController.cs" />

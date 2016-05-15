@@ -184,6 +184,16 @@ namespace NewCyclone.Models
         /// </summary>
         public string content { get; set; }
 
+        private List<SysFileSort> _files = new List<SysFileSort>();
+
+        /// <summary>
+        /// 图片集
+        /// </summary>
+        public List<SysFileSort> files {
+            get { return _files; }
+            set { _files = value; }
+        }
+
         /// <summary>
         /// 使用ID构造网页页面文档（图文信息）
         /// </summary>
@@ -194,6 +204,14 @@ namespace NewCyclone.Models
                 this.seoTitle = d.seoTitle;
                 this.seoKeyWords = d.seoKeyWords;
                 this.content = d.content;
+
+                //图片集
+                if (d.Db_DocFile.Count > 0) {
+                    foreach (var f in d.Db_DocFile) {
+                        this.files.Add(new SysFileSort(f.Db_SysFileId));
+                    }
+                    this.files.Sort();
+                }
             }
         }
 
@@ -244,6 +262,7 @@ namespace NewCyclone.Models
                     }
                     var newrow = db.Db_SysDocSet.Add(d);
                     db.SaveChanges();
+
                     SysUserLog.saveLog(condtion, SysUserLogType.编辑, newrow.Id);
                     return new WebDocPage(newrow.Id);
                 }

@@ -36,6 +36,23 @@
             });
         });
 
+        $('#@(pageId)file_upload').uploadify({
+            'swf': '/Content/uploadify.swf',
+            'uploader': '/File/upload',
+            'buttonText': '上传图集',
+            'multi': true,
+            'fileTypeDesc': 'Image Files',
+            'fileTypeExts': '*.gif; *.jpg; *.png',
+            'onUploadSuccess' : function(file, data, response) {
+                console.log(data);
+                if (data.error == 0) {
+                    //将上传的图片追加到图集的末尾
+                }
+                else {
+                    $.messager.alert('错误', data.message, 'error');
+                }
+            }
+        });
     });
 </script>
 <form id="@(pageId)editform">
@@ -65,6 +82,12 @@
         <tr>
             <td class="t">描述</td>
             <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:60px;" value="@condtion.describe" /></td>
+        </tr>
+        <tr>
+            <td class="t">图集</td>
+            <td>
+                <input type="file" id="@(pageId)file_upload" name="fileupload" />
+            </td>
         </tr>
         <tr>
             <td class="t">正文</td>

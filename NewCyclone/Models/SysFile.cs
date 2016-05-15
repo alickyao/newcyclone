@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using NewCyclone.DataBase;
+using System.ComponentModel.DataAnnotations;
 
 namespace NewCyclone.Models
 {
@@ -59,7 +60,7 @@ namespace NewCyclone.Models
     /// <summary>
     /// 可排序的文件
     /// </summary>
-    public class FileSort :SysFile {
+    public class SysFileSort :SysFile,IComparable {
 
         /// <summary>
         /// 排序
@@ -70,18 +71,64 @@ namespace NewCyclone.Models
         /// 使用ID构造可排序的文件
         /// </summary>
         /// <param name="id"></param>
-        public FileSort(string id) : base(id) {
+        public SysFileSort(string id) : base(id) {
             using (var db = new SysModelContainer()) {
                 var d = db.Db_SysFileSet.OfType<Db_FileSort>().Single(p => p.Id == id);
                 this.sort = d.sort;
             }
+        }
+
+        /// <summary>
+        /// 创建一个可排序的文件记录
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static SysFileSort create(VMCreateFileSortRequest condtion) {
+            SysValidata.valiData(condtion);
+            using (var db = new SysModelContainer()) {
+                Db_FileSort d = new Db_FileSort()
+                {
+                    createdOn = DateTime.Now,
+                    createdBy = HttpContext.Current.User.Identity.Name,
+                    fileName = condtion.fileName,
+                    filePath = condtion.filePath,
+                    Id = Guid.NewGuid().ToString(),
+                    sort = condtion.sort
+                };
+                Db_SysFileSet newrow = db.Db_SysFileSet.Add(d);
+                db.SaveChanges();
+                return new SysFileSort(newrow.Id);
+            }
+        }
+        /// <summary>
+        /// 比较
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int CompareTo(object obj)
+        {
+            if (typeof(SysFileSort).IsAssignableFrom(obj.GetType())) {
+                SysFileSort t = (SysFileSort)obj;
+                if (this.sort > t.sort)
+                {
+                    return 1;
+                }
+                else if (this.sort < t.sort)
+                {
+                    return -1;
+                }
+                else {
+                    return 0;
+                }
+            }
+            return 0;
         }
     }
 
     /// <summary>
     /// 带描述的文件
     /// </summary>
-    public class FileInfo : FileSort
+    public class SysFileInfo : SysFileSort
     {
         /// <summary>
         /// 标题
@@ -97,13 +144,40 @@ namespace NewCyclone.Models
         /// 使用ID构造带描述的文件
         /// </summary>
         /// <param name="id"></param>
-        public FileInfo(string id) : base(id) {
+        public SysFileInfo(string id) : base(id) {
             using (var db = new SysModelContainer()) {
                 var d = db.Db_SysFileSet.OfType<Db_FileInfo>().Single(p => p.Id == id);
                 this.title = d.title;
                 this.describe = d.describe;
             }
         }
+
+
+        /// <summary>
+        /// 创建一个带描述的文件
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static SysFileInfo create(VMCreateFileInfoRequest condtion) {
+            SysValidata.valiData(condtion);
+            using (var db = new SysModelContainer()) {
+                Db_FileInfo d = new Db_FileInfo()
+                {
+                    createdBy = HttpContext.Current.User.Identity.Name,
+                    createdOn = DateTime.Now,
+                    describe = condtion.describe,
+                    fileName = condtion.fileName,
+                    filePath = condtion.filePath,
+                    Id = Guid.NewGuid().ToString(),
+                    sort = condtion.sort,
+                    title = condtion.title
+                };
+                Db_SysFileSet newrow = db.Db_SysFileSet.Add(d);
+                db.SaveChanges();
+                return new SysFileInfo(newrow.Id);
+            }
+        }
+
     }
 
     /// <summary>
@@ -114,31 +188,59 @@ namespace NewCyclone.Models
         /// <summary>
         /// 文件名
         /// </summary>
-        protected string fileName { get; set; }
+        internal string fileName { get; set; }
         /// <summary>
         /// 文件存放的路径
         /// </summary>
-        protected string filePath { get; set; }
+        internal string filePath { get; set; }
 
         /// <summary>
         /// 文件存放的位置
         /// </summary>
-        protected string url { get; set; }
+        [Required]
+        public string url { get; set; }
 
         /// <summary>
-        /// 传入文件的url构造请求参数
+        /// 
         /// </summary>
-        /// <param name="url">文件存放的路径</param>
         public VMCreateFileRequest(string url) {
-
+            int s = url.LastIndexOf('/');
+            if (s == -1) {
+                throw new SysException("url的格式不正确，正确的格式为path/filename");
+            }
+            this.filePath = url.Substring(0, s + 1);
+            this.fileName = url.Substring(s + 1);
+            this.url = url;
         }
+    }
+
+    /// <summary>
+    /// 创建可排序的文件请求参数
+    /// </summary>
+    public class VMCreateFileSortRequest : VMCreateFileRequest {
         /// <summary>
-        /// 传入文件名称与路径构造函数
+        /// 排序号
         /// </summary>
-        /// <param name="fileName">文件名</param>
-        /// <param name="filePath">文件存放的路径</param>
-        public VMCreateFileRequest(string fileName, string filePath) {
+        public int sort { get; set; }
 
-        }
+        public VMCreateFileSortRequest(string url) : base(url) { }
+    }
+
+    /// <summary>
+    /// 创建带标题与描述的文件请求
+    /// </summary>
+    public class VMCreateFileInfoRequest : VMCreateFileSortRequest { 
+        
+        /// <summary>
+        /// 标题
+        /// </summary>
+        public string title { get; set; }
+
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string describe { get; set; }
+
+        public VMCreateFileInfoRequest(string url) : base(url) { }
     }
 }
