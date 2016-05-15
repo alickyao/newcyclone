@@ -45,8 +45,11 @@
             'fileTypeExts': '*.gif; *.jpg; *.png',
             'onUploadSuccess' : function(file, data, response) {
                 console.log(data);
-                if (data.error == 0) {
+                data = $.parseJSON(data);
+                if (data.error == "0") {
                     //将上传的图片追加到图集的末尾
+                    var piclist = $("#@(pageId)piclist");
+                    piclist.append("<li><img src='" + data.url + "' /></li>");
                 }
                 else {
                     $.messager.alert('错误', data.message, 'error');
@@ -84,9 +87,17 @@
             <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:60px;" value="@condtion.describe" /></td>
         </tr>
         <tr>
-            <td class="t">图集</td>
+            <td class="t">上传图集</td>
             <td>
                 <input type="file" id="@(pageId)file_upload" name="fileupload" />
+            </td>
+        </tr>
+        <tr>
+            <td class="t">图集</td>
+            <td>
+                <ul id="@(pageId)piclist" class="sortfilelist">
+
+                </ul>
             </td>
         </tr>
         <tr>
