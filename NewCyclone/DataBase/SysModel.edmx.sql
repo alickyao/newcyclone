@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/13/2016 20:36:42
--- Generated from EDMX file: E:\project\git\newcyclone\NewCyclone\DataBase\SysModel.edmx
+-- Date Created: 05/16/2016 09:41:40
+-- Generated from EDMX file: D:\project\git\newcyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -17,11 +17,17 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[FK_Db_SysDocDb_DocCat]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_SysDocCatSet] DROP CONSTRAINT [FK_Db_SysDocDb_DocCat];
+IF OBJECT_ID(N'[dbo].[FK_Db_CatTree_inherits_Db_SysTree]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysTreeSet_Db_CatTree] DROP CONSTRAINT [FK_Db_CatTree_inherits_Db_SysTree];
 GO
-IF OBJECT_ID(N'[dbo].[FK_Db_SysDocDb_DocFile]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_SysDocFileSet] DROP CONSTRAINT [FK_Db_SysDocDb_DocFile];
+IF OBJECT_ID(N'[dbo].[FK_Db_DocWeb_inherits_Db_SysDoc]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocSet_Db_DocWeb] DROP CONSTRAINT [FK_Db_DocWeb_inherits_Db_SysDoc];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_FileInfo_inherits_Db_FileSort]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysFileSet_Db_FileInfo] DROP CONSTRAINT [FK_Db_FileInfo_inherits_Db_FileSort];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_FileSort_inherits_Db_SysFileSet]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysFileSet_Db_FileSort] DROP CONSTRAINT [FK_Db_FileSort_inherits_Db_SysFileSet];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_SysUser]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_SysUser];
@@ -29,17 +35,17 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_Db_MemberUser_inherits_Db_SysUser]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysUserSet_Db_MemberUser] DROP CONSTRAINT [FK_Db_MemberUser_inherits_Db_SysUser];
 GO
+IF OBJECT_ID(N'[dbo].[FK_Db_SysDocDb_DocCat]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocCatSet] DROP CONSTRAINT [FK_Db_SysDocDb_DocCat];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_SysDocDb_DocFile]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocFileSet] DROP CONSTRAINT [FK_Db_SysDocDb_DocFile];
+GO
 IF OBJECT_ID(N'[dbo].[FK_Db_SysExceptionLog_inherits_Db_SysMsg]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysExceptionLog] DROP CONSTRAINT [FK_Db_SysExceptionLog_inherits_Db_SysMsg];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_SysUserLog_inherits_Db_SysMsg]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] DROP CONSTRAINT [FK_Db_SysUserLog_inherits_Db_SysMsg];
-GO
-IF OBJECT_ID(N'[dbo].[FK_Db_CatTree_inherits_Db_SysTree]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_SysTreeSet_Db_CatTree] DROP CONSTRAINT [FK_Db_CatTree_inherits_Db_SysTree];
-GO
-IF OBJECT_ID(N'[dbo].[FK_Db_DocWeb_inherits_Db_SysDoc]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_SysDocSet_Db_DocWeb] DROP CONSTRAINT [FK_Db_DocWeb_inherits_Db_SysDoc];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_WebPage_inherits_Db_DocWeb]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysDocSet_Db_WebPage] DROP CONSTRAINT [FK_Db_WebPage_inherits_Db_DocWeb];
@@ -52,41 +58,14 @@ GO
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[Db_SysUserSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysUserSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysMsgSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysMsgSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysTreeSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysTreeSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysFileSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysFileSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysDocSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysDocSet];
-GO
 IF OBJECT_ID(N'[dbo].[Db_SysDocCatSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysDocCatSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysDocFileSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysDocFileSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_ManagerUser]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysUserSet_Db_ManagerUser];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_MemberUser]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysUserSet_Db_MemberUser];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysExceptionLog]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysMsgSet_Db_SysExceptionLog];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysUserLog]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysTreeSet_Db_CatTree]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysTreeSet_Db_CatTree];
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_DocWeb]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysDocSet_Db_DocWeb];
@@ -96,6 +75,39 @@ IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_WebPage]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_WebRote]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysDocSet_Db_WebRote];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysFileSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysFileSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysFileSet_Db_FileInfo]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysFileSet_Db_FileInfo];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysFileSet_Db_FileSort]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysFileSet_Db_FileSort];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysMsgSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysMsgSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysExceptionLog]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysMsgSet_Db_SysExceptionLog];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysUserLog]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysTreeSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysTreeSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysTreeSet_Db_CatTree]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysTreeSet_Db_CatTree];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysUserSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysUserSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_ManagerUser]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysUserSet_Db_ManagerUser];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_MemberUser]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysUserSet_Db_MemberUser];
 GO
 
 -- --------------------------------------------------
@@ -137,8 +149,8 @@ CREATE TABLE [dbo].[Db_SysFileSet] (
     [Id] varchar(50)  NOT NULL,
     [createdOn] datetime  NOT NULL,
     [filePath] varchar(max)  NOT NULL,
-    [fileName] nvarchar(max)  NOT NULL,
-    [createdBy] nvarchar(max)  NOT NULL
+    [fileName] varchar(max)  NOT NULL,
+    [createdBy] varchar(max)  NOT NULL
 );
 GO
 

@@ -6,17 +6,20 @@
 @model Collection<ApiDescription>
 
 @{
-    ViewBag.Title = "ASP.NET Web API Help Page";
+    ViewBag.Title = "NewCyclone Help";
 
     // Group APIs by controller
     ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
 }
 
 <link type="text/css" href="~/Areas/HelpPage/HelpPage.css" rel="stylesheet" />
+
+<div style="display:block; position:fixed; right:10px; bottom:10px; background:#ccc; "><a href="#home" style="display:block; text-decoration:none;padding:10px;">·µ»Ø¶¥²¿</a></div>
+
 <header class="help-page">
     <div class="content-wrapper">
         <div class="float-left">
-            <h1>@ViewBag.Title</h1>
+            <h1 id="home">@ViewBag.Title</h1>
         </div>
     </div>
 </header>
@@ -25,10 +28,33 @@
         <div class="content-wrapper">
             <h2>Introduction</h2>
             <p>
-                Provide a general description of your APIs here.
+                newcyclone.com help
             </p>
         </div>
     </section>
+    <section class="featured">
+        <h2>Directory</h2>
+    </section>
+    <section class="content-wrapper main-content clear-fix">
+        <table class="help-page-table">
+            <thead>
+                <tr>
+                    <th>API Class</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in apiGroups)
+                {
+                    <tr>
+                        <td class="api-name"><a href="#@(group.Key.ControllerName)">@group.Key.ControllerName</a></td>
+                        <td class="api-documentation">@ViewBag.DocumentationProvider.GetDocumentation(group.Key)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+
     <section class="content-wrapper main-content clear-fix">
         @foreach (var group in apiGroups)
         {

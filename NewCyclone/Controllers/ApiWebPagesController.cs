@@ -25,6 +25,34 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
+        /// 删除页面的图片
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [HttpPost]
+        public BaseResponse<int> delpic(VMEditListRequest<string> condtion)
+        {
+            BaseResponse<int> result = new BaseResponse<int>();
+
+            try
+            {
+                result.result = SysDoc.delfiles(condtion);
+                result.msg = "删除成功";
+            }
+            catch (SysException e)
+            {
+                result = e.getresult(result);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, condtion);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// 检索网页文档
         /// </summary>
         /// <param name="condtion"></param>
@@ -88,6 +116,47 @@ namespace NewCyclone.Controllers
             }
             return result;
         }
+
+
+        /// <summary>
+        /// 为网站页面追加可排序的图集
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [HttpPost]
+        public BaseResponse<List<SysFileSort>> appendsortpic(VMAppendWebDocFilesSortRequest condtion) {
+            BaseResponse<List<SysFileSort>> result = new BaseResponse<List<SysFileSort>>();
+            try
+            {
+                WebDocPage page = new WebDocPage(condtion.docId);
+                result.result = page.createFilesSort(condtion.rows);
+                result.msg = "保存成功";
+            }
+            catch (SysException e)
+            {
+                result = e.getresult(result);
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, condtion);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 为网站页面追加待描述的图集
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [HttpPost]
+        public BaseResponse<List<SysFileInfo>> appendinfopic(VMAppendWebDocFilesInfoRequest condtion) {
+            BaseResponse<List<SysFileInfo>> result = new BaseResponse<List<SysFileInfo>>();
+
+            return result;
+        }
+
+        
 
         /// <summary>
         /// 获取页面图文内容详情

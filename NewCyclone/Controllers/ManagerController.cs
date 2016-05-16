@@ -260,6 +260,8 @@ namespace NewCyclone.Controllers
         {
             setPageId(pageId);
             VMEditWebDocPageRequest condtion = new VMEditWebDocPageRequest();
+            List<SysFileSort> files = new List<SysFileSort>();
+
             if (!string.IsNullOrEmpty(Id))
             {
                 //编辑
@@ -278,6 +280,11 @@ namespace NewCyclone.Controllers
                 foreach (var cat in info.cat) {
                     condtion.catTreeIds.Add(cat.id);
                 }
+
+                //图集
+                if (info.files.Count > 0) {
+                    files = info.files;
+                }
             }
             else {
                 condtion.Id = SysHelp.getNewId();
@@ -286,6 +293,7 @@ namespace NewCyclone.Controllers
                     condtion.catTreeIds.Add(catTreeId);
                 }
             }
+            ViewBag.files = files;
             ViewBag.condtion = condtion;
             return View();
         }

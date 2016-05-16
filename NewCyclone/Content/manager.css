@@ -48,6 +48,19 @@
         background:#efefef;
     }
 
+.btntable {
+    border:none;
+}
+    .btntable td {
+        padding:0;
+        border:none;
+        text-align:center;
+    }
+/*可排序的图片*/
 .sortfilelist {width:100%; overflow:hidden; list-style:none; padding:0; margin:0}
-.sortfilelist li {float:left; border :1px solid #ccc;padding:5px; margin:0 5px 5px 0; height:200px; overflow:hidden;}
-.sortfilelist li img {width:200px;}
+.sortfilelist li {float:left; border :1px solid #ccc;padding:5px; margin:0 5px 5px 0; height:150px; overflow:hidden;}
+    .sortfilelist li .imglist {
+        height:120px;
+        overflow:hidden;
+    }
+.sortfilelist li img {width:150px;}

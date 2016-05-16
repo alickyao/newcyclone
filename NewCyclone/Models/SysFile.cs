@@ -55,6 +55,30 @@ namespace NewCyclone.Models
                 this.url = this.filePath + this.fileName;
             }
         }
+        /// <summary>
+        /// 通过URL构造一个文件信息
+        /// </summary>
+        public SysFile(VMCreateFileRequest condtion) {
+            //根据condtion.url构造filePath与fileName
+            SysValidata.valiData(condtion);
+            int s =condtion.url.LastIndexOf('/');
+            if (s == -1) {
+                throw new SysException("输入的文件位置不正确，争取的格式为:/filepath/filename.xxx");
+            }
+            this.filePath = condtion.url.Substring(0, s + 1);
+            this.fileName = condtion.url.Substring(s + 1);
+        }
+
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        public void delete() {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysFileSet.Single(p => p.Id == this.Id);
+                db.Db_SysFileSet.Remove(d);
+                db.SaveChanges();
+            }
+        }
     }
 
     /// <summary>
@@ -79,29 +103,67 @@ namespace NewCyclone.Models
         }
 
         /// <summary>
-        /// 创建一个可排序的文件记录
+        /// 通过创建请求构造对象
         /// </summary>
         /// <param name="condtion"></param>
+        public SysFileSort(VMCreateFileSortRequest condtion):base(condtion) {
+            this.sort = condtion.sort;
+        }
+
+        /// <summary>
+        /// 创建一个可排序的文件记录
+        /// </summary>
         /// <returns></returns>
-        public static SysFileSort create(VMCreateFileSortRequest condtion) {
-            SysValidata.valiData(condtion);
+        public SysFileSort create() {
             using (var db = new SysModelContainer()) {
                 Db_FileSort d = new Db_FileSort()
                 {
                     createdOn = DateTime.Now,
                     createdBy = HttpContext.Current.User.Identity.Name,
-                    fileName = condtion.fileName,
-                    filePath = condtion.filePath,
+                    fileName = this.fileName,
+                    filePath = this.filePath,
                     Id = Guid.NewGuid().ToString(),
-                    sort = condtion.sort
+                    sort = this.sort
                 };
                 Db_SysFileSet newrow = db.Db_SysFileSet.Add(d);
                 db.SaveChanges();
                 return new SysFileSort(newrow.Id);
             }
         }
+
         /// <summary>
-        /// 比较
+        /// 编辑排序
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static List<SysFileSort> editSort(VMEditListRequest<VMEditFileSortRequest> condtion) {
+            SysValidata.valiData(condtion);
+
+            List<SysFileSort> result = new List<SysFileSort>();
+            foreach (var row in condtion.rows)
+            {
+                var file = new SysFileSort(row.fileId);
+                file.sort = row.sort;
+                file.saveSort();
+                result.Add(file);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 保存排序
+        /// </summary>
+        private void saveSort()
+        {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysFileSet.OfType<Db_FileSort>().Single(p => p.Id == this.Id);
+                d.sort = this.sort;
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// 比较 用于排序
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -152,32 +214,37 @@ namespace NewCyclone.Models
             }
         }
 
+        /// <summary>
+        /// 通过创建请求构造对象
+        /// </summary>
+        /// <param name="condtion"></param>
+        public SysFileInfo(VMCreateFileInfoRequest condtion) : base(condtion) {
+            this.title = condtion.title;
+            this.describe = condtion.describe;
+        }
 
         /// <summary>
         /// 创建一个带描述的文件
         /// </summary>
-        /// <param name="condtion"></param>
         /// <returns></returns>
-        public static SysFileInfo create(VMCreateFileInfoRequest condtion) {
-            SysValidata.valiData(condtion);
+        public new SysFileInfo create() {
             using (var db = new SysModelContainer()) {
                 Db_FileInfo d = new Db_FileInfo()
                 {
                     createdBy = HttpContext.Current.User.Identity.Name,
                     createdOn = DateTime.Now,
-                    describe = condtion.describe,
-                    fileName = condtion.fileName,
-                    filePath = condtion.filePath,
+                    describe = this.describe,
+                    fileName = this.fileName,
+                    filePath = this.filePath,
                     Id = Guid.NewGuid().ToString(),
-                    sort = condtion.sort,
-                    title = condtion.title
+                    sort = this.sort,
+                    title = this.title
                 };
                 Db_SysFileSet newrow = db.Db_SysFileSet.Add(d);
                 db.SaveChanges();
                 return new SysFileInfo(newrow.Id);
             }
         }
-
     }
 
     /// <summary>
@@ -186,32 +253,10 @@ namespace NewCyclone.Models
     public class VMCreateFileRequest {
 
         /// <summary>
-        /// 文件名
-        /// </summary>
-        internal string fileName { get; set; }
-        /// <summary>
-        /// 文件存放的路径
-        /// </summary>
-        internal string filePath { get; set; }
-
-        /// <summary>
         /// 文件存放的位置
         /// </summary>
         [Required]
         public string url { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public VMCreateFileRequest(string url) {
-            int s = url.LastIndexOf('/');
-            if (s == -1) {
-                throw new SysException("url的格式不正确，正确的格式为path/filename");
-            }
-            this.filePath = url.Substring(0, s + 1);
-            this.fileName = url.Substring(s + 1);
-            this.url = url;
-        }
     }
 
     /// <summary>
@@ -222,8 +267,6 @@ namespace NewCyclone.Models
         /// 排序号
         /// </summary>
         public int sort { get; set; }
-
-        public VMCreateFileSortRequest(string url) : base(url) { }
     }
 
     /// <summary>
@@ -240,7 +283,35 @@ namespace NewCyclone.Models
         /// 描述
         /// </summary>
         public string describe { get; set; }
+    }
 
-        public VMCreateFileInfoRequest(string url) : base(url) { }
+    /// <summary>
+    /// 编辑可排序文件排序请求
+    /// </summary>
+    public class VMEditFileSortRequest {
+        /// <summary>
+        /// 文件ID
+        /// </summary>
+        [Required]
+        [StringLength(36,MinimumLength =36)]
+        public string fileId { get; set; }
+        /// <summary>
+        /// 文件排序码
+        /// </summary>
+        public int sort { get; set; }
+    }
+
+    /// <summary>
+    /// 编辑可描述的文件请求
+    /// </summary>
+    public class VMEditFileInfoRequest : VMEditFileSortRequest {
+        /// <summary>
+        /// 标题
+        /// </summary>
+        public string title { get; set; }
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string describe { get; set; }
     }
 }

@@ -4,6 +4,9 @@
     VMEditWebDocPageRequest condtion = ViewBag.condtion;
     string q = JsonConvert.SerializeObject(condtion.catTreeIds);
     string pageId = ViewBag.pageId;
+
+    List<SysFileSort> files = ViewBag.files;
+
 }
 <script>
     $(document).ready(function () {
@@ -48,14 +51,68 @@
                 data = $.parseJSON(data);
                 if (data.error == "0") {
                     //将上传的图片追加到图集的末尾
+
+                    //获取现有的图片的数量
+                    var c = $("#@(pageId)piclist").find("li").length;
+                    c = c + 1;
                     var piclist = $("#@(pageId)piclist");
-                    piclist.append("<li><img src='" + data.url + "' /></li>");
+                    var str = '<li id="" url="'+ data.url +'">' +
+                                    '<div class="imglist"><img src="' + data.url + '" /></div>' +
+                                    '<table class="btntable" style="width:100%">' +
+                                        '<tr>' +
+                                            '<td style="width:33%;">' +
+                                                '<a href="#" class="@(pageId)setleft easyui-linkbutton" data-options="iconCls:\'icon-back\',plain:true"></a>' +
+                                                    '</td>' +
+                                            '<td style="width:33%;">' +
+                                                '<a href="#" class="@(pageId)setdelete easyui-linkbutton" data-options="iconCls:\'icon-cancel\',plain:true"></a>' +
+                                                    '</td>' +
+                                            '<td style="width:33%;">' +
+                                                '<a href="#" class="@(pageId)setright easyui-linkbutton" data-options="iconCls:\'icon-front\',plain:true"></a>' +
+                                            '</td>' +
+                                        '</tr>' +
+                                    '</table>' +
+                                '</li>';
+                    piclist.append(str);
+                    $.parser.parse(piclist);
                 }
                 else {
                     $.messager.alert('错误', data.message, 'error');
                 }
             }
         });
+
+        var leftbtn = ".@(pageId)setleft";
+        var rightbtn = ".@(pageId)setright";
+        var delbtn = ".@(pageId)setdelete";
+
+
+        $(document).off("click", leftbtn);
+        $(document).on("click", leftbtn, function () {
+            //向左
+            var li = $(this).parent().parent().parent().parent().parent();
+            if (li.prev().length == 0) {
+                return false;
+            }
+            li.prev().before(li[0]);
+        });
+        $(document).off("click", rightbtn);
+        $(document).on("click", rightbtn, function () {
+            //向右
+            var li = $(this).parent().parent().parent().parent().parent();
+            if (li.next().length == 0) {
+                return false;
+            }
+            li.next().after(li[0]);
+        });
+        $(document).off("click", delbtn);
+        $(document).on("click", delbtn, function () {
+            var li = $(this).parent().parent().parent().parent().parent();
+            if (li.attr("Id") != "") {
+                li.appendTo("#@(pageId)dellist");
+            }
+            //li.remove();
+        });
+
     });
 </script>
 <form id="@(pageId)editform">
@@ -95,9 +152,28 @@
         <tr>
             <td class="t">图集</td>
             <td>
+                <input type="hidden" name="files" value="," />
                 <ul id="@(pageId)piclist" class="sortfilelist">
-
+                    @foreach (var file in files) {
+                        <li id="@file.Id">
+                            <div class="imglist"><img src="@file.url" /></div>
+                            <table class="btntable" style="width:100%">
+                                <tr>
+                                    <td style="width:33%;">
+                                        <a href="#" class="@(pageId)setleft easyui-linkbutton" data-options="iconCls:'icon-back',plain:true"></a>
+                                    </td>
+                                    <td style="width:33%;">
+                                        <a href="#" class="@(pageId)setdelete easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true"></a>
+                                    </td>
+                                    <td style="width:33%;">
+                                        <a href="#" class="@(pageId)setright easyui-linkbutton" data-options="iconCls:'icon-front',plain:true"></a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </li>
+                    }
                 </ul>
+                <ul id="@(pageId)dellist" style="display:none;"></ul>
             </td>
         </tr>
         <tr>

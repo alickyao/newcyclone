@@ -335,6 +335,7 @@
     <Content Include="Content\themes\icons\edit_remove.png" />
     <Content Include="Content\themes\icons\filesave.png" />
     <Content Include="Content\themes\icons\filter.png" />
+    <Content Include="Content\themes\icons\front.png" />
     <Content Include="Content\themes\icons\help.png" />
     <Content Include="Content\themes\icons\large_chart.png" />
     <Content Include="Content\themes\icons\large_clipart.png" />
@@ -912,7 +913,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\kindeditor\attached\" />
-    <Folder Include="Views\File\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

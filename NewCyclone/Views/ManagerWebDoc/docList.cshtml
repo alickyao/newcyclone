@@ -156,6 +156,53 @@
                                         showmsg(json);
                                         btn.linkbutton("enable");
                                         if (json.code == 0) {
+
+                                            var filelist = $("#@(pageId)piclist").find("li");
+                                            var dellist = $("#@(pageId)dellist").find("li");
+                                            if (filelist.length > 0) {
+                                                var oldfiles = [];
+                                                var newfiles = [];
+                                                $.each(filelist, function (i, n) {
+                                                    if ($(n).attr("Id") == "") {
+                                                        //new
+                                                        newfiles.push({
+                                                            url: $(n).attr("url"),
+                                                            sort:i
+                                                        });
+                                                    }
+                                                    else {
+                                                        //old
+                                                        oldfiles.push({
+                                                            fileId: $(n).attr("Id"),
+                                                            sort: i
+                                                        });
+                                                    }
+                                                });
+                                                if (newfiles.length > 0) {
+                                                    //新增
+                                                    $.post("/api/ApiWebPages/appendsortpic", { docId: json.result.Id, rows: newfiles }, function (json) {
+                                                         console.log(json);
+                                                    });
+                                                }
+                                                if (oldfiles.length > 0) {
+                                                    //调整排序
+                                                    $.post("/api/ApiSysFile/editFilesSort", { rows: oldfiles }, function (json) {
+                                                        console.log(json);
+                                                    });
+                                                }
+                                            }
+
+                                            //删除
+                                            if (dellist.length > 0) {
+                                                var delfiles = [];
+                                                $.each(dellist, function (i, n) {
+                                                    delfiles.push($(n).attr("Id"));
+                                                });
+                                                $.post("/api/ApiWebPages/delpic", { rows: delfiles }, function (json) {
+                                                    console.log(json);
+                                                });
+                                            }
+
                                             dd.dialog("close");
                                             loadGrid();
                                         }

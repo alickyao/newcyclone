@@ -21,10 +21,12 @@ namespace NewCyclone.Controllers
         public BaseResponse<SysFileSort> test()
         {
             BaseResponse<SysFileSort> res = new BaseResponse<SysFileSort>();
-            res.result = SysFileSort.create(new VMCreateFileSortRequest("/path/file.jpg")
+            SysFileSort s = new SysFileSort(new VMCreateFileSortRequest()
             {
-                sort = 0
+                sort = 0,
+                url = "/sadfds/dsf.jpg"
             });
+            s.create();
             return res;
         }
     }

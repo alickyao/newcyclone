@@ -94,6 +94,43 @@ namespace NewCyclone.Models
                 SysUserLog.saveLog("删除文档:" + this.caption, SysUserLogType.删除, this.Id);
             }
         }
+
+        /// <summary>
+        /// 记录到文件关联表
+        /// </summary>
+        /// <param name="file">文件</param>
+        public void savefiles(SysFile file) {
+            using (var db = new SysModelContainer()) {
+                Db_SysDocFile f = new Db_SysDocFile()
+                {
+                    Db_SysFileId = file.Id,
+                    Db_SysDocId = this.Id
+                };
+                db.Db_SysDocFileSet.Add(f);
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// 批量删除文件
+        /// </summary>
+        /// <param name="files">需要删除的文件ID集合</param>
+        /// <returns>被删除的记录总数</returns>
+        public static int delfiles(VMEditListRequest<string> files) {
+            SysValidata.valiData(files);
+            int i = 0;
+            using (var db = new SysModelContainer()) {
+                var delrow = (from x in db.Db_SysDocFileSet where files.rows.Contains(x.Db_SysFileId) select x);
+                db.Db_SysDocFileSet.RemoveRange(delrow);
+                foreach (string file in files.rows) {
+                    SysFile f = new SysFile(file);
+                    f.delete();
+                    i++;
+                }
+                db.SaveChanges();
+            }
+            return i;
+        }
     }
 
     /// <summary>
@@ -162,6 +199,40 @@ namespace NewCyclone.Models
             return result;
         }
 
+
+        /// <summary>
+        /// 新增可排序的图片集
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public List<SysFileSort> createFilesSort(List<VMCreateFileSortRequest> condtion)
+        {
+            List<SysFileSort> result = new List<SysFileSort>();
+            foreach (var f in condtion) {
+                SysFileSort s = new SysFileSort(f);
+                SysFileSort newrow = s.create();
+                result.Add(newrow);
+                savefiles(newrow);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 新增带描述的图片集
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public List<SysFileInfo> createFilesInfo(List<VMCreateFileInfoRequest> condtion) {
+            List<SysFileInfo> result = new List<SysFileInfo>();
+            foreach (var f in condtion)
+            {
+                SysFileInfo s = new SysFileInfo(f);
+                SysFileInfo newrow = s.create();
+                result.Add(newrow);
+                savefiles(newrow);
+            }
+            return result;
+        }
     }
 
     /// <summary>
@@ -301,6 +372,8 @@ namespace NewCyclone.Models
                 }
             }
         }
+
+        
     }
 
     /// <summary>
@@ -399,5 +472,51 @@ namespace NewCyclone.Models
         /// 功能ID
         /// </summary>
         public string fun { get; set; }
+    }
+
+    /// <summary>
+    /// 为文档追加可排序的图片请求
+    /// </summary>
+    public class VMAppendWebDocFilesSortRequest {
+        /// <summary>
+        /// 文档的ID
+        /// </summary>
+        [Required]
+        public string docId { get; set; }
+
+        private List<VMCreateFileSortRequest> _rows = new List<VMCreateFileSortRequest>();
+
+        /// <summary>
+        /// 可排序的文件列表
+        /// </summary>
+        [Required]
+        public List<VMCreateFileSortRequest> rows {
+            get { return _rows; }
+            set { _rows = value; }
+        }
+    }
+
+    /// <summary>
+    /// 为文档追加带描述的图片请求
+    /// </summary>
+    public class VMAppendWebDocFilesInfoRequest
+    {
+        /// <summary>
+        /// 文档的ID
+        /// </summary>
+        [Required]
+        public string docId { get; set; }
+
+        private List<VMCreateFileInfoRequest> _rows = new List<VMCreateFileInfoRequest>();
+
+        /// <summary>
+        /// 可排序的文件列表
+        /// </summary>
+        [Required]
+        public List<VMCreateFileInfoRequest> rows
+        {
+            get { return _rows; }
+            set { _rows = value; }
+        }
     }
 }
