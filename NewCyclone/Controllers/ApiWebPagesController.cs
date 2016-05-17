@@ -29,7 +29,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
         public BaseResponse<int> delpic(VMEditListRequest<string> condtion)
         {
@@ -76,7 +76,7 @@ namespace NewCyclone.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse<SysDoc> delete(string id) {
             BaseResponse<SysDoc> result = new BaseResponse<SysDoc>();
             try
@@ -98,7 +98,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
         public BaseResponse<WebDocPage> editpic(VMEditWebDocPageRequest condtion) {
             BaseResponse<WebDocPage> result = new BaseResponse<WebDocPage>();
@@ -123,7 +123,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
         public BaseResponse<List<SysFileSort>> appendsortpic(VMAppendWebDocFilesSortRequest condtion) {
             BaseResponse<List<SysFileSort>> result = new BaseResponse<List<SysFileSort>>();
@@ -148,7 +148,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
         public BaseResponse<List<SysFileInfo>> appendinfopic(VMAppendWebDocFilesInfoRequest condtion) {
             BaseResponse<List<SysFileInfo>> result = new BaseResponse<List<SysFileInfo>>();

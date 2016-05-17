@@ -99,7 +99,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
         public BaseResponse reSetNewPwd(ViewModelChangePwdRequest condtion) {
             BaseResponse result = new BaseResponse();
@@ -125,7 +125,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="loginName"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpGet]
         public int checkLoginName(string loginName)
         {
@@ -176,7 +176,7 @@ namespace NewCyclone.Controllers
         /// <param name="condtion">请求</param>
         /// <returns></returns>
         [HttpPost]
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse<SysManagerUser> editUser(string loginName, ViewModelUserEditReqeust condtion) {
             BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();
             try

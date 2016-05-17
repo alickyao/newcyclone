@@ -43,7 +43,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse<BaseResponseList<SysMsg>> searchMsgList(VMMsgSearchMsgRequest condtion) {
             BaseResponse<BaseResponseList<SysMsg>> result = new BaseResponse<BaseResponseList<SysMsg>>();
             try
@@ -61,7 +61,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse<BaseResponseList<SysUserLog>> searchUserLog(ViewModelMsgSearchUserLogReqeust condtion) {
             BaseResponse<BaseResponseList<SysUserLog>> result = new BaseResponse<BaseResponseList<SysUserLog>>();
             try
@@ -79,7 +79,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse<BaseResponseList<SysExcptionLog>> searchExceptionLog(VMMsgSearchExceptionLogRequest condtion) {
             BaseResponse<BaseResponseList<SysExcptionLog>> result = new BaseResponse<BaseResponseList<SysExcptionLog>>();
             try

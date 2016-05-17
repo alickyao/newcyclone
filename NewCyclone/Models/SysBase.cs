@@ -146,7 +146,43 @@ namespace NewCyclone.Models
     }
 
     /// <summary>
-    /// 扩展的系统角色验证
+    /// 扩展的系统角色验证【API】
+    /// </summary>
+    public class ApiAuthorize : System.Web.Http.AuthorizeAttribute {
+        /// <summary>
+        /// 角色类型，如果指定了特定的角色，该值无效
+        /// </summary>
+        public SysRolesType RoleType { get; set; }
+
+        /// <summary>
+        /// 验证
+        /// </summary>
+        /// <param name="actionContext"></param>
+        /// <returns></returns>
+        protected override bool IsAuthorized(HttpActionContext actionContext)
+        {
+
+            if (HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                if (string.IsNullOrEmpty(this.Roles))
+                {
+                    List<SysRoles> roles = SysRoles.getRolesList(RoleType);
+                    foreach (SysRoles role in roles)
+                    {
+                        if (HttpContext.Current.User.IsInRole(role.role))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return base.IsAuthorized(actionContext);
+        }
+    }
+
+    /// <summary>
+    /// 扩展的系统角色验证【网站界面】
     /// </summary>
     public class SysAuthorize : System.Web.Mvc.AuthorizeAttribute
     {
