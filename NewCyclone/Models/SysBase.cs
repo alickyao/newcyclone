@@ -114,7 +114,7 @@ namespace NewCyclone.Models
     }
 
     /// <summary>
-    /// 系统验证
+    /// 系统参数验证
     /// </summary>
     public class SysValidata {
         /// <summary>
@@ -155,13 +155,12 @@ namespace NewCyclone.Models
         public SysRolesType RoleType { get; set; }
 
         /// <summary>
-        /// 验证
+        /// 自定义权限验证
         /// </summary>
         /// <param name="actionContext"></param>
         /// <returns></returns>
         protected override bool IsAuthorized(HttpActionContext actionContext)
         {
-
             if (HttpContext.Current.User.Identity.IsAuthenticated)
             {
                 if (string.IsNullOrEmpty(this.Roles))
@@ -174,15 +173,20 @@ namespace NewCyclone.Models
                             return true;
                         }
                     }
+                    return false;
+                }
+                else {
+                    return base.IsAuthorized(actionContext);
                 }
             }
-
-            return base.IsAuthorized(actionContext);
+            else {
+                return false;
+            }
         }
     }
 
     /// <summary>
-    /// 扩展的系统角色验证【网站界面】
+    /// 扩展的系统角色验证【UI】
     /// </summary>
     public class SysAuthorize : System.Web.Mvc.AuthorizeAttribute
     {
@@ -198,7 +202,8 @@ namespace NewCyclone.Models
         /// <returns></returns>
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            if (httpContext.User.Identity.IsAuthenticated) {
+            if (httpContext.User.Identity.IsAuthenticated)
+            {
                 if (string.IsNullOrEmpty(this.Roles))
                 {
                     List<SysRoles> roles = SysRoles.getRolesList(RoleType);
@@ -209,10 +214,16 @@ namespace NewCyclone.Models
                             return true;
                         }
                     }
+                    return false;
+                }
+                else {
+                    return base.AuthorizeCore(httpContext);
                 }
             }
+            else {
+                return false;
+            }
 
-            return base.AuthorizeCore(httpContext);
         }
     }
 
