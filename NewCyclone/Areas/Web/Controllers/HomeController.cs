@@ -26,6 +26,7 @@ namespace NewCyclone.Areas.Web.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public ActionResult user() {
             return View();
         }

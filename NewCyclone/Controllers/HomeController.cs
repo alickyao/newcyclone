@@ -19,5 +19,19 @@ namespace NewCyclone.Controllers
         {
             return View();
         }
+
+        /// <summary>
+        /// 登录
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult login(string ReturnUrl) {
+            if (ReturnUrl.IndexOf("Admin") > 0)
+            {
+                return RedirectToAction("login", "Manager", new { area = "Admin", ReturnUrl = ReturnUrl });
+            }
+            else {
+                return RedirectToAction("index", "Home");
+            }
+        }
     }
 }

@@ -148,7 +148,7 @@ namespace NewCyclone.Models
     /// <summary>
     /// 扩展的系统角色验证
     /// </summary>
-    public class SysAuthorize : System.Web.Http.AuthorizeAttribute
+    public class SysAuthorize : System.Web.Mvc.AuthorizeAttribute
     {
         /// <summary>
         /// 角色类型，如果指定了特定的角色，该值无效
@@ -156,27 +156,27 @@ namespace NewCyclone.Models
         public SysRolesType RoleType { get; set; }
 
         /// <summary>
-        /// 如果有设置角色类型，则进行验证
+        /// 自定义授权验证
         /// </summary>
-        /// <param name="actionContext"></param>
+        /// <param name="httpContext"></param>
         /// <returns></returns>
-        protected override bool IsAuthorized(HttpActionContext actionContext)
+        protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            if (HttpContext.Current.User.Identity.IsAuthenticated)
-            {
+            if (httpContext.User.Identity.IsAuthenticated) {
                 if (string.IsNullOrEmpty(this.Roles))
                 {
                     List<SysRoles> roles = SysRoles.getRolesList(RoleType);
                     foreach (SysRoles role in roles)
                     {
-                        if (HttpContext.Current.User.IsInRole(role.role))
+                        if (httpContext.User.IsInRole(role.role))
                         {
                             return true;
                         }
                     }
                 }
             }
-            return base.IsAuthorized(actionContext);
+
+            return base.AuthorizeCore(httpContext);
         }
     }
 
