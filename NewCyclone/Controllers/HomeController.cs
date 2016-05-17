@@ -21,7 +21,7 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 登录
+        /// 判断登录跳转
         /// </summary>
         /// <returns></returns>
         public ActionResult login(string ReturnUrl) {
@@ -30,7 +30,7 @@ namespace NewCyclone.Controllers
                 return RedirectToAction("login", "Manager", new { area = "Admin", ReturnUrl = ReturnUrl });
             }
             else {
-                return RedirectToAction("index", "Home");
+                return RedirectToAction("login", "Home", new { area = "Web", ReturnUrl = ReturnUrl });
             }
         }
     }
