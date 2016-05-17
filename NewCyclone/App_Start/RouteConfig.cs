@@ -19,6 +19,7 @@ namespace NewCyclone
                 defaults: new { controller = "Home", action = "index", id = UrlParameter.Optional },
                 namespaces: new string[] { "NewCyclone.Controllers" }
             );
+            //.DataTokens.Add("area", "Web");可设置area中的区域为默认起始页
         }
     }
 }

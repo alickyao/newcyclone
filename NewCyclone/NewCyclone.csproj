@@ -123,7 +123,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\images\PCLogo.jpg" />
-    <Content Include="Content\manager.css" />
+    <Content Include="Areas\Admin\Content\manager.css" />
     <Content Include="Content\themes\black\accordion.css" />
     <Content Include="Content\themes\black\calendar.css" />
     <Content Include="Content\themes\black\combo.css" />
