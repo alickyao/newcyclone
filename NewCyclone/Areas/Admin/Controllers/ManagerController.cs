@@ -225,6 +225,7 @@ namespace NewCyclone.Areas.Admin.Controllers
         /// <param name="fun">功能模块标示</param>
         /// <param name="pageId"></param>
         /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult catTreeList(string fun, string pageId = null)
         {
             setPageId(pageId);
@@ -238,6 +239,7 @@ namespace NewCyclone.Areas.Admin.Controllers
         /// <param name="fun">功能模块标示</param>
         /// <param name="pageId"></param>
         /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult catTreeGrid(string fun, string pageId = null)
         {
             setPageId(pageId);
@@ -258,6 +260,7 @@ namespace NewCyclone.Areas.Admin.Controllers
         /// <param name="condtion"></param>
         /// <param name="pageId"></param>
         /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult docList(VMSearchWebDocReqeust condtion, string pageId)
         {
             setPageId(pageId);
@@ -272,6 +275,7 @@ namespace NewCyclone.Areas.Admin.Controllers
         /// <param name="pageId">页面ID</param>
         /// <param name="catTreeId">分类ID</param>
         /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult editpic(string Id, string pageId, string catTreeId)
         {
             setPageId(pageId);
@@ -321,6 +325,7 @@ namespace NewCyclone.Areas.Admin.Controllers
         /// 创建/编辑轮播
         /// </summary>
         /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult editrote()
         {
             return View();
@@ -330,6 +335,7 @@ namespace NewCyclone.Areas.Admin.Controllers
         /// 编辑产品
         /// </summary>
         /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult editproduct()
         {
             return View();
