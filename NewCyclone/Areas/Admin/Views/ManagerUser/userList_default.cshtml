@@ -75,7 +75,7 @@
                 var dd = $("#@(pageId)edit");
                 dd.dialog({
                     title: "用户：[" + rowData.fullName + "]",
-                    href: '/ManagerUser/editUser?loginName=' + rowData.loginName,
+                    href: '@Url.Action("editUser", "ManagerUser")?loginName=' + rowData.loginName,
                     onClose: function () {
                         loadGrid();
                     }

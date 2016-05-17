@@ -65,7 +65,7 @@
             </table>
         </form>
     </div>
-    <div data-options="region:'center',title:'日志',href:'/ManagerMsg/userLog?viewset=simp&loginName=@(user.loginName)&fkid=@(user.loginName)'"></div>
+    <div data-options="region:'center',title:'日志',href:'@Url.Action("userLog", "ManagerMsg",new { viewset= "simp", loginName=user.loginName,fkid=user.loginName })'"></div>
 </div>
 
 

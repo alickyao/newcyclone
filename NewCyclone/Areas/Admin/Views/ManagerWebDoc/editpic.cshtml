@@ -110,7 +110,9 @@
             if (li.attr("Id") != "") {
                 li.appendTo("#@(pageId)dellist");
             }
-            //li.remove();
+            else {
+                li.remove();
+            }
         });
 
     });

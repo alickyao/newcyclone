@@ -437,6 +437,30 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="App_Set\appsettings.config" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Web\Views\web.config" />
+    <Content Include="Areas\Web\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Web\Views\Home\user.cshtml" />
+    <Content Include="Areas\Web\Views\Home\login.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\EasyUiLayout.cshtml" />
+    <Content Include="Areas\Admin\Views\Manager\index.cshtml" />
+    <Content Include="Areas\Admin\Views\Manager\login.cshtml" />
+    <Content Include="Areas\Admin\Views\Manager\workTab.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerMsg\exceptionLog.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerMsg\exceptionLogInfo.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerMsg\userLogInfo.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerMsg\userLog_default.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerMsg\userLog_simp.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerTree\catTreeGrid.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerTree\catTreeList.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerUser\changepwd.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerUser\editUser.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerUser\userInfo.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerUser\userList_default.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerWebDoc\docList.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerWebDoc\editpic.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerWebDoc\editproduct.cshtml" />
+    <Content Include="Areas\Admin\Views\ManagerWebDoc\editrote.cshtml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.min.js" />
@@ -732,6 +756,8 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\ManagerController.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
     <Compile Include="Areas\HelpPage\Controllers\HelpController.cs" />
@@ -760,6 +786,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Areas\Web\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Web\WebAreaRegistration.cs" />
     <Compile Include="Controllers\ApiSysFileController.cs" />
     <Compile Include="Controllers\ApiSysMsgController.cs" />
     <Compile Include="Controllers\ApiSysCatTreeController.cs" />
@@ -768,7 +796,6 @@
     <Compile Include="Controllers\ApiWebPagesController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="DataBase\Db_CatTree.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
@@ -882,25 +909,6 @@
     <Content Include="Scripts\jquery.min.map" />
     <Content Include="Views\Shared\BootStrapLayout.cshtml" />
     <Content Include="Views\Home\index.cshtml" />
-    <Content Include="Views\Shared\EasyUiLayout.cshtml" />
-    <Content Include="Views\Manager\login.cshtml" />
-    <Content Include="Views\Manager\index.cshtml" />
-    <Content Include="Views\Manager\workTab.cshtml" />
-    <Content Include="Views\ManagerUser\changepwd.cshtml" />
-    <Content Include="Views\ManagerUser\userInfo.cshtml" />
-    <Content Include="Views\ManagerUser\userList_default.cshtml" />
-    <Content Include="Views\ManagerUser\editUser.cshtml" />
-    <Content Include="Views\ManagerMsg\userLog_default.cshtml" />
-    <Content Include="Views\ManagerMsg\userLog_simp.cshtml" />
-    <Content Include="Views\ManagerMsg\exceptionLog.cshtml" />
-    <Content Include="Views\ManagerMsg\userLogInfo.cshtml" />
-    <Content Include="Views\ManagerMsg\exceptionLogInfo.cshtml" />
-    <Content Include="Views\ManagerTree\catTreeList.cshtml" />
-    <Content Include="Views\ManagerTree\catTreeGrid.cshtml" />
-    <Content Include="Views\ManagerWebDoc\docList.cshtml" />
-    <Content Include="Views\ManagerWebDoc\editpic.cshtml" />
-    <Content Include="Views\ManagerWebDoc\editrote.cshtml" />
-    <Content Include="Views\ManagerWebDoc\editproduct.cshtml" />
     <Content Include="Scripts\kindeditor\asp.net\file_manager_json.ashx" />
     <Content Include="Scripts\kindeditor\asp.net\upload_json.ashx" />
     <None Include="Web.Debug.config">
@@ -912,6 +920,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Web\Models\" />
+    <Folder Include="Areas\Web\Views\Shared\" />
     <Folder Include="Scripts\kindeditor\attached\" />
   </ItemGroup>
   <ItemGroup>

@@ -21,7 +21,7 @@
                     $.each(node.childrenIdList, function (i, n) {
                         s += "&catTreeIds=" + n;
                     });
-                    panel.panel("refresh", "/ManagerWebDoc/docList" + s);
+                    panel.panel("refresh", "@Url.Action("docList", "ManagerWebDoc")" + s);
                 }
             });
         });

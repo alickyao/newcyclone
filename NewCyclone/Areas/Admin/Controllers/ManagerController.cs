@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Security;
 using System.Web.Mvc;
+using System.Web.Security;
 using NewCyclone.Models;
 
-namespace NewCyclone.Controllers
+namespace NewCyclone.Areas.Admin.Controllers
 {
     /// <summary>
     /// 后台基础
     /// </summary>
-    public class MBaseController : Controller {
+    public class MBaseController : Controller
+    {
         /// <summary>
         /// 页面的ID
         /// </summary>
@@ -19,7 +20,8 @@ namespace NewCyclone.Controllers
         /// <summary>
         /// 为页面ID赋值
         /// </summary>
-        public MBaseController() {
+        public MBaseController()
+        {
             pageId = SysHelp.getNewId("HHmmss");
             ViewBag.pageId = pageId;
         }
@@ -28,8 +30,10 @@ namespace NewCyclone.Controllers
         /// 重新设置页面的PageId
         /// </summary>
         /// <param name="pId">重设的pageId</param>
-        public void setPageId(string pId = null) {
-            if (!string.IsNullOrEmpty(pId)) {
+        public void setPageId(string pId = null)
+        {
+            if (!string.IsNullOrEmpty(pId))
+            {
                 this.pageId = pId;
                 ViewBag.pageId = pId;
             }
@@ -45,14 +49,16 @@ namespace NewCyclone.Controllers
         /// 后台登录
         /// </summary>
         /// <returns></returns>
-        public ActionResult login() {
+        public ActionResult login()
+        {
             return View();
         }
 
         /// <summary>
         /// 退出登录
         /// </summary>
-        public ActionResult logout() {
+        public ActionResult logout()
+        {
             if (User.Identity.IsAuthenticated)
             {
                 FormsAuthentication.SignOut();
@@ -78,7 +84,8 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult workTab() {
+        public ActionResult workTab()
+        {
             return View();
         }
     }
@@ -86,7 +93,8 @@ namespace NewCyclone.Controllers
     /// <summary>
     /// 后台用户相关
     /// </summary>
-    public class ManagerUserController : MBaseController {
+    public class ManagerUserController : MBaseController
+    {
         /// <summary>
         /// 修改密码
         /// </summary>
@@ -104,7 +112,8 @@ namespace NewCyclone.Controllers
         /// <param name="pageId"></param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult userInfo(string pageId = null) {
+        public ActionResult userInfo(string pageId = null)
+        {
             setPageId(pageId);
             SysManagerUser user = new SysManagerUser(User.Identity.Name);
             ViewBag.user = user;
@@ -133,7 +142,8 @@ namespace NewCyclone.Controllers
         /// <param name="pageId"></param>
         /// <returns></returns>
         [Authorize(Roles = "admin")]
-        public ActionResult editUser(string loginName, string pageId = null) {
+        public ActionResult editUser(string loginName, string pageId = null)
+        {
             setPageId(pageId);
             ViewBag.loginName = loginName;
             return View();
@@ -143,7 +153,8 @@ namespace NewCyclone.Controllers
     /// <summary>
     /// 后台消息
     /// </summary>
-    public class ManagerMsgController : MBaseController {
+    public class ManagerMsgController : MBaseController
+    {
 
         /// <summary>
         /// 用户日志列表
@@ -153,7 +164,8 @@ namespace NewCyclone.Controllers
         /// <param name="viewset"></param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult userLog(ViewModelMsgSearchUserLogReqeust condtion, string pageId, string viewset = "default") {
+        public ActionResult userLog(ViewModelMsgSearchUserLogReqeust condtion, string pageId, string viewset = "default")
+        {
             setPageId(pageId);
             ViewBag.condtion = condtion;
             ViewModelSearchUserBaseRequest searchUserRequest = new ViewModelSearchUserBaseRequest();
@@ -167,7 +179,8 @@ namespace NewCyclone.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult userLogInfo(int id) {
+        public ActionResult userLogInfo(int id)
+        {
             ViewBag.info = new SysUserLog(id);
             return View();
         }
@@ -192,7 +205,8 @@ namespace NewCyclone.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult exceptionLogInfo(long id) {
+        public ActionResult exceptionLogInfo(long id)
+        {
             ViewBag.info = new SysExcptionLog(id);
             return View();
         }
@@ -202,7 +216,8 @@ namespace NewCyclone.Controllers
     /// <summary>
     /// 分类与树
     /// </summary>
-    public class ManagerTreeController : MBaseController {
+    public class ManagerTreeController : MBaseController
+    {
 
         /// <summary>
         /// 分类树网格
@@ -234,7 +249,8 @@ namespace NewCyclone.Controllers
     /// <summary>
     /// 网页文档（图文消息，轮播等）
     /// </summary>
-    public class ManagerWebDocController : MBaseController {
+    public class ManagerWebDocController : MBaseController
+    {
 
         /// <summary>
         /// 检索文档
@@ -277,19 +293,22 @@ namespace NewCyclone.Controllers
                     seoTitle = info.seoTitle,
                     showTime = info.showTime
                 };
-                foreach (var cat in info.cat) {
+                foreach (var cat in info.cat)
+                {
                     condtion.catTreeIds.Add(cat.id);
                 }
 
                 //图集
-                if (info.files.Count > 0) {
+                if (info.files.Count > 0)
+                {
                     files = info.files;
                 }
             }
             else {
                 condtion.Id = SysHelp.getNewId();
                 condtion.fun = "pic";
-                if (!string.IsNullOrEmpty(catTreeId)) {
+                if (!string.IsNullOrEmpty(catTreeId))
+                {
                     condtion.catTreeIds.Add(catTreeId);
                 }
             }
@@ -302,7 +321,8 @@ namespace NewCyclone.Controllers
         /// 创建/编辑轮播
         /// </summary>
         /// <returns></returns>
-        public ActionResult editrote() {
+        public ActionResult editrote()
+        {
             return View();
         }
 
@@ -310,7 +330,8 @@ namespace NewCyclone.Controllers
         /// 编辑产品
         /// </summary>
         /// <returns></returns>
-        public ActionResult editproduct() {
+        public ActionResult editproduct()
+        {
             return View();
         }
     }

@@ -118,5 +118,5 @@
             </table>
         </form>
     </div>
-    <div data-options="region:'center',title:'日志',href:'/ManagerMsg/userLog?viewset=simp&loginName=@(ViewBag.loginName)&fkid=@(ViewBag.loginName)'"></div>
+    <div data-options="region:'center',title:'日志',href:'@Url.Action("userLog", "ManagerMsg", new { viewset = "simp", loginName = ViewBag.loginName, fkid = ViewBag.loginName })'"></div>
 </div>

@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "index";
-    Layout = "~/Views/Shared/EasyUiLayout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/EasyUiLayout.cshtml";
     string userMenu = JsonConvert.SerializeObject(ViewBag.userMenu);
     SysManagerUser userinfo = ViewBag.userinfo;
     string pageId = ViewBag.pageId;
@@ -90,7 +90,7 @@
             var dd = $("#@(pageId)changePwdWin");
             dd.dialog({
                 title: "修改密码",
-                href: "/ManagerUser/changepwd"
+                href: "@Url.Action("changepwd", "ManagerUser")"
             });
             dd.dialog("open");
         });
@@ -99,7 +99,7 @@
             var dd = $("#@(pageId)userInfoWin");
             dd.dialog({
                 title: "我的",
-                href: "/ManagerUser/userInfo"
+                href: "@Url.Action("userInfo", "ManagerUser")"
             });
             dd.dialog("open");
         });

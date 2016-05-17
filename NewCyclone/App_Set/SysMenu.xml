@@ -33,11 +33,11 @@
         <children>
           <SysMenu>
             <text>内容分类管理</text>
-            <url><![CDATA[/ManagerTree/catTreeList?fun=webcms]]></url>
+            <url><![CDATA[/Admin/ManagerTree/catTreeList?fun=webcms]]></url>
           </SysMenu>
           <SysMenu>
             <text>内容管理</text>
-            <url><![CDATA[/ManagerTree/catTreeGrid?fun=webcms]]></url>
+            <url><![CDATA[/Admin/ManagerTree/catTreeGrid?fun=webcms]]></url>
           </SysMenu>
         </children>
       </SysMenu>
@@ -52,7 +52,7 @@
     <children>
       <SysMenu>
         <text>系统管理员维护</text>
-        <url><![CDATA[/ManagerUser/userList?keywords=&roles=admin&roles=user]]></url>
+        <url><![CDATA[/Admin/ManagerUser/userList?keywords=&roles=admin&roles=user]]></url>
       </SysMenu>
       <SysMenu>
         <text>系统日志</text>
@@ -60,13 +60,13 @@
           <SysMenu>
             <text>用户日志</text>
             <url>
-              <![CDATA[/ManagerMsg/userLog]]>
+              <![CDATA[/Admin/ManagerMsg/userLog]]>
             </url>
           </SysMenu>
           <SysMenu>
             <text>错误日志</text>
             <url>
-              <![CDATA[/ManagerMsg/exceptionLog]]>
+              <![CDATA[/Admin/ManagerMsg/exceptionLog]]>
             </url>
           </SysMenu>
         </children>

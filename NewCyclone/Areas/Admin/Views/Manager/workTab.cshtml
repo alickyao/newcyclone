@@ -64,11 +64,11 @@
                         break;
                     case 1://日志
                         title = "日志详情"
-                        url = "/ManagerMsg/userLogInfo/" + rowData.Id;
+                        url = "@Url.Action("userLogInfo", "ManagerMsg")/" + rowData.Id;
                         break;
                     case 2://异常
                         title = "异常详情"
-                        url = "/ManagerMsg/exceptionLogInfo/" + rowData.Id;
+                        url = "@Url.Action("exceptionLogInfo", "ManagerMsg")/" + rowData.Id;
                         break;
                 }
                 if (url != "") {

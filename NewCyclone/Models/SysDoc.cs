@@ -367,7 +367,7 @@ namespace NewCyclone.Models
                     }
 
                     db.SaveChanges();
-
+                    SysUserLog.saveLog(condtion, SysUserLogType.编辑, condtion.Id);
                     return new WebDocPage(condtion.Id);
                 }
             }

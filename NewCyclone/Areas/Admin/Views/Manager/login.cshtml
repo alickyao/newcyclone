@@ -91,7 +91,7 @@
                 console.log(json);
                 if (json.code == 0) {
                     btn.button("complete");
-                    window.location.href = "index";
+                    window.location.href = "@Url.Action("index")";
                 }
                 else {
                     toastr.error(json.msg);
