@@ -19,7 +19,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        [Authorize]
         [HttpPost]
         public BaseResponse<List<SysFileSort>> editFilesSort(VMEditListRequest<VMEditFileSortRequest> condtion) {
             BaseResponse<List<SysFileSort>> result = new BaseResponse<List<SysFileSort>>();
