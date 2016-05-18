@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using NewCyclone.DataBase;
+using System.IO;
 using System.ComponentModel.DataAnnotations;
 
 namespace NewCyclone.Models
@@ -78,6 +79,51 @@ namespace NewCyclone.Models
                 db.Db_SysFileSet.Remove(d);
                 db.SaveChanges();
             }
+        }
+
+        /// <summary>
+        /// 列出上传目录下的所有文档
+        /// </summary>
+        /// <param name="path"></param>
+        public static VMDiskFileQueryResponse listFiles(string path = "") {
+            string rootUrl = "/upload/" + path;
+            string rootPath = HttpContext.Current.Server.MapPath(rootUrl);
+            string [] dirlist = Directory.GetDirectories(rootPath);
+            string[] fileslist = Directory.GetFiles(rootPath);
+            VMDiskFileQueryResponse result = new VMDiskFileQueryResponse();
+
+
+            result.url = rootUrl;
+            if (!string.IsNullOrEmpty(path)) {
+                if (path.IndexOf('/') > 0)
+                {
+                    result.prvUrl = path.Substring(0, path.LastIndexOf('/'));
+                }
+            }
+
+            foreach (string d in dirlist) {
+                DirectoryInfo dir = new DirectoryInfo(d);
+                result.rows.Add(new VMDiskFileInfo() {
+                    fileSize = 0,
+                    hasFile = (dir.GetFileSystemInfos().Length > 0),
+                    isDir = true,
+                    lastWriteTime = dir.LastWriteTime,
+                    name = dir.Name
+                });
+            }
+
+            foreach (string f in fileslist) {
+                FileInfo file = new FileInfo(f);
+                result.rows.Add(new VMDiskFileInfo() {
+                    fileSize = file.Length,
+                    hasFile =false,
+                    isDir = false,
+                    lastWriteTime = file.LastWriteTime,
+                    name = file.Name
+                });
+            }
+            result.total = result.rows.Count();
+            return result;
         }
     }
 
@@ -246,6 +292,63 @@ namespace NewCyclone.Models
             }
         }
     }
+
+    /// <summary>
+    /// 文件查询返回对象
+    /// </summary>
+    public class VMDiskFileQueryResponse {
+
+        /// <summary>
+        /// 总计
+        /// </summary>
+        public int total { get; set; }
+
+        /// <summary>
+        /// 当前请求的URL
+        /// </summary>
+        public string url { get; set; }
+
+        /// <summary>
+        /// 可返回的URL
+        /// </summary>
+        public string prvUrl { get; set; }
+
+        private List<VMDiskFileInfo> _rows = new List<VMDiskFileInfo>();
+        /// <summary>
+        /// 行
+        /// </summary>
+        public List<VMDiskFileInfo> rows {
+            get { return _rows; }
+            set { _rows = value; }
+        }
+    }
+
+    /// <summary>
+    /// 系统文件信息
+    /// </summary>
+    public class VMDiskFileInfo {
+        /// <summary>
+        /// 是否目录
+        /// </summary>
+        public bool isDir { get; set; }
+        /// <summary>
+        /// 如果是目录该目录下是否有文件
+        /// </summary>
+        public bool hasFile { get; set; }
+        /// <summary>
+        /// 文件夹或文件的名称
+        /// </summary>
+        public string name { get; set; }
+        /// <summary>
+        /// 如果是文件则表示文件的大小
+        /// </summary>
+        public long fileSize { get; set; }
+        /// <summary>
+        /// 最后更新时间
+        /// </summary>
+        public DateTime lastWriteTime { get; set; }
+    }
+
 
     /// <summary>
     /// 创建文件记录请求

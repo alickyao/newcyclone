@@ -18,15 +18,10 @@ namespace NewCyclone.Controllers
         /// </summary>
         [HttpGet]
         [ApiAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse<SysFileSort> test()
+        public BaseResponse<VMDiskFileQueryResponse> test(string path)
         {
-            BaseResponse<SysFileSort> res = new BaseResponse<SysFileSort>();
-            //SysFileSort s = new SysFileSort(new VMCreateFileSortRequest()
-            //{
-            //    sort = 0,
-            //    url = "/sadfds/dsf.jpg"
-            //});
-            //s.create();
+            BaseResponse<VMDiskFileQueryResponse> res = new BaseResponse<VMDiskFileQueryResponse>();
+            res.result = SysFile.listFiles(path);
             return res;
         }
     }
