@@ -46,7 +46,7 @@ $(document).ready(function () {
         checkthisdate: {//检查日期是否大于指定的天数
             validator: function (value, param) {
                 var curDate = new Date();
-                var newDate = new Date(curDate.setDate(curDate.getDate() + (param[0]-1)));
+                var newDate = new Date(curDate.setDate(curDate.getDate() + (param[0] - 1)));
                 var Reg = true;
                 var vDate = new Date(value);
                 if (vDate < newDate) {
@@ -54,7 +54,7 @@ $(document).ready(function () {
                 }
                 return Reg;
             },
-            message:"不能小于指定的天数"
+            message: "不能小于指定的天数"
         },
         checkloginname: {//检查登录名是否有重复
             validator: function (value, param) {
@@ -72,6 +72,43 @@ $(document).ready(function () {
                 return r;
             },
             message: "该登录名已被使用"
+        },
+        checkCatTreeAlias: {//检查分类树的别名是否已使用
+            validator: function (value, param) {
+                var r = false;
+                var grid = $(param[0]);
+                var row = grid.treegrid("getSelected");
+                $.ajax({
+                    url: "/api/ApiSysCatTree/checkTreeIdIsExist?alias=" + value + "&wid="+row.id,
+                    async: false,
+                    dataType: 'json',
+                    type: 'get',
+                    contentType: "application/json",
+                    success: function (data) {
+                        r = (data == 0);
+                    }
+                });
+                return r;
+            },
+            message: "该别名已使用"
+        },
+        checkWebDocAlias: {//检查文档的别名是否已使用
+            validator: function (value, param) {
+                var r = false;
+                var wid = param[0];
+                $.ajax({
+                    url: "/api/ApiWebPages/checkAliasIsExist?alias=" + value + "&wid=" + wid,
+                    async: false,
+                    dataType: 'json',
+                    type: 'get',
+                    contentType: "application/json",
+                    success: function (data) {
+                        r = (data == 0);
+                    }
+                });
+                return r;
+            },
+            message: "该别名已使用"
         },
     });
 });

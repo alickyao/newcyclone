@@ -17,5 +17,6 @@ namespace NewCyclone.DataBase
         public string fun { get; set; }
         public string describe { get; set; }
         public System.DateTime showTime { get; set; }
+        public string alias { get; set; }
     }
 }

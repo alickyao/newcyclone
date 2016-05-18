@@ -70,6 +70,7 @@ namespace NewCyclone.Controllers
             return result;
         }
 
+
         /// <summary>
         /// 将文档标记为删除
         /// </summary>
@@ -91,6 +92,19 @@ namespace NewCyclone.Controllers
                 result = SysException.getResult(result, e, id);
             }
             return result;
+        }
+
+        /// <summary>
+        /// 检查文档的别名是否可用
+        /// </summary>
+        /// <param name="alias">别名</param>
+        /// <param name="wid">需排除的ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        public int checkAliasIsExist(string alias, string wid)
+        {
+            return WebDoc.checkAliasIsExist(alias, wid);
         }
 
         /// <summary>
@@ -119,6 +133,48 @@ namespace NewCyclone.Controllers
 
 
         /// <summary>
+        /// 获取页面图文内容详情
+        /// </summary>
+        /// <param name="id">图文内容的ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        public BaseResponse<WebDocPage> getpic(string id)
+        {
+            BaseResponse<WebDocPage> result = new BaseResponse<WebDocPage>();
+            try
+            {
+                result.result = new WebDocPage(id);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, id);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 根据别名获取图文内容详情
+        /// </summary>
+        /// <param name="alias">文档的别名</param>
+        /// <returns></returns>
+        [HttpGet]
+        public BaseResponse<WebDocPage> getpicbyAlias(string alias) {
+            BaseResponse<WebDocPage> result = new BaseResponse<WebDocPage>();
+            try
+            {
+                result.result = WebDocPage.getDocByAlias(alias);
+            }
+            catch (SysException e) {
+                result = e.getresult(result);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, alias);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 为网站页面追加可排序的图集
         /// </summary>
         /// <param name="condtion"></param>
@@ -144,7 +200,7 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 为网站页面追加待描述的图集
+        /// 为网站页面追加带描述的图集
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
@@ -153,26 +209,6 @@ namespace NewCyclone.Controllers
         public BaseResponse<List<SysFileInfo>> appendinfopic(VMAppendWebDocFilesInfoRequest condtion) {
             BaseResponse<List<SysFileInfo>> result = new BaseResponse<List<SysFileInfo>>();
 
-            return result;
-        }
-
-        
-
-        /// <summary>
-        /// 获取页面图文内容详情
-        /// </summary>
-        /// <param name="id">图文内容的ID</param>
-        /// <returns></returns>
-        [HttpGet]
-        public BaseResponse<WebDocPage> getpic(string id) {
-            BaseResponse<WebDocPage> result = new BaseResponse<WebDocPage>();
-            try
-            {
-                result.result = new WebDocPage(id);
-            }
-            catch (Exception e) {
-                result = SysException.getResult(result, e, id);
-            }
             return result;
         }
     }

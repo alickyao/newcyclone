@@ -158,6 +158,11 @@ namespace NewCyclone.Models
         public DateTime showTime { get; set; }
 
         /// <summary>
+        /// 别名
+        /// </summary>
+        public string alias { get; set; }
+
+        /// <summary>
         /// 使用ID构造一个网站文档
         /// </summary>
         /// <param name="id"></param>
@@ -168,6 +173,7 @@ namespace NewCyclone.Models
                 this.fun = funlist.Single(p => p.id == d.fun);
                 this.describe = d.describe;
                 this.showTime = d.showTime;
+                this.alias = d.alias;
             }
         }
 
@@ -199,6 +205,29 @@ namespace NewCyclone.Models
             return result;
         }
 
+
+        /// <summary>
+        /// 检查文档的别名是否可用
+        /// </summary>
+        /// <param name="alias">别名</param>
+        /// <param name="wid">需要排除的ID</param>
+        /// <returns></returns>
+        public static int checkAliasIsExist(string alias , string wid)
+        {
+            int count = 0;
+
+            if (!string.IsNullOrEmpty(alias)) {
+                using (var db = new SysModelContainer()) {
+                    count = (from c in db.Db_SysDocSet.OfType<Db_DocWeb>().AsEnumerable()
+                             where (c.alias == alias)
+                             && (string.IsNullOrEmpty(wid) ? true : c.Id != wid)
+                             select c.Id
+                             ).Count();
+                }
+            }
+
+            return count;
+        }
 
         /// <summary>
         /// 新增可排序的图片集
@@ -286,6 +315,27 @@ namespace NewCyclone.Models
             }
         }
 
+
+        /// <summary>
+        /// 根据别名获取网页页面（图文信息）
+        /// </summary>
+        /// <param name="alias"></param>
+        /// <returns></returns>
+        public static WebDocPage getDocByAlias(string alias) {
+            if (string.IsNullOrEmpty(alias))
+            {
+                throw new SysException("别名不能为空",alias);
+            }
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysDocSet.OfType<Db_DocWeb>().SingleOrDefault(p => p.alias == alias && !p.isDeleted);
+                if (d == null) {
+                    throw new SysException("未能找到详情的文档", alias);
+                }
+                WebDocPage doc = new WebDocPage(d.Id);
+                return doc;
+            }
+        }
+
         /// <summary>
         /// 创建/编辑图文文档
         /// </summary>
@@ -321,7 +371,8 @@ namespace NewCyclone.Models
                         modifiedOn = DateTime.Now,
                         seoKeyWords = condtion.seoKeyWords,
                         seoTitle = condtion.seoTitle,
-                        showTime = condtion.showTime
+                        showTime = condtion.showTime,
+                        alias = condtion.alias
                     };
 
                     //分类
@@ -356,6 +407,7 @@ namespace NewCyclone.Models
                     d.seoTitle = condtion.seoTitle;
                     d.showTime = condtion.showTime;
                     d.describe = condtion.describe;
+                    d.alias = condtion.alias;
 
                     //分类
                     foreach (string cat in condtion.catTreeIds)
@@ -436,6 +488,13 @@ namespace NewCyclone.Models
             get { return _catTreeIds; }
             set { _catTreeIds = value; }
         }
+
+
+        /// <summary>
+        /// 别名
+        /// </summary>
+        [StringLength(50)]
+        public string alias { get; set; }
 
         /// <summary>
         /// 生成日志文本

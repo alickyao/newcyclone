@@ -126,6 +126,12 @@
             <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" value="@condtion.caption" /></td>
         </tr>
         <tr>
+            <td class="t">别名&nbsp;<a href="#" title="设置别名后，可通过别名获取该文档的详情" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
+            <td>
+                <input type="text" class="easyui-textbox" name="alias" data-options="validType:'checkWebDocAlias[\'@condtion.Id\']'" value="@condtion.alias" />
+            </td>
+        </tr>
+        <tr>
             <td class="t">所在分类</td>
             <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="catTreeIds" data-options="required:true" style="width:300px;" /></td>
         </tr>

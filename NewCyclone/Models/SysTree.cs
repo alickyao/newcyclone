@@ -81,6 +81,8 @@ namespace NewCyclone.Models
         /// </summary>
         public string rootId { get; internal set; }
 
+        
+
         private void setInfo() {
             using (var db = new SysModelContainer())
             {
@@ -185,6 +187,8 @@ namespace NewCyclone.Models
             }
         }
 
+        
+
         /// <summary>
         /// 实现递归获取子节点
         /// </summary>
@@ -218,6 +222,11 @@ namespace NewCyclone.Models
         /// </summary>
         public Nullable<int> sort { get; set; }
 
+        /// <summary>
+        /// 别名 可通过别名获取分类树的节点
+        /// </summary>
+        public string alias { get; set; }
+
         private void setInfo() {
             using (var db = new SysModelContainer())
             {
@@ -225,6 +234,7 @@ namespace NewCyclone.Models
                 this.text = d.name;
                 this.fun = d.fun;
                 this.sort = d.sort;
+                this.alias = d.alias;
             }
         }
 
@@ -298,39 +308,49 @@ namespace NewCyclone.Models
                 throw new SysException("添加/编辑根节点时，参数fun必填", condtion);
             }
 
-            if (string.IsNullOrEmpty(condtion.id))
-            {
-                //新增
-                using (var db = new SysModelContainer())
-                {
+            //别名检查
+            if (!string.IsNullOrEmpty(condtion.alias)) {
+                if (checkAliasIsExist(condtion.alias, condtion.id) > 0) {
+                    throw new SysException("树的别已使用，保存失败", condtion);
+                }
+            }
+
+            bool isEdit = true;
+            using (var db = new SysModelContainer()) {
+                var o = db.Db_SysTreeSet.SingleOrDefault(p => p.Id == condtion.id);
+                if (o == null) {
+                    isEdit = false;
+                    condtion.id = SysHelp.getNewId();
+                    //新增
                     Db_CatTree d = new Db_CatTree()
                     {
                         fun = condtion.fun,
                         createdOn = DateTime.Now,
-                        Id = SysHelp.getNewId(),
+                        Id = condtion.id,
                         name = condtion.text,
                         parentId = condtion._parentId,
                         isDeleted = false,
-                        sort = condtion.sort
+                        sort = condtion.sort,
+                        alias = condtion.alias
                     };
                     Db_SysTree newrow = db.Db_SysTreeSet.Add(d);
                     db.SaveChanges();
-                    SysCatTree newtree = new SysCatTree(newrow.Id);
-                    return newtree;
                 }
             }
-            else {
+            if (isEdit) {
                 //编辑
                 SysCatTree tree = new SysCatTree(condtion.id, false);
                 tree.text = condtion.text;
                 tree._parentId = condtion._parentId;
                 tree.fun = condtion.fun;
                 tree.sort = condtion.sort;
+                tree.alias = condtion.alias;
                 tree.save();
-                tree = new SysCatTree(condtion.id, false);
-                return tree;
             }
+            SysCatTree newtree = new SysCatTree(condtion.id, false);
+            return newtree;
         }
+
         /// <summary>
         /// 保存操作
         /// </summary>
@@ -342,8 +362,53 @@ namespace NewCyclone.Models
                 d.fun = this.fun;
                 d.parentId = this._parentId;
                 d.sort = this.sort;
+                d.alias = this.alias;
                 db.SaveChanges();
             }
+        }
+
+
+        /// <summary>
+        /// 根据别名获取分类树的信息
+        /// </summary>
+        /// <param name="alias">别名</param>
+        /// <param name="getChlid">是否获取子集</param>
+        /// <returns></returns>
+        public static SysCatTree getTreeByAlias(string alias, bool getChlid = false) {
+            if (string.IsNullOrEmpty(alias)) {
+                throw new SysException("别名不能为空");
+            }
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysTreeSet.OfType<Db_CatTree>().SingleOrDefault(p => p.alias == alias && !p.isDeleted);
+                if (d == null) {
+                    throw new SysException("未能找到相应的分类树",alias);
+                }
+                SysCatTree tree = new SysCatTree(d.Id, getChlid);
+                return tree;
+            }
+        }
+
+        /// <summary>
+        /// 检查的树的别名是否可用
+        /// </summary>
+        /// <param name="alias">需要检查的别名</param>
+        /// <param name="Id">需要排除的树的ID</param>
+        /// <returns></returns>
+        public static int checkAliasIsExist(string alias, string Id = null)
+        {
+            
+            int count = 0;
+            if (!string.IsNullOrEmpty(alias))
+            {
+                using (var db = new SysModelContainer())
+                {
+                    count = (from c in db.Db_SysTreeSet.OfType<Db_CatTree>().AsEnumerable()
+                             where (c.alias == alias)
+                             && (string.IsNullOrEmpty(Id) ? true : c.Id != Id)
+                             select c.Id).Count();
+                }
+            }
+            return count;
         }
 
         /// <summary>
@@ -373,7 +438,7 @@ namespace NewCyclone.Models
     public class VMTreeEditCatTreeRequest {
 
         /// <summary>
-        /// 编辑时需要传入的节点的ID
+        /// 树的ID
         /// </summary>
         [StringLength(50)]
         public string id { get; set; }
@@ -396,6 +461,12 @@ namespace NewCyclone.Models
         /// </summary>
         [StringLength(50)]
         public string _parentId { get; set; }
+
+        /// <summary>
+        /// 树的别名（可通过别名获取树）
+        /// </summary>
+        [StringLength(50)]
+        public string alias { get; set; }
 
         /// <summary>
         /// 排序依据

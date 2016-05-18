@@ -38,11 +38,12 @@
                 grid.treegrid("unselect", row.id);
             },
             columns: [[
-                    { title: 'Id', field: 'id',width:'110' },
-                    { title: '名称', field: 'text', width:'250', editor: { type: "textbox", options: { required: true } } },
-                    { title: '排序', field: 'sort', width:'40',align:'center', editor: { type: "numberbox", options: { required: false } } },
+                    { title: 'Id', field: 'id', width: '110' },
+                    { title: '名称', field: 'text', width: '250', editor: { type: "textbox", options: { required: true } } },
+                    { title: '别名', field: 'alias', width: '100', editor: { type: "textbox", options: { required: false, validType: 'checkCatTreeAlias["#@(pageId)grid"]' } } },
+                    { title: '排序', field: 'sort', width: '40', align: 'center', editor: { type: "numberbox", options: { required: false } } },
                     {
-                        title: '创建时间', field: 'createOn',width:'120', align: 'right', formatter: function (value) {
+                        title: '创建时间', field: 'createOn', width: '120', align: 'right', formatter: function (value) {
                             if (value != null) {
                                 return new Date(value).Format("yyyy-MM-dd hh:mm");
                             }
@@ -61,7 +62,7 @@
                                 id: '',
                                 text: '',
                                 sort: 0,
-                                fun : "@fun"
+                                fun: "@fun"
                             };
                             if (srow != null) {
                                 parentid = srow.id;
@@ -120,8 +121,8 @@
                                         grid.treegrid("update", {
                                             id: editRow, row: json.result
                                         });
-                                        editRow = undefined;
                                     }
+                                    editRow = undefined;
                                 });
                             }
                         }

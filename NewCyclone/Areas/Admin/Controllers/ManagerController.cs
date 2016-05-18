@@ -295,7 +295,8 @@ namespace NewCyclone.Areas.Admin.Controllers
                     Id = info.Id,
                     seoKeyWords = info.seoKeyWords,
                     seoTitle = info.seoTitle,
-                    showTime = info.showTime
+                    showTime = info.showTime,
+                    alias = info.alias
                 };
                 foreach (var cat in info.cat)
                 {

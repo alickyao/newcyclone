@@ -50,7 +50,7 @@
             onClickRow: function (rowIndex, rowData) {
                 var infowin = $("#@(pageId)info");
                 infowin.panel({
-                    href: '/ManagerMsg/exceptionLogInfo/' + rowData.Id
+                    href: '@Url.Action("exceptionLogInfo", "ManagerMsg")/' + rowData.Id
                 });
                 infowin.panel("refresh");
             },
