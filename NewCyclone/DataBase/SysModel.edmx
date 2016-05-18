@@ -4,398 +4,398 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="SysModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Db_SysDocCatSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Db_SysDocId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Db_CatTreeId" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysDocFileSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Db_SysDocId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Db_SysFileId" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysDocSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="createdBy" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="modifiedOn" Type="datetime" Nullable="false" />
-          <Property Name="modifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="isDeleted" Type="bit" Nullable="false" />
-          <Property Name="caption" Type="nvarchar(max)" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysDocSet_Db_DocWeb">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="fun" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="describe" Type="nvarchar(max)" />
-          <Property Name="showTime" Type="datetime" Nullable="false" />
-          <Property Name="alias" Type="nvarchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="Db_SysDocSet_Db_WebPage">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="seoTitle" Type="nvarchar(max)" />
-          <Property Name="seoKeyWords" Type="nvarchar(max)" />
-          <Property Name="content" Type="nvarchar(max)" />
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysDocSet_Db_WebRote">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="imgWidth" Type="int" Nullable="false" />
-          <Property Name="imgHeight" Type="int" Nullable="false" />
-          <Property Name="waitSecond" Type="int" Nullable="false" />
-          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysFileSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="filePath" Type="varchar(max)" Nullable="false" />
-          <Property Name="fileName" Type="varchar(max)" Nullable="false" />
-          <Property Name="createdBy" Type="varchar(max)" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysFileSet_Db_FileInfo">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="title" Type="nvarchar(max)" />
-          <Property Name="describe" Type="nvarchar(max)" />
-          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysFileSet_Db_FileSort">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="sort" Type="int" Nullable="false" />
-          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysMsgSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="msgType" Type="int" Nullable="false" />
-          <Property Name="message" Type="nvarchar(max)" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysMsgSet_Db_SysExceptionLog">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="errorCode" Type="int" Nullable="false" />
-          <Property Name="condtion" Type="varchar(max)" />
-          <Property Name="source" Type="varchar(max)" Nullable="false" />
-          <Property Name="stackTrace" Type="varchar(max)" Nullable="false" />
-          <Property Name="targetSite" Type="varchar(max)" Nullable="false" />
-          <Property Name="Id" Type="bigint" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysMsgSet_Db_SysUserLog">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Db_SysUser_loginName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="logType" Type="int" Nullable="false" />
-          <Property Name="fkId" Type="nvarchar" MaxLength="50" />
-          <Property Name="ip" Type="varchar" MaxLength="50" />
-          <Property Name="device" Type="varchar(max)" />
-          <Property Name="Id" Type="bigint" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysTreeSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="parentId" Type="varchar" MaxLength="50" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="isDeleted" Type="bit" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysTreeSet_Db_CatTree">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="name" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="fun" Type="varchar" MaxLength="50" />
-          <Property Name="sort" Type="int" />
-          <Property Name="alias" Type="nvarchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="Db_SysUserSet">
-          <Key>
-            <PropertyRef Name="loginName" />
-          </Key>
-          <Property Name="loginName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="isDeleted" Type="bit" Nullable="false" />
-          <Property Name="isDisabled" Type="bit" Nullable="false" />
-          <Property Name="lastLoginTime" Type="datetime" />
-          <Property Name="passWord" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="role" Type="varchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysUserSet_Db_ManagerUser">
-          <Key>
-            <PropertyRef Name="loginName" />
-          </Key>
-          <Property Name="fullName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="mobilePhone" Type="nvarchar" MaxLength="50" />
-          <Property Name="jobTitle" Type="nvarchar" MaxLength="50" />
-          <Property Name="loginName" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Db_SysUserSet_Db_MemberUser">
-          <Key>
-            <PropertyRef Name="loginName" />
-          </Key>
-          <Property Name="nickName" Type="nvarchar" MaxLength="50" />
-          <Property Name="loginName" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <Association Name="FK_Db_CatTree_inherits_Db_SysTree">
-          <End Role="Db_SysTreeSet" Type="Self.Db_SysTreeSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysTreeSet_Db_CatTree" Type="Self.Db_SysTreeSet_Db_CatTree" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysTreeSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysTreeSet_Db_CatTree">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_DocWeb_inherits_Db_SysDoc">
-          <End Role="Db_SysDocSet" Type="Self.Db_SysDocSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysDocSet_Db_DocWeb" Type="Self.Db_SysDocSet_Db_DocWeb" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysDocSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysDocSet_Db_DocWeb">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_FileInfo_inherits_Db_FileSort">
-          <End Role="Db_SysFileSet_Db_FileSort" Type="Self.Db_SysFileSet_Db_FileSort" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysFileSet_Db_FileInfo" Type="Self.Db_SysFileSet_Db_FileInfo" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysFileSet_Db_FileSort">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysFileSet_Db_FileInfo">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_FileSort_inherits_Db_SysFileSet">
-          <End Role="Db_SysFileSet" Type="Self.Db_SysFileSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysFileSet_Db_FileSort" Type="Self.Db_SysFileSet_Db_FileSort" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysFileSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysFileSet_Db_FileSort">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_ManagerUser_inherits_Db_SysUser">
-          <End Role="Db_SysUserSet" Type="Self.Db_SysUserSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysUserSet_Db_ManagerUser" Type="Self.Db_SysUserSet_Db_ManagerUser" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysUserSet">
-              <PropertyRef Name="loginName" />
-            </Principal>
-            <Dependent Role="Db_SysUserSet_Db_ManagerUser">
-              <PropertyRef Name="loginName" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_MemberUser_inherits_Db_SysUser">
-          <End Role="Db_SysUserSet" Type="Self.Db_SysUserSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysUserSet_Db_MemberUser" Type="Self.Db_SysUserSet_Db_MemberUser" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysUserSet">
-              <PropertyRef Name="loginName" />
-            </Principal>
-            <Dependent Role="Db_SysUserSet_Db_MemberUser">
-              <PropertyRef Name="loginName" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_SysDocDb_DocCat">
-          <End Role="Db_SysDocSet" Type="Self.Db_SysDocSet" Multiplicity="1" />
-          <End Role="Db_SysDocCatSet" Type="Self.Db_SysDocCatSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysDocSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysDocCatSet">
-              <PropertyRef Name="Db_SysDocId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_SysDocDb_DocFile">
-          <End Role="Db_SysDocSet" Type="Self.Db_SysDocSet" Multiplicity="1" />
-          <End Role="Db_SysDocFileSet" Type="Self.Db_SysDocFileSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysDocSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysDocFileSet">
-              <PropertyRef Name="Db_SysDocId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_SysExceptionLog_inherits_Db_SysMsg">
-          <End Role="Db_SysMsgSet" Type="Self.Db_SysMsgSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysMsgSet_Db_SysExceptionLog" Type="Self.Db_SysMsgSet_Db_SysExceptionLog" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysMsgSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysMsgSet_Db_SysExceptionLog">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_SysUserLog_inherits_Db_SysMsg">
-          <End Role="Db_SysMsgSet" Type="Self.Db_SysMsgSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysMsgSet_Db_SysUserLog" Type="Self.Db_SysMsgSet_Db_SysUserLog" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysMsgSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysMsgSet_Db_SysUserLog">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_WebPage_inherits_Db_DocWeb">
-          <End Role="Db_SysDocSet_Db_DocWeb" Type="Self.Db_SysDocSet_Db_DocWeb" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysDocSet_Db_WebPage" Type="Self.Db_SysDocSet_Db_WebPage" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysDocSet_Db_DocWeb">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysDocSet_Db_WebPage">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_WebRote_inherits_Db_DocWeb">
-          <End Role="Db_SysDocSet_Db_DocWeb" Type="Self.Db_SysDocSet_Db_DocWeb" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysDocSet_Db_WebRote" Type="Self.Db_SysDocSet_Db_WebRote" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysDocSet_Db_DocWeb">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysDocSet_Db_WebRote">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="SysModelStoreContainer">
-          <EntitySet Name="Db_SysDocCatSet" EntityType="Self.Db_SysDocCatSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysDocFileSet" EntityType="Self.Db_SysDocFileSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysDocSet" EntityType="Self.Db_SysDocSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysDocSet_Db_DocWeb" EntityType="Self.Db_SysDocSet_Db_DocWeb" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysDocSet_Db_WebPage" EntityType="Self.Db_SysDocSet_Db_WebPage" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysDocSet_Db_WebRote" EntityType="Self.Db_SysDocSet_Db_WebRote" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysFileSet" EntityType="Self.Db_SysFileSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysFileSet_Db_FileInfo" EntityType="Self.Db_SysFileSet_Db_FileInfo" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysFileSet_Db_FileSort" EntityType="Self.Db_SysFileSet_Db_FileSort" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysMsgSet" EntityType="Self.Db_SysMsgSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysMsgSet_Db_SysExceptionLog" EntityType="Self.Db_SysMsgSet_Db_SysExceptionLog" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysMsgSet_Db_SysUserLog" EntityType="Self.Db_SysMsgSet_Db_SysUserLog" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysTreeSet" EntityType="Self.Db_SysTreeSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysTreeSet_Db_CatTree" EntityType="Self.Db_SysTreeSet_Db_CatTree" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysUserSet" EntityType="Self.Db_SysUserSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysUserSet_Db_ManagerUser" EntityType="Self.Db_SysUserSet_Db_ManagerUser" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysUserSet_Db_MemberUser" EntityType="Self.Db_SysUserSet_Db_MemberUser" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Db_CatTree_inherits_Db_SysTree" Association="Self.FK_Db_CatTree_inherits_Db_SysTree">
-            <End Role="Db_SysTreeSet" EntitySet="Db_SysTreeSet" />
-            <End Role="Db_SysTreeSet_Db_CatTree" EntitySet="Db_SysTreeSet_Db_CatTree" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_DocWeb_inherits_Db_SysDoc" Association="Self.FK_Db_DocWeb_inherits_Db_SysDoc">
-            <End Role="Db_SysDocSet" EntitySet="Db_SysDocSet" />
-            <End Role="Db_SysDocSet_Db_DocWeb" EntitySet="Db_SysDocSet_Db_DocWeb" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_FileInfo_inherits_Db_FileSort" Association="Self.FK_Db_FileInfo_inherits_Db_FileSort">
-            <End Role="Db_SysFileSet_Db_FileSort" EntitySet="Db_SysFileSet_Db_FileSort" />
-            <End Role="Db_SysFileSet_Db_FileInfo" EntitySet="Db_SysFileSet_Db_FileInfo" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_FileSort_inherits_Db_SysFileSet" Association="Self.FK_Db_FileSort_inherits_Db_SysFileSet">
-            <End Role="Db_SysFileSet" EntitySet="Db_SysFileSet" />
-            <End Role="Db_SysFileSet_Db_FileSort" EntitySet="Db_SysFileSet_Db_FileSort" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_ManagerUser_inherits_Db_SysUser" Association="Self.FK_Db_ManagerUser_inherits_Db_SysUser">
-            <End Role="Db_SysUserSet" EntitySet="Db_SysUserSet" />
-            <End Role="Db_SysUserSet_Db_ManagerUser" EntitySet="Db_SysUserSet_Db_ManagerUser" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_MemberUser_inherits_Db_SysUser" Association="Self.FK_Db_MemberUser_inherits_Db_SysUser">
-            <End Role="Db_SysUserSet" EntitySet="Db_SysUserSet" />
-            <End Role="Db_SysUserSet_Db_MemberUser" EntitySet="Db_SysUserSet_Db_MemberUser" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_SysDocDb_DocCat" Association="Self.FK_Db_SysDocDb_DocCat">
-            <End Role="Db_SysDocSet" EntitySet="Db_SysDocSet" />
-            <End Role="Db_SysDocCatSet" EntitySet="Db_SysDocCatSet" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_SysDocDb_DocFile" Association="Self.FK_Db_SysDocDb_DocFile">
-            <End Role="Db_SysDocSet" EntitySet="Db_SysDocSet" />
-            <End Role="Db_SysDocFileSet" EntitySet="Db_SysDocFileSet" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_SysExceptionLog_inherits_Db_SysMsg" Association="Self.FK_Db_SysExceptionLog_inherits_Db_SysMsg">
-            <End Role="Db_SysMsgSet" EntitySet="Db_SysMsgSet" />
-            <End Role="Db_SysMsgSet_Db_SysExceptionLog" EntitySet="Db_SysMsgSet_Db_SysExceptionLog" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_SysUserLog_inherits_Db_SysMsg" Association="Self.FK_Db_SysUserLog_inherits_Db_SysMsg">
-            <End Role="Db_SysMsgSet" EntitySet="Db_SysMsgSet" />
-            <End Role="Db_SysMsgSet_Db_SysUserLog" EntitySet="Db_SysMsgSet_Db_SysUserLog" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_WebPage_inherits_Db_DocWeb" Association="Self.FK_Db_WebPage_inherits_Db_DocWeb">
-            <End Role="Db_SysDocSet_Db_DocWeb" EntitySet="Db_SysDocSet_Db_DocWeb" />
-            <End Role="Db_SysDocSet_Db_WebPage" EntitySet="Db_SysDocSet_Db_WebPage" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_WebRote_inherits_Db_DocWeb" Association="Self.FK_Db_WebRote_inherits_Db_DocWeb">
-            <End Role="Db_SysDocSet_Db_DocWeb" EntitySet="Db_SysDocSet_Db_DocWeb" />
-            <End Role="Db_SysDocSet_Db_WebRote" EntitySet="Db_SysDocSet_Db_WebRote" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema></edmx:StorageModels>
+    <Schema Namespace="SysModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="SysModelStoreContainer">
+    <EntitySet Name="Db_SysUserSet" EntityType="SysModel.Store.Db_SysUserSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysMsgSet" EntityType="SysModel.Store.Db_SysMsgSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysTreeSet" EntityType="SysModel.Store.Db_SysTreeSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysFileSet" EntityType="SysModel.Store.Db_SysFileSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocSet" EntityType="SysModel.Store.Db_SysDocSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocCatSet" EntityType="SysModel.Store.Db_SysDocCatSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocFileSet" EntityType="SysModel.Store.Db_SysDocFileSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysUserSet_Db_ManagerUser" EntityType="SysModel.Store.Db_SysUserSet_Db_ManagerUser" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysUserSet_Db_MemberUser" EntityType="SysModel.Store.Db_SysUserSet_Db_MemberUser" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysMsgSet_Db_SysExceptionLog" EntityType="SysModel.Store.Db_SysMsgSet_Db_SysExceptionLog" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysMsgSet_Db_SysUserLog" EntityType="SysModel.Store.Db_SysMsgSet_Db_SysUserLog" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysTreeSet_Db_CatTree" EntityType="SysModel.Store.Db_SysTreeSet_Db_CatTree" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocSet_Db_DocWeb" EntityType="SysModel.Store.Db_SysDocSet_Db_DocWeb" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocSet_Db_WebPage" EntityType="SysModel.Store.Db_SysDocSet_Db_WebPage" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocSet_Db_WebRote" EntityType="SysModel.Store.Db_SysDocSet_Db_WebRote" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysFileSet_Db_FileSort" EntityType="SysModel.Store.Db_SysFileSet_Db_FileSort" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysFileSet_Db_FileInfo" EntityType="SysModel.Store.Db_SysFileSet_Db_FileInfo" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="Db_SysDocDb_DocCat" Association="SysModel.Store.Db_SysDocDb_DocCat">
+      <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
+      <End Role="Db_DocCat" EntitySet="Db_SysDocCatSet" />
+    </AssociationSet>
+    <AssociationSet Name="Db_SysDocDb_DocFile" Association="SysModel.Store.Db_SysDocDb_DocFile">
+      <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
+      <End Role="Db_DocFile" EntitySet="Db_SysDocFileSet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_ManagerUser_inherits_Db_SysUser" Association="SysModel.Store.FK_Db_ManagerUser_inherits_Db_SysUser">
+      <End Role="Db_SysUser" EntitySet="Db_SysUserSet" />
+      <End Role="Db_ManagerUser" EntitySet="Db_SysUserSet_Db_ManagerUser" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_MemberUser_inherits_Db_SysUser" Association="SysModel.Store.FK_Db_MemberUser_inherits_Db_SysUser">
+      <End Role="Db_SysUser" EntitySet="Db_SysUserSet" />
+      <End Role="Db_MemberUser" EntitySet="Db_SysUserSet_Db_MemberUser" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_SysExceptionLog_inherits_Db_SysMsg" Association="SysModel.Store.FK_Db_SysExceptionLog_inherits_Db_SysMsg">
+      <End Role="Db_SysMsg" EntitySet="Db_SysMsgSet" />
+      <End Role="Db_SysExceptionLog" EntitySet="Db_SysMsgSet_Db_SysExceptionLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_SysUserLog_inherits_Db_SysMsg" Association="SysModel.Store.FK_Db_SysUserLog_inherits_Db_SysMsg">
+      <End Role="Db_SysMsg" EntitySet="Db_SysMsgSet" />
+      <End Role="Db_SysUserLog" EntitySet="Db_SysMsgSet_Db_SysUserLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_CatTree_inherits_Db_SysTree" Association="SysModel.Store.FK_Db_CatTree_inherits_Db_SysTree">
+      <End Role="Db_SysTree" EntitySet="Db_SysTreeSet" />
+      <End Role="Db_CatTree" EntitySet="Db_SysTreeSet_Db_CatTree" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_DocWeb_inherits_Db_SysDoc" Association="SysModel.Store.FK_Db_DocWeb_inherits_Db_SysDoc">
+      <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
+      <End Role="Db_DocWeb" EntitySet="Db_SysDocSet_Db_DocWeb" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_WebPage_inherits_Db_DocWeb" Association="SysModel.Store.FK_Db_WebPage_inherits_Db_DocWeb">
+      <End Role="Db_DocWeb" EntitySet="Db_SysDocSet_Db_DocWeb" />
+      <End Role="Db_WebPage" EntitySet="Db_SysDocSet_Db_WebPage" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_WebRote_inherits_Db_DocWeb" Association="SysModel.Store.FK_Db_WebRote_inherits_Db_DocWeb">
+      <End Role="Db_DocWeb" EntitySet="Db_SysDocSet_Db_DocWeb" />
+      <End Role="Db_WebRote" EntitySet="Db_SysDocSet_Db_WebRote" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_FileSort_inherits_Db_SysFileSet" Association="SysModel.Store.FK_Db_FileSort_inherits_Db_SysFileSet">
+      <End Role="Db_SysFileSet" EntitySet="Db_SysFileSet" />
+      <End Role="Db_FileSort" EntitySet="Db_SysFileSet_Db_FileSort" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_FileInfo_inherits_Db_FileSort" Association="SysModel.Store.FK_Db_FileInfo_inherits_Db_FileSort">
+      <End Role="Db_FileSort" EntitySet="Db_SysFileSet_Db_FileSort" />
+      <End Role="Db_FileInfo" EntitySet="Db_SysFileSet_Db_FileInfo" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Db_SysUserSet">
+    <Key>
+      <PropertyRef Name="loginName" />
+    </Key>
+    <Property Name="loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="isDeleted" Type="bit" Nullable="false" />
+    <Property Name="isDisabled" Type="bit" Nullable="false" />
+    <Property Name="lastLoginTime" Type="datetime" Nullable="true" />
+    <Property Name="passWord" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="role" Type="varchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysMsgSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="msgType" Type="int" Nullable="false" />
+    <Property Name="message" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysTreeSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="parentId" Type="varchar" Nullable="true" MaxLength="50" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="isDeleted" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysFileSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="filePath" Type="varchar(max)" Nullable="false" />
+    <Property Name="fileName" Type="varchar(max)" Nullable="false" />
+    <Property Name="createdBy" Type="varchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysDocSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="createdBy" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="modifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="modifiedBy" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="isDeleted" Type="bit" Nullable="false" />
+    <Property Name="caption" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysDocCatSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Db_SysDocId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Db_CatTreeId" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysDocFileSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Db_SysDocId" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Db_SysFileId" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysUserSet_Db_ManagerUser">
+    <Key>
+      <PropertyRef Name="loginName" />
+    </Key>
+    <Property Name="fullName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="mobilePhone" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="jobTitle" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysUserSet_Db_MemberUser">
+    <Key>
+      <PropertyRef Name="loginName" />
+    </Key>
+    <Property Name="nickName" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysMsgSet_Db_SysExceptionLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="errorCode" Type="int" Nullable="false" />
+    <Property Name="condtion" Type="varchar(max)" Nullable="true" />
+    <Property Name="source" Type="varchar(max)" Nullable="false" />
+    <Property Name="stackTrace" Type="varchar(max)" Nullable="false" />
+    <Property Name="targetSite" Type="varchar(max)" Nullable="false" />
+    <Property Name="Id" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysMsgSet_Db_SysUserLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Db_SysUser_loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="logType" Type="int" Nullable="false" />
+    <Property Name="fkId" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="ip" Type="varchar" Nullable="true" MaxLength="50" />
+    <Property Name="device" Type="varchar(max)" Nullable="true" />
+    <Property Name="Id" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysTreeSet_Db_CatTree">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="fun" Type="varchar" Nullable="true" MaxLength="50" />
+    <Property Name="sort" Type="int" Nullable="true" />
+    <Property Name="alias" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Id" Type="varchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysDocSet_Db_DocWeb">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="fun" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="describe" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="showTime" Type="datetime" Nullable="false" />
+    <Property Name="alias" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysDocSet_Db_WebPage">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="seoTitle" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="seoKeyWords" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="content" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysDocSet_Db_WebRote">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="imgWidth" Type="int" Nullable="false" />
+    <Property Name="imgHeight" Type="int" Nullable="false" />
+    <Property Name="waitSecond" Type="int" Nullable="false" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysFileSet_Db_FileSort">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="sort" Type="int" Nullable="false" />
+    <Property Name="Id" Type="varchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysFileSet_Db_FileInfo">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="title" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="describe" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Id" Type="varchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <Association Name="Db_SysDocDb_DocCat">
+    <End Role="Db_SysDoc" Type="SysModel.Store.Db_SysDocSet" Multiplicity="1" />
+    <End Role="Db_DocCat" Type="SysModel.Store.Db_SysDocCatSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysDoc">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_DocCat">
+        <PropertyRef Name="Db_SysDocId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Db_SysDocDb_DocFile">
+    <End Role="Db_SysDoc" Type="SysModel.Store.Db_SysDocSet" Multiplicity="1" />
+    <End Role="Db_DocFile" Type="SysModel.Store.Db_SysDocFileSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysDoc">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_DocFile">
+        <PropertyRef Name="Db_SysDocId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_ManagerUser_inherits_Db_SysUser">
+    <End Role="Db_SysUser" Type="SysModel.Store.Db_SysUserSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_ManagerUser" Type="SysModel.Store.Db_SysUserSet_Db_ManagerUser" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysUser">
+        <PropertyRef Name="loginName" />
+      </Principal>
+      <Dependent Role="Db_ManagerUser">
+        <PropertyRef Name="loginName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_MemberUser_inherits_Db_SysUser">
+    <End Role="Db_SysUser" Type="SysModel.Store.Db_SysUserSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_MemberUser" Type="SysModel.Store.Db_SysUserSet_Db_MemberUser" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysUser">
+        <PropertyRef Name="loginName" />
+      </Principal>
+      <Dependent Role="Db_MemberUser">
+        <PropertyRef Name="loginName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_SysExceptionLog_inherits_Db_SysMsg">
+    <End Role="Db_SysMsg" Type="SysModel.Store.Db_SysMsgSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_SysExceptionLog" Type="SysModel.Store.Db_SysMsgSet_Db_SysExceptionLog" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysMsg">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_SysExceptionLog">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_SysUserLog_inherits_Db_SysMsg">
+    <End Role="Db_SysMsg" Type="SysModel.Store.Db_SysMsgSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_SysUserLog" Type="SysModel.Store.Db_SysMsgSet_Db_SysUserLog" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysMsg">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_SysUserLog">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_CatTree_inherits_Db_SysTree">
+    <End Role="Db_SysTree" Type="SysModel.Store.Db_SysTreeSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_CatTree" Type="SysModel.Store.Db_SysTreeSet_Db_CatTree" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysTree">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_CatTree">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_DocWeb_inherits_Db_SysDoc">
+    <End Role="Db_SysDoc" Type="SysModel.Store.Db_SysDocSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_DocWeb" Type="SysModel.Store.Db_SysDocSet_Db_DocWeb" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysDoc">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_DocWeb">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_WebPage_inherits_Db_DocWeb">
+    <End Role="Db_DocWeb" Type="SysModel.Store.Db_SysDocSet_Db_DocWeb" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_WebPage" Type="SysModel.Store.Db_SysDocSet_Db_WebPage" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_DocWeb">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_WebPage">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_WebRote_inherits_Db_DocWeb">
+    <End Role="Db_DocWeb" Type="SysModel.Store.Db_SysDocSet_Db_DocWeb" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_WebRote" Type="SysModel.Store.Db_SysDocSet_Db_WebRote" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_DocWeb">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_WebRote">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_FileSort_inherits_Db_SysFileSet">
+    <End Role="Db_SysFileSet" Type="SysModel.Store.Db_SysFileSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_FileSort" Type="SysModel.Store.Db_SysFileSet_Db_FileSort" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysFileSet">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_FileSort">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_FileInfo_inherits_Db_FileSort">
+    <End Role="Db_FileSort" Type="SysModel.Store.Db_SysFileSet_Db_FileSort" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_FileInfo" Type="SysModel.Store.Db_SysFileSet_Db_FileInfo" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_FileSort">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_FileInfo">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="SysModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
@@ -631,7 +631,7 @@
     <EntitySetMapping Name="Db_SysTreeSet">
       <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysTree)">
         <MappingFragment StoreEntitySet="Db_SysTreeSet">
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="parentId" ColumnName="parentId" />
           <ScalarProperty Name="createdOn" ColumnName="createdOn" />
           <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
@@ -639,11 +639,11 @@
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_CatTree)">
         <MappingFragment StoreEntitySet="Db_SysTreeSet_Db_CatTree">
-          <ScalarProperty Name="alias" ColumnName="alias" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="fun" ColumnName="fun" />
           <ScalarProperty Name="sort" ColumnName="sort" />
+          <ScalarProperty Name="alias" ColumnName="alias" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -685,11 +685,11 @@
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_DocWeb)">
         <MappingFragment StoreEntitySet="Db_SysDocSet_Db_DocWeb">
-          <ScalarProperty Name="alias" ColumnName="alias" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="fun" ColumnName="fun" />
           <ScalarProperty Name="describe" ColumnName="describe" />
           <ScalarProperty Name="showTime" ColumnName="showTime" />
+          <ScalarProperty Name="alias" ColumnName="alias" />
         </MappingFragment>
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_WebPage)">

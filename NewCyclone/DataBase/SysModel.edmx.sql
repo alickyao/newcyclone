@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/16/2016 09:41:40
--- Generated from EDMX file: D:\project\git\newcyclone\NewCyclone\DataBase\SysModel.edmx
+-- Date Created: 05/18/2016 19:41:37
+-- Generated from EDMX file: E:\project\git\newcyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -225,6 +225,7 @@ CREATE TABLE [dbo].[Db_SysTreeSet_Db_CatTree] (
     [name] nvarchar(max)  NOT NULL,
     [fun] varchar(50)  NULL,
     [sort] int  NULL,
+    [alias] nvarchar(50)  NULL,
     [Id] varchar(50)  NOT NULL
 );
 GO
@@ -234,6 +235,7 @@ CREATE TABLE [dbo].[Db_SysDocSet_Db_DocWeb] (
     [fun] nvarchar(max)  NOT NULL,
     [describe] nvarchar(max)  NULL,
     [showTime] datetime  NOT NULL,
+    [alias] nvarchar(50)  NULL,
     [Id] nvarchar(50)  NOT NULL
 );
 GO
