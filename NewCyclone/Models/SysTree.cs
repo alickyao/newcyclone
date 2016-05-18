@@ -405,6 +405,7 @@ namespace NewCyclone.Models
                     count = (from c in db.Db_SysTreeSet.OfType<Db_CatTree>().AsEnumerable()
                              where (c.alias == alias)
                              && (string.IsNullOrEmpty(Id) ? true : c.Id != Id)
+                             && (!c.isDeleted)
                              select c.Id).Count();
                 }
             }

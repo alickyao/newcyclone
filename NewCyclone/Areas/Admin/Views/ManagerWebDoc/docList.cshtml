@@ -70,7 +70,7 @@
                     }
                 },
                 {
-                    field:'alias',title:'别名'  
+                    field:'alias',title:'别名'
                 },
                 {
                     field: 'showTime', title: '发布时间',
@@ -124,6 +124,25 @@
                 $("#@(pageId)dd").dialog("open");
             }
         });
+
+        //网格删除按钮
+        $("#@(pageId)delrow").click(function () {
+            var row = grid.datagrid("getSelected");
+            if (row == null) {
+                $.messager.alert('错误', "请先选中一行", 'error');
+            }
+            else {
+                $.messager.confirm('请确认', '确定删除文档:' + row.caption + "?", function (r) {
+                    if (r) {
+                        $.getJSON("/api/ApiWebPages/delete/" + row.Id, function (json) {
+                            showmsg(json);
+                            loadGrid();
+                        });
+                    }
+                });
+            }
+        });
+
         loadGrid();
 
         //翻页设置
@@ -151,7 +170,7 @@
                             var Reg = form.form('enableValidation').form('validate');
                             if (Reg) {
                                 btn.linkbutton("disable");
-                                
+
                                 window.setTimeout(function () {
                                     var d = form.serializeObject();
                                     console.log(d);
@@ -280,7 +299,7 @@
                     <div data-options="name:'@s.id'">@s.text</div>
                 }
             </div>
-            <a href="#" class="easyui-linkbutton" iconCls="icon-clear" plain="true">删除</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-clear" id="@(pageId)delrow" plain="true">删除</a>
         </div>
         <table id="@(pageId)grid"></table>
     </div>

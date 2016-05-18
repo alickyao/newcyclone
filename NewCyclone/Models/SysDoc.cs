@@ -221,6 +221,7 @@ namespace NewCyclone.Models
                     count = (from c in db.Db_SysDocSet.OfType<Db_DocWeb>().AsEnumerable()
                              where (c.alias == alias)
                              && (string.IsNullOrEmpty(wid) ? true : c.Id != wid)
+                             && (!c.isDeleted)
                              select c.Id
                              ).Count();
                 }
@@ -346,6 +347,10 @@ namespace NewCyclone.Models
 
             if (condtion.catTreeIds.Count == 0) {
                 throw new SysException("所在分类必选", condtion);
+            }
+
+            if (checkAliasIsExist(condtion.alias, condtion.Id)>0) {
+                throw new SysException("该别名已使用", condtion);
             }
 
             using (var db = new SysModelContainer()) {
