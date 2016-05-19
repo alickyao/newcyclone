@@ -326,15 +326,21 @@
     <Content Include="Content\themes\gray\validatebox.css" />
     <Content Include="Content\themes\gray\window.css" />
     <Content Include="Content\themes\icon.css" />
+    <Content Include="Content\themes\icons\arrow_down.png" />
+    <Content Include="Content\themes\icons\arrow_left.png" />
+    <Content Include="Content\themes\icons\arrow_merge.png" />
+    <Content Include="Content\themes\icons\arrow_up.png" />
     <Content Include="Content\themes\icons\back.png" />
     <Content Include="Content\themes\icons\blank.gif" />
     <Content Include="Content\themes\icons\cancel.png" />
+    <Content Include="Content\themes\icons\cancel_red.png" />
     <Content Include="Content\themes\icons\clear.png" />
     <Content Include="Content\themes\icons\cut.png" />
     <Content Include="Content\themes\icons\edit_add.png" />
     <Content Include="Content\themes\icons\edit_remove.png" />
     <Content Include="Content\themes\icons\filesave.png" />
     <Content Include="Content\themes\icons\filter.png" />
+    <Content Include="Content\themes\icons\folder.png" />
     <Content Include="Content\themes\icons\front.png" />
     <Content Include="Content\themes\icons\help.png" />
     <Content Include="Content\themes\icons\large_chart.png" />
@@ -350,7 +356,9 @@
     <Content Include="Content\themes\icons\more.png" />
     <Content Include="Content\themes\icons\no.png" />
     <Content Include="Content\themes\icons\ok.png" />
+    <Content Include="Content\themes\icons\page.png" />
     <Content Include="Content\themes\icons\pencil.png" />
+    <Content Include="Content\themes\icons\picture.png" />
     <Content Include="Content\themes\icons\print.png" />
     <Content Include="Content\themes\icons\redo.png" />
     <Content Include="Content\themes\icons\reload.png" />
@@ -461,6 +469,7 @@
     <Content Include="Areas\Admin\Views\ManagerWebDoc\editpic.cshtml" />
     <Content Include="Areas\Admin\Views\ManagerWebDoc\editproduct.cshtml" />
     <Content Include="Areas\Admin\Views\ManagerWebDoc\editrote.cshtml" />
+    <Content Include="Areas\Admin\Views\Files\listUpload.cshtml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.min.js" />
@@ -757,6 +766,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\FilesController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManagerController.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />

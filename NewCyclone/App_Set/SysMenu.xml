@@ -41,6 +41,15 @@
           </SysMenu>
         </children>
       </SysMenu>
+      <SysMenu>
+        <text>文件管理</text>
+        <children>
+          <SysMenu>
+            <text>已上传文件列表</text>
+            <url><![CDATA[/Admin/Files/listUpload]]></url>
+          </SysMenu>
+        </children>
+      </SysMenu>
     </children>
   </SysMenu>
   <SysMenu>

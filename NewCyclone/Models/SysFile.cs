@@ -86,19 +86,26 @@ namespace NewCyclone.Models
         /// </summary>
         /// <param name="path"></param>
         public static VMDiskFileQueryResponse listFiles(string path = "") {
-            string rootUrl = "/upload/" + path;
+            string rootUrl = "/upload/" + (string.IsNullOrEmpty(path) ? "" : path + "/");
             string rootPath = HttpContext.Current.Server.MapPath(rootUrl);
             string [] dirlist = Directory.GetDirectories(rootPath);
             string[] fileslist = Directory.GetFiles(rootPath);
             VMDiskFileQueryResponse result = new VMDiskFileQueryResponse();
 
-
-            result.url = rootUrl;
-            if (!string.IsNullOrEmpty(path)) {
+            string[] imgFilesType = { ".jpg", ".png", ".jpeg", ".bmp", ".gif" };
+            result.path = (string.IsNullOrEmpty(path) ? "" : path + "/");
+            if (!string.IsNullOrEmpty(path))
+            {
                 if (path.IndexOf('/') > 0)
                 {
                     result.prvUrl = path.Substring(0, path.LastIndexOf('/'));
                 }
+                else {
+                    result.prvUrl = "";
+                }
+            }
+            else {
+                result.prvUrl = "root";
             }
 
             foreach (string d in dirlist) {
@@ -108,22 +115,65 @@ namespace NewCyclone.Models
                     hasFile = (dir.GetFileSystemInfos().Length > 0),
                     isDir = true,
                     lastWriteTime = dir.LastWriteTime,
-                    name = dir.Name
+                    name = dir.Name,
+                    url = rootUrl+ dir.Name,
+                    fileType = string.Empty,
+                    isImg = false
                 });
             }
 
             foreach (string f in fileslist) {
                 FileInfo file = new FileInfo(f);
-                result.rows.Add(new VMDiskFileInfo() {
+                result.rows.Add(new VMDiskFileInfo()
+                {
                     fileSize = file.Length,
-                    hasFile =false,
+                    hasFile = false,
                     isDir = false,
                     lastWriteTime = file.LastWriteTime,
-                    name = file.Name
+                    name = file.Name,
+                    url = rootUrl + file.Name,
+                    fileType = file.Extension,
+                    isImg = imgFilesType.Contains(file.Extension)
                 });
             }
             result.total = result.rows.Count();
+            result.rows.Sort();
             return result;
+        }
+
+        /// <summary>
+        /// 从磁盘中删除文件
+        /// </summary>
+        /// <param name="path">文件的路径/path/file.ext</param>
+        public static void deleteFile(string path) {
+            if (string.IsNullOrEmpty(path)) {
+                throw new SysException("路径不能为空", path);
+            }
+            string p = HttpContext.Current.Server.MapPath(path);
+            FileInfo file = new FileInfo(p);
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+            else {
+                throw new SysException("文件不存在", path);
+            }
+        }
+
+        /// <summary>
+        /// 从磁盘中删除文件(批量)
+        /// </summary>
+        /// <param name="path">路径集合</param>
+        public static void deleteFile(List<string> path) {
+            if (path == null) {
+                throw new SysException("请传入需要删除的文件的路径参数集合");
+            }
+            if (path.Count == 0) {
+                throw new SysException("需要删除的文件的路径参数集合为空");
+            }
+            foreach (string p in path) {
+                deleteFile(p);
+            }
         }
     }
 
@@ -304,12 +354,12 @@ namespace NewCyclone.Models
         public int total { get; set; }
 
         /// <summary>
-        /// 当前请求的URL
+        /// 当前请求的path
         /// </summary>
-        public string url { get; set; }
+        public string path { get; set; }
 
         /// <summary>
-        /// 可返回的URL
+        /// 可返回的Path 当值为root时表示当前已为根目录
         /// </summary>
         public string prvUrl { get; set; }
 
@@ -326,7 +376,7 @@ namespace NewCyclone.Models
     /// <summary>
     /// 系统文件信息
     /// </summary>
-    public class VMDiskFileInfo {
+    public class VMDiskFileInfo:IComparable {
         /// <summary>
         /// 是否目录
         /// </summary>
@@ -339,6 +389,22 @@ namespace NewCyclone.Models
         /// 文件夹或文件的名称
         /// </summary>
         public string name { get; set; }
+
+        /// <summary>
+        /// 扩展名
+        /// </summary>
+        public string fileType { get; set; }
+
+        /// <summary>
+        /// 是否为图像文件
+        /// </summary>
+        public bool isImg { get; set; }
+
+        /// <summary>
+        /// 访问路径
+        /// </summary>
+        public string url { get; set; }
+
         /// <summary>
         /// 如果是文件则表示文件的大小
         /// </summary>
@@ -347,6 +413,20 @@ namespace NewCyclone.Models
         /// 最后更新时间
         /// </summary>
         public DateTime lastWriteTime { get; set; }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int CompareTo(object obj)
+        {
+            if (typeof(VMDiskFileInfo).Equals(obj.GetType())) {
+                VMDiskFileInfo o = (VMDiskFileInfo)obj;
+                return -this.lastWriteTime.CompareTo(o.lastWriteTime);
+            }
+            return 0;
+        }
     }
 
 

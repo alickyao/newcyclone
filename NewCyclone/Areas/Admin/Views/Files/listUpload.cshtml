@@ -1,0 +1,167 @@
+﻿
+@{
+    Layout = null;
+    string pageId = ViewBag.pageId;
+    bool isAdmin = User.IsInRole("admin");
+}
+<script>
+    $(document).ready(function () {
+
+        var path = "@ViewBag.path";
+        var pre = "";
+        var grid = $("#@(pageId)grid");
+        function loadGrid() {
+            grid.datagrid("loading");
+            $.getJSON("/api/ApiSysFile/queryDiskFiles?path="+path, function (json) {
+                grid.datagrid("loaded");
+                grid.datagrid("uncheckAll");
+                console.log(json);
+                pre = json.result.prvUrl;
+                gridLoadData(grid, json);
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: false,
+            rownumbers: true,
+            singleSelect: true,
+            selectOnCheck: false,
+            checkOnSelect: false,
+            idField: "url",
+            onDblClickRow: function (rowIndex, rowData) {
+                if (rowData.isDir) {
+                    path = (path == "" ? "" : path + "/") + rowData.name;
+                    loadGrid();
+                }
+            },
+            onClickRow: function (rowIndex, rowData) {
+                if (!rowData.isDir) {
+                    if (rowData.isImg) {
+                        $("#@(pageId)info").html("<img src='" + rowData.url + "' style='max-width:100%;' />");
+                    }
+                }
+            },
+            onLoadSuccess: function (data) {
+                //删除按钮设置
+                if ("@isAdmin" == "False") {
+                    $("#@(pageId)delbtn").linkbutton('disable');
+                }
+            },
+            columns: [[
+                {
+                    field: 'url', checkbox:true
+                },
+                {
+                    field: 'show', title: '预览', align: 'center', formatter: function (value, row, index) {
+                        if (!row.isDir) {
+                            if (row.isImg) {
+                                return "<img src='" + row.url + "' style='width:50px; margin-top:5px;' />";
+                            }
+                        }
+                    }
+                },
+                {
+                    field: 'isDir', title: '类型', align: 'center', formatter: function () {
+                        return "";
+                    },
+                    styler: function (value, row, index) {
+                        var filename = "folder.png";
+                        if (!value) {
+                            filename = "page.png";
+                            if (row.isImg) {
+                                filename = "picture.png";
+                            }
+                        }
+                        return "background:url('/Content/themes/icons/"+ filename +"') no-repeat center center;"
+                    }
+                },
+                {
+                    field: 'name', title: '名称', align: 'left'
+                },
+                {
+                    field: 'fileType', title: '扩展名', align: 'left'
+                },
+                {
+                    field: 'fileSize', title: '大小', align: 'right', formatter: function (value, row, index) {
+                        if (!row.isDir) {
+                            return (value / 1000).toFixed(0) + "k";
+                        }
+                        return "";
+                    }
+                },
+                {
+                    field: 'lastWriteTime', title: '最后修改时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                }
+
+            ]],
+            toolbar: [
+                {
+                    text: "返回",
+                    iconCls: "icon-undo",
+                    handler: function () {
+                        if (pre != "root") {
+                            path = pre;
+                            loadGrid();
+                        }
+                    }
+                },
+
+                {
+                    text: "删除勾选的文件",
+                    id:"@(pageId)delbtn",
+                    iconCls: "icon-cancel-red",
+                    handler: function () {
+                        var rows = grid.datagrid("getChecked");
+                        if (rows.length > 0) {
+                            var urls = [];
+                            var e = false;
+                            for (var i = 0; i < rows.length; i++) {
+                                if (rows[i].isDir) {
+                                    $.messager.alert("错误", "不能删除文件夹", "error");
+                                    e = true;
+                                    break;
+                                }
+                                urls.push(rows[i].url);
+                            }
+
+                            if (!e && urls.length > 0) {
+
+                                $.messager.confirm('请确认', '确定彻底删除'+ urls.length +'个文件?', function (r) {
+                                    if (r) {
+                                        grid.datagrid("loading")
+                                        $.post("/api/ApiSysFile/delFiles", { rows: urls }, function (json) {
+                                            console.log(json);
+                                            showmsg(json);
+                                            loadGrid();
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                        else {
+                            $.messager.alert("错误", "请勾选需要删除的文件", "error");
+                        }
+                    }
+                }
+            ]
+        });
+        loadGrid();
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'east',border:false,title:'详情',split:true" style="width:400px;">
+        <div id="@(pageId)info" class="easyui-panel" data-options="fit:true,border:false" style="padding:5px;"></div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>

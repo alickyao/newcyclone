@@ -84,18 +84,21 @@
                     field: 'Id', title: 'ID',
                 },
                 {
-                    field: 'msgTypeicon', title: '', align: 'center', formatter: function (value, row, index) {
+                    field: 'msgTypeicon', title: '类型', align: 'center',
+                    styler: function (value, row, index) {
+                        var filename = "";
                         switch (row.msgType) {
                             case 0://通知
-                                return "<img src='/Content/themes/icons/tip.png' style='margin-top:4px;' />"
+                                filename = "tip.png"
                                 break;
                             case 1://日志
-                                return "<img src='/Content/themes/icons/pencil.png' style='margin-top:4px;' />"
+                                filename = "pencil.png"
                                 break;
                             case 2://异常
-                                return "<img src='/Content/themes/icons/no.png' style='margin-top:4px;' />"
+                                filename = "no.png"
                                 break;
                         }
+                        return "background:url('/Content/themes/icons/" + filename + "') no-repeat center center;"
                     }
                 },
                 {

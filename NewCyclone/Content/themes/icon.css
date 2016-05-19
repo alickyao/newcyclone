@@ -1,3 +1,15 @@
+.icon-arrow_down {
+    background:url('icons/arrow_down.png') no-repeat center center;
+}
+.icon-arrow_up {
+    background:url('icons/arrow_up.png') no-repeat center center;
+}
+.icon-arrow_left {
+    background:url('icons/arrow_left.png') no-repeat center center;
+}
+.icon-arrow_right {
+    background:url('icons/arrow_right.png') no-repeat center center;
+}
 .icon-blank{
 	background:url('icons/blank.gif') no-repeat center center;
 }
@@ -27,6 +39,9 @@
 }
 .icon-cancel{
 	background:url('icons/cancel.png') no-repeat center center;
+}
+.icon-cancel-red{
+	background:url('icons/cancel_red.png') no-repeat center center;
 }
 .icon-reload{
 	background:url('icons/reload.png') no-repeat center center;
