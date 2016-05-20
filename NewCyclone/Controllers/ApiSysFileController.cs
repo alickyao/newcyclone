@@ -70,13 +70,38 @@ namespace NewCyclone.Controllers
             try
             {
                 result.result = SysFileSort.editSort(condtion);
-                result.msg = "调整成功";
+                result.msg = "排序调整成功";
             }
             catch (SysException e)
             {
                 result = e.getresult(result);
             }
             catch (Exception e) {
+                result = SysException.getResult(result, e, condtion);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 编辑带描述的文件信息（包括排序）
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost]
+        public BaseResponse<List<SysFileInfo>> editFilesInfo(VMEditListRequest<VMEditFileInfoRequest> condtion) {
+            BaseResponse<List<SysFileInfo>> result = new BaseResponse<List<SysFileInfo>>();
+            try
+            {
+                result.result = SysFileInfo.editInfo(condtion);
+                result.msg = "信息调整成功";
+            }
+            catch (SysException e)
+            {
+                result = e.getresult(result);
+            }
+            catch (Exception e)
+            {
                 result = SysException.getResult(result, e, condtion);
             }
             return result;

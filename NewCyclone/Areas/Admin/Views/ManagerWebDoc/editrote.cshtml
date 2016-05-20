@@ -1,5 +1,144 @@
 ﻿
 @{
     Layout = null;
+    VMEditWebPicRoteRequest condtion = ViewBag.condtion;
+    string q = JsonConvert.SerializeObject(condtion.catTreeIds);
+    string pageId = ViewBag.pageId;
+
+    List<SysFileInfo> files = ViewBag.files;
 }
-轮播
+<script>
+    $(document).ready(function () {
+        var treeSet = $.parseJSON('@Html.Raw(q)');
+        var selectcat = $("#@(pageId)selectcat");
+        var form = $("#@(pageId)editform");
+
+        //分类树
+        $.getJSON("/api/ApiSysCatTree/getTreelist?fun=webcms", function (json) {
+            selectcat.combotree({
+                data: json.result,
+                animate: true,
+                multiple: true,
+                editable: false,
+                cascadeCheck: false,
+                lines: true,
+                panelHeight: 'auto',
+                required: true,
+                onLoadSuccess: function (node, data) {
+                    selectcat.combotree("setValues", treeSet);
+                }
+            });
+        });
+
+        $('#@(pageId)file_upload').uploadify({
+            'swf': '/Content/uploadify.swf',
+            'uploader': '/File/upload?path=webpage',
+            'buttonText': '上传图集',
+            'multi': true,
+            'fileTypeDesc': 'Image Files',
+            'fileTypeExts': '*.gif; *.jpg; *.png',
+            'onUploadSuccess': function (file, data, response) {
+                data = $.parseJSON(data);
+                if (data.error == "0") {
+                    //将上传的图片追加到图集的末尾
+                    var piclist = $("#@(pageId)piclist");
+                    var url = "@Url.Action("getFileInfoListHtml", "Files",new { pageId = pageId })";
+                    $.get(url + "&url=" + data.url, function (data) {
+                        piclist.append(data);
+                        $.parser.parse(piclist);
+                    });
+                }
+                else {
+                    $.messager.alert('错误', data.message, 'error');
+                }
+            }
+        });
+
+        var leftbtn = ".@(pageId)setup";
+        var rightbtn = ".@(pageId)setdown";
+        var delbtn = ".@(pageId)setdelete";
+
+
+        $(document).off("click", leftbtn);
+        $(document).on("click", leftbtn, function () {
+            //向上
+            var li = $(this).parentsUntil("li").parent();
+            if (li.prev().length == 0) {
+                return false;
+            }
+            li.prev().before(li[0]);
+        });
+        $(document).off("click", rightbtn);
+        $(document).on("click", rightbtn, function () {
+            //向下
+            var li = $(this).parentsUntil("li").parent();
+            if (li.next().length == 0) {
+                return false;
+            }
+            li.next().after(li[0]);
+        });
+        $(document).off("click", delbtn);
+        $(document).on("click", delbtn, function () {
+            var li = $(this).parentsUntil("li").parent();
+            if (li.attr("Id") != "") {
+                li.appendTo("#@(pageId)dellist");
+            }
+            else {
+                li.remove();
+            }
+        });
+
+    });
+</script>
+<form id="@(pageId)editform">
+    <input type="hidden" name="Id" value="@condtion.Id" />
+    <input type="hidden" name="fun" value="@condtion.fun" />
+    <table class="formtable" style="width:100%">
+        <tr>
+            <td class="t" style="width:80px;">标题</td>
+            <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" value="@condtion.caption" /></td>
+        </tr>
+        <tr>
+            <td class="t">别名&nbsp;<a href="#" title="设置别名后，可通过别名获取该图片集的详情" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
+            <td>
+                <input type="text" class="easyui-textbox" name="alias" data-options="validType:'checkWebDocAlias[\'@condtion.Id\']'" value="@condtion.alias" />
+            </td>
+        </tr>
+        <tr>
+            <td class="t">所在分类</td>
+            <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="catTreeIds" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td class="t" style="width:80px;">发布时间</td>
+            <td><input type="text" class="easyui-datebox" name="showTime" value="@condtion.showTime" /></td>
+        </tr>
+        <tr>
+            <td class="t">描述</td>
+            <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:60px;" value="@condtion.describe" /></td>
+        </tr>
+        <tr>
+            <td class="t">上传图集</td>
+            <td>
+                <input type="file" id="@(pageId)file_upload" name="fileupload" />
+            </td>
+        </tr>
+    </table>
+</form>
+<table class="formtable" style="width:100%; margin-top:5px;">
+    <tr>
+        <td class="t" style="width:80px;">图集</td>
+        <td>
+            <input type="hidden" name="files" value="," />
+            <ul id="@(pageId)piclist" class="infofileinfolist">
+                @if (files.Count > 0)
+                {
+                    foreach (var f in files)
+                    {
+                        @Html.Action("getFileInfoListHtml", "Files", new { pageId = pageId, fileId = f.Id });
+                    }
+                }
+            </ul>
+            <ul id="@(pageId)dellist" style="display:none;"></ul>
+        </td>
+    </tr>
+</table>

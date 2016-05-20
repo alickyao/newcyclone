@@ -470,6 +470,7 @@
     <Content Include="Areas\Admin\Views\ManagerWebDoc\editproduct.cshtml" />
     <Content Include="Areas\Admin\Views\ManagerWebDoc\editrote.cshtml" />
     <Content Include="Areas\Admin\Views\Files\listUpload.cshtml" />
+    <Content Include="Areas\Admin\Views\Files\getFileInfoListHtml.cshtml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.min.js" />

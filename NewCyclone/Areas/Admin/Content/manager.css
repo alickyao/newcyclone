@@ -56,6 +56,7 @@
         border:none;
         text-align:center;
     }
+
 /*可排序的图片*/
 .sortfilelist {width:100%; overflow:hidden; list-style:none; padding:0; margin:0}
 .sortfilelist li {float:left; border :1px solid #ccc;padding:5px; margin:0 5px 5px 0; height:150px; overflow:hidden;}
@@ -64,3 +65,12 @@
         overflow:hidden;
     }
 .sortfilelist li img {width:150px;}
+
+
+/*带描述的图片列表*/
+.infofileinfolist {
+    width:100%; overflow:hidden; list-style:none; padding:0; margin:0
+}
+    .infofileinfolist li {
+        margin-bottom:5px;
+    }

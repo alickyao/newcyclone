@@ -27,5 +27,32 @@ namespace NewCyclone.Areas.Admin.Controllers
 
             return View();
         }
+
+        /// <summary>
+        /// 显示一个带描述的文件
+        /// </summary>
+        /// <param name="pageId">页面的ID</param>
+        /// <param name="fileId">文件的ID</param>
+        /// <param name="url">或者文件的URL</param>
+        /// <returns></returns>
+        public ActionResult getFileInfoListHtml(string pageId, string fileId, string url = null)
+        {
+            setPageId(pageId);
+            ViewBag.url = url;
+            VMEditFileInfoRequest f = new VMEditFileInfoRequest();
+            if (!string.IsNullOrEmpty(fileId)) {
+                SysFileInfo info = new SysFileInfo(fileId);
+                f = new VMEditFileInfoRequest() {
+                    describe = info.describe,
+                    fileId = info.Id,
+                    link = info.link,
+                    sort = info.sort,
+                    title = info.title,
+                };
+                ViewBag.url = info.url;
+            }
+            ViewBag.file = f;
+            return View();
+        }
     }
 }

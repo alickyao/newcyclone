@@ -25,34 +25,6 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 删除页面的图片
-        /// </summary>
-        /// <param name="condtion"></param>
-        /// <returns></returns>
-        [ApiAuthorize(RoleType = SysRolesType.后台)]
-        [HttpPost]
-        public BaseResponse<int> delpic(VMEditListRequest<string> condtion)
-        {
-            BaseResponse<int> result = new BaseResponse<int>();
-
-            try
-            {
-                result.result = SysDoc.delfiles(condtion);
-                result.msg = "删除成功";
-            }
-            catch (SysException e)
-            {
-                result = e.getresult(result);
-            }
-            catch (Exception e)
-            {
-                result = SysException.getResult(result, e, condtion);
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// 检索网页文档
         /// </summary>
         /// <param name="condtion"></param>
@@ -175,7 +147,75 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 为网站页面追加可排序的图集
+        /// 新增/编辑网站轮播
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        public BaseResponse<WebDocRote> editrote(VMEditWebPicRoteRequest condtion) {
+            BaseResponse<WebDocRote> result = new BaseResponse<WebDocRote>();
+            try
+            {
+                result.result = WebDocRote.edit(condtion);
+                result.msg = "保存成功";
+            }
+            catch (SysException e)
+            {
+                result = e.getresult(result, true);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, condtion);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取轮播信息详情
+        /// </summary>
+        /// <param name="id">轮播的ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        public BaseResponse<WebDocRote> getrote(string id) {
+            BaseResponse<WebDocRote> result = new BaseResponse<WebDocRote>();
+            try
+            {
+                result.result = new WebDocRote(id);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, id);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 根据别名获取轮播信息详情
+        /// </summary>
+        /// <param name="alias">别名</param>
+        /// <returns></returns>
+        [HttpGet]
+        public BaseResponse<WebDocRote> getrotebyAlias(string alias)
+        {
+            BaseResponse<WebDocRote> result = new BaseResponse<WebDocRote>();
+            try
+            {
+                result.result = WebDocRote.getDocByAlias(alias);
+            }
+            catch (SysException e)
+            {
+                result = e.getresult(result);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, alias);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 为网站内容追加可排序的图集
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
@@ -187,7 +227,7 @@ namespace NewCyclone.Controllers
             {
                 WebDocPage page = new WebDocPage(condtion.docId);
                 result.result = page.createFilesSort(condtion.rows);
-                result.msg = "保存成功";
+                result.msg = "图片追加成功";
             }
             catch (SysException e)
             {
@@ -200,7 +240,7 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 为网站页面追加带描述的图集
+        /// 为网站内容追加带描述的图集
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
@@ -208,6 +248,46 @@ namespace NewCyclone.Controllers
         [HttpPost]
         public BaseResponse<List<SysFileInfo>> appendinfopic(VMAppendWebDocFilesInfoRequest condtion) {
             BaseResponse<List<SysFileInfo>> result = new BaseResponse<List<SysFileInfo>>();
+            try
+            {
+                WebDoc doc = new WebDoc(condtion.docId);
+                result.result = doc.createFilesInfo(condtion.rows);
+                result.msg = "图片追加成功";
+            }
+            catch (SysException e)
+            {
+                result = e.getresult(result);
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, condtion);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 删除页面的图片
+        /// </summary>
+        /// <param name="condtion">请求参数中的请传入需要删除的文件的ID集合</param>
+        /// <returns></returns>
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        [HttpPost]
+        public BaseResponse<int> delpic(VMEditListRequest<string> condtion)
+        {
+            BaseResponse<int> result = new BaseResponse<int>();
+
+            try
+            {
+                result.result = SysDoc.delfiles(condtion);
+                result.msg = "删除成功";
+            }
+            catch (SysException e)
+            {
+                result = e.getresult(result);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, condtion);
+            }
 
             return result;
         }

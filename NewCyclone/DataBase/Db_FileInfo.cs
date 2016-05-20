@@ -16,5 +16,6 @@ namespace NewCyclone.DataBase
     {
         public string title { get; set; }
         public string describe { get; set; }
+        public string link { get; set; }
     }
 }

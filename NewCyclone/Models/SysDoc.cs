@@ -231,6 +231,22 @@ namespace NewCyclone.Models
         }
 
         /// <summary>
+        /// 验证基础请求参数，如果验证失败则直接抛出异常
+        /// </summary>
+        /// <param name="condtion">创建/编辑的请求参数</param>
+        public static void vailData(VMEditWebDocRequest condtion) {
+            if (condtion.catTreeIds.Count == 0)
+            {
+                throw new SysException("所在分类必选", condtion);
+            }
+
+            if (checkAliasIsExist(condtion.alias, condtion.Id) > 0)
+            {
+                throw new SysException("该别名已使用", condtion);
+            }
+        }
+
+        /// <summary>
         /// 新增可排序的图片集
         /// </summary>
         /// <param name="condtion"></param>
@@ -330,7 +346,7 @@ namespace NewCyclone.Models
             using (var db = new SysModelContainer()) {
                 var d = db.Db_SysDocSet.OfType<Db_DocWeb>().SingleOrDefault(p => p.alias == alias && !p.isDeleted);
                 if (d == null) {
-                    throw new SysException("未能找到详情的文档", alias);
+                    throw new SysException("未能通过别名找到该信息", alias);
                 }
                 WebDocPage doc = new WebDocPage(d.Id);
                 return doc;
@@ -343,16 +359,8 @@ namespace NewCyclone.Models
         /// <param name="condtion"></param>
         /// <returns></returns>
         public static WebDocPage edit(VMEditWebDocPageRequest condtion) {
-            SysValidata.valiData(condtion);
-
-            if (condtion.catTreeIds.Count == 0) {
-                throw new SysException("所在分类必选", condtion);
-            }
-
-            if (checkAliasIsExist(condtion.alias, condtion.Id)>0) {
-                throw new SysException("该别名已使用", condtion);
-            }
-
+            SysValidata.valiData(condtion);//参数验证
+            vailData(condtion);//参数验证
             using (var db = new SysModelContainer()) {
 
                 if (string.IsNullOrEmpty(condtion.Id)) {
@@ -407,7 +415,6 @@ namespace NewCyclone.Models
                     d.content = condtion.content;
                     d.modifiedOn = DateTime.Now;
                     d.modifiedBy = HttpContext.Current.User.Identity.Name;
-                    d.fun = condtion.fun;
                     d.seoKeyWords = condtion.seoKeyWords;
                     d.seoTitle = condtion.seoTitle;
                     d.showTime = condtion.showTime;
@@ -434,19 +441,196 @@ namespace NewCyclone.Models
     }
 
     /// <summary>
-    /// 创建/编辑网站图文文档请求
+    /// 网页轮播（图片轮播）
     /// </summary>
-    public class VMEditWebDocPageRequest:ItoSysLogMesable {
+    public class WebDocRote : WebDoc {
 
+        /// <summary>
+        /// 图片的宽(单位像素)
+        /// </summary>
+        public int imgWidth { get; set; }
+        /// <summary>
+        /// 图片高度(单位像素)
+        /// </summary>
+        public int imgHeight { get; set; }
+        /// <summary>
+        /// 等待时间(单位 秒)
+        /// </summary>
+        public int waitSecond { get; set; }
+
+        private List<SysFileInfo> _files = new List<SysFileInfo>();
+
+        /// <summary>
+        /// 带描述的图片集
+        /// </summary>
+        public List<SysFileInfo> files {
+            get { return _files; }
+            set { _files = value; }
+        }
+
+        /// <summary>
+        /// 通过ID获取轮播信息
+        /// </summary>
+        /// <param name="id"></param>
+        public WebDocRote(string id) : base(id) {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysDocSet.OfType<Db_WebRote>().Single(p => p.Id == id);
+                this.imgHeight = d.imgHeight;
+                this.imgWidth = d.imgWidth;
+                this.waitSecond = d.waitSecond;
+
+                //图片集
+                if (d.Db_DocFile.Count > 0) {
+                    foreach (var f in d.Db_DocFile)
+                    {
+                        this.files.Add(new SysFileInfo(f.Db_SysFileId));
+                    }
+                    this.files.Sort();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 创建/编辑图片轮播
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static WebDocRote edit(VMEditWebPicRoteRequest condtion) {
+            SysValidata.valiData(condtion);
+            vailData(condtion);//参数验证
+            if (string.IsNullOrEmpty(condtion.Id)) {
+                condtion.Id = SysHelp.getNewId();
+            }
+            using (var db = new SysModelContainer()) {
+                var c = db.Db_SysDocSet.OfType<Db_WebRote>().SingleOrDefault(p => p.Id == condtion.Id);
+                if (c == null)
+                {
+                    //新增
+                    Db_WebRote d = new Db_WebRote() {
+                        caption = condtion.caption,
+                        createdBy = HttpContext.Current.User.Identity.Name,
+                        createdOn = DateTime.Now,
+                        describe = condtion.describe,
+                        fun = condtion.fun,
+                        Id = condtion.Id,
+                        isDeleted = false,
+                        modifiedBy = HttpContext.Current.User.Identity.Name,
+                        modifiedOn = DateTime.Now,
+                        showTime = condtion.showTime,
+                        alias = condtion.alias,
+                        imgHeight = condtion.imgHeight,
+                        imgWidth = condtion.imgWidth,
+                        waitSecond= condtion.waitSecond
+                    };
+                    //分类
+                    foreach (string cat in condtion.catTreeIds)
+                    {
+                        d.Db_DocCat.Add(new Db_SysDocCat()
+                        {
+                            Db_CatTreeId = cat
+                        });
+                    }
+                    var newrow = db.Db_SysDocSet.Add(d);
+                    db.SaveChanges();
+
+                    SysUserLog.saveLog(condtion, SysUserLogType.编辑, newrow.Id);
+                    return new WebDocRote(newrow.Id);
+                }
+                else {
+                    //编辑
+                    //删除原来的的分类
+                    db.Db_SysDocCatSet.RemoveRange(c.Db_DocCat);
+                    db.SaveChanges();
+
+                    c.waitSecond = condtion.waitSecond;
+                    c.imgWidth = condtion.imgWidth;
+                    c.imgHeight = condtion.imgHeight;
+
+
+                    c.caption = condtion.caption;
+                    c.modifiedOn = DateTime.Now;
+                    c.modifiedBy = HttpContext.Current.User.Identity.Name;
+                    c.showTime = condtion.showTime;
+                    c.describe = condtion.describe;
+                    c.alias = condtion.alias;
+
+                    //分类
+                    foreach (string cat in condtion.catTreeIds)
+                    {
+                        c.Db_DocCat.Add(new Db_SysDocCat()
+                        {
+                            Db_CatTreeId = cat
+                        });
+                    }
+
+                    db.SaveChanges();
+                    SysUserLog.saveLog(condtion, SysUserLogType.编辑, condtion.Id);
+                    return new WebDocRote(condtion.Id);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 根据别名获取网页轮播图片信息
+        /// </summary>
+        /// <param name="alias">别名</param>
+        /// <returns></returns>
+        public static WebDocRote getDocByAlias(string alias) {
+            if (string.IsNullOrEmpty(alias))
+            {
+                throw new SysException("别名不能为空", alias);
+            }
+            using (var db = new SysModelContainer())
+            {
+                var d = db.Db_SysDocSet.OfType<Db_WebRote>().SingleOrDefault(p => p.alias == alias && !p.isDeleted);
+                if (d == null)
+                {
+                    throw new SysException("未能通过别名找到该信息", alias);
+                }
+                WebDocRote doc = new WebDocRote(d.Id);
+                return doc;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 网站文档创建编辑基础类
+    /// </summary>
+    public abstract class VMEditWebDocRequest {
         /// <summary>
         /// 主键  新建时 调用 SysHelp.getNewId() 或不填
         /// </summary>
         public string Id { get; set; }
+
         /// <summary>
         /// 标题
         /// </summary>
         [Required]
         public string caption { get; set; }
+
+        /// <summary>
+        /// 别名（可通过别名来找到该信息）
+        /// </summary>
+        [StringLength(50)]
+        public string alias { get; set; }
+
+        /// <summary>
+        /// 文档描述
+        /// </summary>
+        public string describe { get; set; }
+
+        private List<string> _catTreeIds = new List<string>();
+
+        /// <summary>
+        /// 所在分类
+        /// </summary>
+        [Required]
+        public List<string> catTreeIds
+        {
+            get { return _catTreeIds; }
+            set { _catTreeIds = value; }
+        }
+
         /// <summary>
         /// 模块的ID
         /// </summary>
@@ -458,15 +642,19 @@ namespace NewCyclone.Models
         /// <summary>
         /// 展示的创建时间 默认为系统当前时间
         /// </summary>
-        public DateTime showTime {
+        public DateTime showTime
+        {
             get { return _showTime; }
             set { _showTime = value; }
         }
 
-        /// <summary>
-        /// 文档描述
-        /// </summary>
-        public string describe { get; set; }
+        
+    }
+
+    /// <summary>
+    /// 创建/编辑网站图文文档请求
+    /// </summary>
+    public class VMEditWebDocPageRequest:VMEditWebDocRequest, ItoSysLogMesable {
 
         /// <summary>
         /// seo标题
@@ -483,24 +671,6 @@ namespace NewCyclone.Models
         /// </summary>
         public string content { get; set; }
 
-        private List<string> _catTreeIds = new List<string>();
-
-        /// <summary>
-        /// 所在分类
-        /// </summary>
-        [Required]
-        public List<string> catTreeIds {
-            get { return _catTreeIds; }
-            set { _catTreeIds = value; }
-        }
-
-
-        /// <summary>
-        /// 别名
-        /// </summary>
-        [StringLength(50)]
-        public string alias { get; set; }
-
         /// <summary>
         /// 生成日志文本
         /// </summary>
@@ -509,6 +679,37 @@ namespace NewCyclone.Models
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("新增/编辑图文消息:").Append(this.caption);
+            return sb.ToString();
+        }
+    }
+
+    /// <summary>
+    /// 创建/编辑网站图片轮播请求
+    /// </summary>
+    public class VMEditWebPicRoteRequest : VMEditWebDocRequest,ItoSysLogMesable
+    {
+
+        /// <summary>
+        /// 图片的宽(单位像素)
+        /// </summary>
+        public int imgWidth { get; set; }
+        /// <summary>
+        /// 图片高度(单位像素)
+        /// </summary>
+        public int imgHeight { get; set; }
+        /// <summary>
+        /// 等待时间(单位 秒)
+        /// </summary>
+        public int waitSecond { get; set; }
+
+        /// <summary>
+        /// 生成日志文本
+        /// </summary>
+        /// <returns></returns>
+        public string toLogString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("新增/编辑图片轮播:").Append(this.caption);
             return sb.ToString();
         }
     }
@@ -574,7 +775,7 @@ namespace NewCyclone.Models
         private List<VMCreateFileInfoRequest> _rows = new List<VMCreateFileInfoRequest>();
 
         /// <summary>
-        /// 可排序的文件列表
+        /// 带信息的文件列表
         /// </summary>
         [Required]
         public List<VMCreateFileInfoRequest> rows

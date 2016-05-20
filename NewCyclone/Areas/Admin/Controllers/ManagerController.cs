@@ -325,19 +325,63 @@ namespace NewCyclone.Areas.Admin.Controllers
         /// <summary>
         /// 创建/编辑轮播
         /// </summary>
+        /// <param name="Id">文档ID</param>
+        /// <param name="pageId">页面ID</param>
+        /// <param name="catTreeId">设定的分类</param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult editrote()
+        public ActionResult editrote(string Id, string pageId, string catTreeId)
         {
+            setPageId(pageId);
+            List<SysFileInfo> files = new List<SysFileInfo>();
+            VMEditWebPicRoteRequest condtion = new VMEditWebPicRoteRequest();
+            if (!string.IsNullOrEmpty(Id)) {
+                WebDocRote info = new WebDocRote(Id);
+                //编辑
+                condtion = new VMEditWebPicRoteRequest() {
+                    caption = info.caption,
+                    describe = info.describe,
+                    fun = info.fun.id,
+                    Id = info.Id,
+                    showTime = info.showTime,
+                    alias = info.alias,
+                    imgHeight = info.imgHeight,
+                    imgWidth = info.imgWidth,
+                    waitSecond = info.waitSecond
+                };
+                //分类
+                foreach (var cat in info.cat) {
+                    condtion.catTreeIds.Add(cat.id);
+                }
+                //图集
+                if (info.files.Count > 0)
+                {
+                    files = info.files;
+                }
+            }
+            else {
+                //新增
+                condtion.Id = SysHelp.getNewId();
+                condtion.fun = "rote";
+                if (!string.IsNullOrEmpty(catTreeId))
+                {
+                    condtion.catTreeIds.Add(catTreeId);
+                }
+            }
+            ViewBag.files = files;
+            ViewBag.condtion = condtion;
             return View();
         }
 
         /// <summary>
         /// 编辑产品
         /// </summary>
+        /// <param name="Id">文档ID</param>
+        /// <param name="pageId">页面ID</param>
+        /// <param name="catTreeId">设定的分类</param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult editproduct()
+        public ActionResult editproduct(string Id, string pageId, string catTreeId)
         {
             return View();
         }

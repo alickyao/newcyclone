@@ -185,33 +185,72 @@
                                             if (filelist.length > 0) {
                                                 var oldfiles = [];
                                                 var newfiles = [];
-                                                $.each(filelist, function (i, n) {
-                                                    if ($(n).attr("Id") == "") {
-                                                        //new
-                                                        newfiles.push({
-                                                            url: $(n).attr("url"),
-                                                            sort:i
-                                                        });
-                                                    }
-                                                    else {
-                                                        //old
-                                                        oldfiles.push({
-                                                            fileId: $(n).attr("Id"),
-                                                            sort: i
-                                                        });
-                                                    }
-                                                });
-                                                if (newfiles.length > 0) {
-                                                    //新增
-                                                    $.post("/api/ApiWebPages/appendsortpic", { docId: json.result.Id, rows: newfiles }, function (json) {
-                                                         console.log(json);
+                                                if (d.fun == "pic") {//图文
+                                                    $.each(filelist, function (i, n) {
+                                                        if ($(n).attr("Id") == "") {
+                                                            //new
+                                                            newfiles.push({
+                                                                url: $(n).attr("url"),
+                                                                sort: i
+                                                            });
+                                                        }
+                                                        else {
+                                                            //old
+                                                            oldfiles.push({
+                                                                fileId: $(n).attr("Id"),
+                                                                sort: i
+                                                            });
+                                                        }
                                                     });
+
+                                                    if (newfiles.length > 0) {
+                                                        //新增
+                                                        $.post("/api/ApiWebPages/appendsortpic", { docId: json.result.Id, rows: newfiles }, function (json) {
+                                                            console.log(json);
+                                                        });
+                                                    }
+                                                    if (oldfiles.length > 0) {
+                                                        //调整排序
+                                                        $.post("/api/ApiSysFile/editFilesSort", { rows: oldfiles }, function (json) {
+                                                            console.log(json);
+                                                        });
+                                                    }
                                                 }
-                                                if (oldfiles.length > 0) {
-                                                    //调整排序
-                                                    $.post("/api/ApiSysFile/editFilesSort", { rows: oldfiles }, function (json) {
-                                                        console.log(json);
+                                                else if (d.fun == "rote") {//轮播
+                                                    $.each(filelist, function (i, n) {
+
+                                                        var d = $(n).find("form").serializeObject();
+                                                        if (d.fileId == "") {
+                                                            //new
+                                                            newfiles.push({
+                                                                url: d.url,
+                                                                sort: i,
+                                                                title: d.filetitle,
+                                                                link: d.filelink,
+                                                                describe: d.filedescribe
+                                                            });
+                                                        }
+                                                        else {
+                                                            //old
+                                                            oldfiles.push({
+                                                                fileId: d.fileId,
+                                                                sort: i,
+                                                                title: d.filetitle,
+                                                                link: d.filelink,
+                                                                describe: d.filedescribe
+                                                            });
+                                                        }
                                                     });
+                                                    if (newfiles.length > 0) {
+                                                        $.post("/api/ApiWebPages/appendinfopic", { docId: json.result.Id, rows: newfiles }, function (json) {
+                                                            console.log(json);
+                                                        })
+                                                    }
+                                                    if (oldfiles.length > 0) {
+                                                        $.post("/api/ApiSysFile/editFilesInfo", { rows: oldfiles }, function (json) {
+                                                            console.log(json);
+                                                        });
+                                                    }
                                                 }
                                             }
 

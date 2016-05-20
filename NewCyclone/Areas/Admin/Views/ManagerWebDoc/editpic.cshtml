@@ -32,6 +32,7 @@
                 editable: false,
                 cascadeCheck: false,
                 lines: true,
+                required: true,
                 panelHeight: 'auto',
                 onLoadSuccess: function (node, data) {
                     selectcat.combotree("setValues", treeSet);
@@ -133,7 +134,7 @@
         </tr>
         <tr>
             <td class="t">所在分类</td>
-            <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="catTreeIds" data-options="required:true" style="width:300px;" /></td>
+            <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="catTreeIds" style="width:300px;" /></td>
         </tr>
         <tr>
             <td class="t" style="width:80px;">发布时间</td>

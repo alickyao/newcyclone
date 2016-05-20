@@ -299,6 +299,11 @@ namespace NewCyclone.Models
         public string describe { get; set; }
 
         /// <summary>
+        /// 链接地址
+        /// </summary>
+        public string link { get; set; }
+
+        /// <summary>
         /// 使用ID构造带描述的文件
         /// </summary>
         /// <param name="id"></param>
@@ -307,6 +312,7 @@ namespace NewCyclone.Models
                 var d = db.Db_SysFileSet.OfType<Db_FileInfo>().Single(p => p.Id == id);
                 this.title = d.title;
                 this.describe = d.describe;
+                this.link = d.link;
             }
         }
 
@@ -317,6 +323,7 @@ namespace NewCyclone.Models
         public SysFileInfo(VMCreateFileInfoRequest condtion) : base(condtion) {
             this.title = condtion.title;
             this.describe = condtion.describe;
+            this.link = condtion.link;
         }
 
         /// <summary>
@@ -334,11 +341,47 @@ namespace NewCyclone.Models
                     filePath = this.filePath,
                     Id = Guid.NewGuid().ToString(),
                     sort = this.sort,
-                    title = this.title
+                    title = this.title,
+                    link = this.link
                 };
                 Db_SysFileSet newrow = db.Db_SysFileSet.Add(d);
                 db.SaveChanges();
                 return new SysFileInfo(newrow.Id);
+            }
+        }
+
+        /// <summary>
+        /// 修改带描述的文件信息（包括排序）
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static List<SysFileInfo> editInfo(VMEditListRequest<VMEditFileInfoRequest> condtion) {
+            SysValidata.valiData(condtion);
+            List<SysFileInfo> result = new List<SysFileInfo>();
+            foreach (var file in condtion.rows) {
+                SysFileInfo info = new SysFileInfo(file.fileId);
+                info.sort = file.sort;
+                info.link = file.link;
+                info.title = file.title;
+                info.describe = file.describe;
+                info.saveInfo();
+                result.Add(info);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 保存信息
+        /// </summary>
+        private void saveInfo()
+        {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysFileSet.OfType<Db_FileInfo>().Single(p => p.Id == this.Id);
+                d.sort = this.sort;
+                d.link = this.link;
+                d.title = this.title;
+                d.describe = this.describe;
+                db.SaveChanges();
             }
         }
     }
@@ -466,6 +509,11 @@ namespace NewCyclone.Models
         /// 描述
         /// </summary>
         public string describe { get; set; }
+
+        /// <summary>
+        /// 链接地址
+        /// </summary>
+        public string link { get; set; }
     }
 
     /// <summary>
@@ -492,9 +540,15 @@ namespace NewCyclone.Models
         /// 标题
         /// </summary>
         public string title { get; set; }
+
         /// <summary>
         /// 描述
         /// </summary>
         public string describe { get; set; }
+
+        /// <summary>
+        /// 链接地址
+        /// </summary>
+        public string link { get; set; }
     }
 }
