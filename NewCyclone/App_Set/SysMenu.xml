@@ -33,6 +33,9 @@
         <children>
           <SysMenu>
             <text>内容分类管理</text>
+            <roles>
+              <string>admin</string>
+            </roles>
             <url><![CDATA[/Admin/ManagerTree/catTreeList?fun=webcms]]></url>
           </SysMenu>
           <SysMenu>

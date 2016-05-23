@@ -116,33 +116,41 @@
                 },
 
                 {
-                    text: "删除勾选的文件",
+                    text: "删除勾选",
                     id:"@(pageId)delbtn",
                     iconCls: "icon-cancel-red",
                     handler: function () {
                         var rows = grid.datagrid("getChecked");
                         if (rows.length > 0) {
                             var urls = [];
-                            var e = false;
+                            var dirUrls = [];
                             for (var i = 0; i < rows.length; i++) {
                                 if (rows[i].isDir) {
-                                    $.messager.alert("错误", "不能删除文件夹", "error");
-                                    e = true;
-                                    break;
+                                    dirUrls.push((path == "" ? "" : path + "/") + rows[i].name);
                                 }
-                                urls.push(rows[i].url);
+                                else {
+                                    urls.push(rows[i].url);
+                                }
                             }
 
-                            if (!e && urls.length > 0) {
-
-                                $.messager.confirm('请确认', '确定彻底删除'+ urls.length +'个文件?', function (r) {
+                            if (urls.length > 0 || dirUrls.length>0) {
+                                $.messager.confirm('请确认', '确定彻底删除'+ urls.length +'个文件<br />和'+ dirUrls.length +'个文件夹？<br />删除操作不可恢复！', function (r) {
                                     if (r) {
-                                        grid.datagrid("loading")
-                                        $.post("/api/ApiSysFile/delFiles", { rows: urls }, function (json) {
-                                            console.log(json);
-                                            showmsg(json);
-                                            loadGrid();
-                                        });
+                                        grid.datagrid("loading");
+                                        if (urls.length > 0) {
+                                            $.post("/api/ApiSysFile/delFiles", { rows: urls }, function (json) {
+                                                console.log(json);
+                                                showmsg(json);
+                                                loadGrid();
+                                            });
+                                        }
+                                        if (dirUrls.length > 0) {
+                                            $.post("/api/ApiSysFile/delDirs", { rows: dirUrls }, function (json) {
+                                                console.log(json);
+                                                showmsg(json);
+                                                loadGrid();
+                                            });
+                                        }
                                     }
                                 });
                             }

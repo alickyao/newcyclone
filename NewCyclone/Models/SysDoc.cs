@@ -188,7 +188,7 @@ namespace NewCyclone.Models
                 var list = (from c in db.Db_SysDocSet.OfType<Db_DocWeb>().AsEnumerable()
                             where (string.IsNullOrEmpty(condtion.q) ? true : (c.caption.Contains(condtion.q) || (c.describe == null ? false : c.describe.Contains(condtion.q))))
                             && (condtion.catTreeIds.Count == 0 ? true : (condtion.catTreeIds.Intersect(c.Db_DocCat.Select(p => p.Db_CatTreeId)).Count() > 0 ? true : false))
-                            && (string.IsNullOrEmpty(condtion.fun) ? true : c.fun == condtion.fun)
+                            && (condtion.fun.Count == 0 ? true : condtion.fun.Contains(c.fun))
                             && (!c.isDeleted)
                             orderby c.showTime descending
                             select c.Id
@@ -733,10 +733,15 @@ namespace NewCyclone.Models
             set { _catTreeIds = value; }
         }
 
+        private List<string> _fun = new List<string>();
+
         /// <summary>
         /// 功能ID
         /// </summary>
-        public string fun { get; set; }
+        public List<string> fun {
+            get { return _fun; }
+            set { _fun = value; }
+        }
     }
 
     /// <summary>

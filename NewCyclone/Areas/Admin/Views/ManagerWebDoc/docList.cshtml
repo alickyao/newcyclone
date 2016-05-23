@@ -30,7 +30,7 @@
             textField: 'text',
             url: '/api/ApiWebPages/getfunlist',
             method: 'get',
-            multiple: false,
+            multiple: true,
             editable: false,
             required: false,
             panelHeight: 'auto'
@@ -256,7 +256,6 @@
         //搜索栏
         $("#@(pageId)querybtn").click(function () {
             var d = query.find("form").serializeObject();
-            console.log(d);
             request.q = d.q;
             request.fun = d.fun;
             request.page = 1;

@@ -9,7 +9,7 @@
     <form>
         <input type="hidden" value="@file.fileId" name="fileId" />
         <input type="hidden" value="@url" name="url" />
-        <div class="imglist"><img src="@url" /></div>
+        <div class="imglist"><a href="@url" target="_blank"><img src="@SysFile.getThumbnail(150, 120, url)" /></a></div>
         <table class="btntable" style="width:100%">
             <tr>
                 <td style="width:33%;">

@@ -68,6 +68,7 @@ namespace NewCyclone.Models
             }
             this.filePath = condtion.url.Substring(0, s + 1);
             this.fileName = condtion.url.Substring(s + 1);
+            this.url = condtion.url;
         }
 
         /// <summary>
@@ -83,6 +84,14 @@ namespace NewCyclone.Models
             try
             {
                 deleteFile(this.url);
+                //同时删除缩略图
+                string dir = this.url.Substring(0, this.url.LastIndexOf('.'));
+                DirectoryInfo d = new DirectoryInfo(HttpContext.Current.Server.MapPath(dir));
+                if (d.Exists)
+                {
+                    dir = dir.Replace("/upload/", "");
+                    deleteDirs(dir);
+                }
             }
             catch { }
         }
@@ -181,6 +190,167 @@ namespace NewCyclone.Models
                 deleteFile(p);
             }
         }
+
+        /// <summary>
+        /// 从磁盘中删除文件夹以及其子文件夹和文件
+        /// </summary>
+        /// <param name="path"></param>
+        public static void deleteDirs(string path) {
+            VMDiskFileQueryResponse list = listFiles(path);
+            if (list.total > 0) {
+                foreach (var l in list.rows) {
+                    if (l.isDir)
+                    {
+                        if (l.hasFile)
+                        {
+                            deleteDirs(path + "/" + l.name);
+                        }
+                        else {
+                            DirectoryInfo dir = new DirectoryInfo(HttpContext.Current.Server.MapPath(l.url));
+                            if (dir.Exists) {
+                                dir.Delete();
+                            }
+                        }
+                    }
+                    else {
+                        FileInfo file = new FileInfo(HttpContext.Current.Server.MapPath(l.url));
+                        if (file.Exists) {
+                            file.Delete();
+                        }
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(path))
+            {
+                DirectoryInfo rootDir = new DirectoryInfo(HttpContext.Current.Server.MapPath("/upload/" + path));
+                if (rootDir.Exists) {
+                    rootDir.Delete();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 根据文件存放的路径获取缩略图地址
+        /// 该方法不会抛出异常，如果遇到异常会返回字符串空值
+        /// </summary>
+        /// <param name="width">宽（单位：像素）</param>
+        /// <param name="height">高（单位：像素）</param>
+        /// <param name="url">源文件的路径</param>
+        /// <returns>缩略图的地址</returns>
+        public static string getThumbnail(int width, int height, string url) {
+            string thumbnail = string.Empty;
+            BaseResponse result = new BaseResponse();
+            try
+            {
+                SysFile file = new SysFile(new VMCreateFileRequest()
+                {
+                    url = url
+                });
+                thumbnail = file.getThumbnail(width, height);
+            }
+            catch (SysException e) {
+                result = e.getresult(result, true);
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, string.Format("width:{0},height{1},url:{2}", width, height, url));
+            }
+            return thumbnail;
+        }
+        /// <summary>
+        /// 获取文件的缩略图
+        /// </summary>
+        /// <param name="width">宽（单位：像素）</param>
+        /// <param name="height">高（单位：像素）</param>
+        /// <returns>缩略图的地址</returns>
+        public string getThumbnail(int width, int height)
+        {
+            if (width <= 0 || height <= 0) {
+                throw new SysException("指定的宽度和高度不能小于或等于0", string.Format("width:{0},height:{1}", width, height));
+            }
+            string sourceFilePath = HttpContext.Current.Server.MapPath(this.url);
+            FileInfo sourceFile = new FileInfo(sourceFilePath);
+            if (!sourceFile.Exists) {
+                throw new SysException("源文件不存在", this);
+            }
+            string[] imgType = ".gif,.jpg,.jpeg,.png,.bmp".Split(',').ToArray();
+            if (!imgType.Contains(sourceFile.Extension)) {
+                throw new SysException("只有图片文件才能生成缩略图");
+            }
+            if (this.url.IndexOf("thumbnail") != -1) {
+                throw new SysException("传入的文件已经是缩略图地址了，不能再生成缩略图");
+            }
+            string thumbnailDir = string.Format("{0}/thumbnail/{1}_{2}", this.url.Substring(0, this.url.LastIndexOf('.')), width, height);
+            string thumbnailFile = thumbnailDir + "/" + this.fileName;
+            string thumbnailDirPath = HttpContext.Current.Server.MapPath(thumbnailDir);
+            string thumbnailFilePath = HttpContext.Current.Server.MapPath(thumbnailFile);
+            //判断目录是否存在
+            DirectoryInfo dir = new DirectoryInfo(thumbnailDirPath);
+            if (!dir.Exists) {
+                Directory.CreateDirectory(thumbnailDirPath);
+            }
+            FileInfo file = new FileInfo(thumbnailFilePath);
+            if (!file.Exists)
+            {
+                //创建缩略图
+                makeThumbnail(sourceFilePath, thumbnailFilePath, width, height);
+            }
+            return thumbnailFile;
+        }
+
+        /// <summary>
+        /// 获取缩略图并保存
+        /// </summary>
+        /// <param name="sourcePath">原地址</param>
+        /// <param name="newPath">目标地址</param>
+        /// <param name="width">宽 像素</param>
+        /// <param name="height">高 像素</param>
+        private static void makeThumbnail(string sourcePath, string newPath, int width, int height)
+        {
+            System.Drawing.Image ig = System.Drawing.Image.FromFile(sourcePath);
+            int towidth = width;
+            int toheight = height;
+            int x = 0;
+            int y = 0;
+            int ow = ig.Width;
+            int oh = ig.Height;
+            if ((double)ig.Width / (double)ig.Height > (double)towidth / (double)toheight)
+            {
+                oh = ig.Height;
+                ow = ig.Height * towidth / toheight;
+                y = 0;
+                x = (ig.Width - ow) / 2;
+
+            }
+            else
+            {
+                ow = ig.Width;
+                oh = ig.Width * height / towidth;
+                x = 0;
+                y = (ig.Height - oh) / 2;
+            }
+            System.Drawing.Image bitmap = new System.Drawing.Bitmap(towidth, toheight);
+            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bitmap);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.Clear(System.Drawing.Color.Transparent);
+            g.DrawImage(ig, new System.Drawing.Rectangle(0, 0, towidth, toheight), new System.Drawing.Rectangle(x, y, ow, oh), System.Drawing.GraphicsUnit.Pixel);
+            try
+            {
+                bitmap.Save(newPath, System.Drawing.Imaging.ImageFormat.Jpeg);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                ig.Dispose();
+                bitmap.Dispose();
+                g.Dispose();
+            }
+
+        }
+
     }
 
     /// <summary>

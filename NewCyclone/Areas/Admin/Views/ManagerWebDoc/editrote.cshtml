@@ -156,75 +156,81 @@
     <div id="@(pageId)ddshowfiles" class="easyui-dialog dialogwin" data-options="inline:true,resizable:true,modal:true,closed:true,title:''" style="width:90%;height:90%">
     </div>
     <div data-options="region:'center',border:false">
-        <form id="@(pageId)editform">
-            <input type="hidden" name="Id" value="@condtion.Id" />
-            <input type="hidden" name="fun" value="@condtion.fun" />
-            <table class="formtable" style="width:100%">
-                <tr>
-                    <td class="t" style="width:80px;">标题</td>
-                    <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" value="@condtion.caption" /></td>
-                </tr>
-                <tr>
-                    <td class="t">别名&nbsp;<a href="#" title="设置别名后，可通过别名获取该图片集的详情" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
-                    <td>
-                        <input type="text" class="easyui-textbox" name="alias" data-options="validType:'checkWebDocAlias[\'@condtion.Id\']'" value="@condtion.alias" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="t">所在分类</td>
-                    <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="catTreeIds" style="width:300px;" /></td>
-                </tr>
-                <tr>
-                    <td class="t" style="width:80px;">发布时间</td>
-                    <td><input type="text" class="easyui-datebox" name="showTime" value="@condtion.showTime" /></td>
-                </tr>
-                <tr>
-                    <td class="t">宽度(像素)</td>
-                    <td><input type="number" class="easyui-numberbox" data-options="required:true" name="imgWidth" value="@condtion.imgWidth" /></td>
-                </tr>
-                <tr>
-                    <td class="t">高度(像素)</td>
-                    <td><input type="number" class="easyui-numberbox" data-options="required:true" name="imgHeight" value="@condtion.imgHeight" /></td>
-                </tr>
-                <tr>
-                    <td class="t">停留时间(秒)</td>
-                    <td><input type="number" class="easyui-numberbox" data-options="required:true" name="waitSecond" value="@condtion.waitSecond" /></td>
-                </tr>
-                <tr>
-                    <td class="t">描述</td>
-                    <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:60px;" value="@condtion.describe" /></td>
-                </tr>
+        <div class="easyui-tabs">
+            <div title="信息">
+                <form id="@(pageId)editform">
+                    <input type="hidden" name="Id" value="@condtion.Id" />
+                    <input type="hidden" name="fun" value="@condtion.fun" />
+                    <table class="formtable" style="width:100%; margin-top:5px;">
+                        <tr>
+                            <td class="t" style="width:80px;">标题</td>
+                            <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" value="@condtion.caption" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t">别名&nbsp;<a href="#" title="设置别名后，可通过别名获取该图片集的详情" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
+                            <td>
+                                <input type="text" class="easyui-textbox" name="alias" data-options="validType:'checkWebDocAlias[\'@condtion.Id\']'" value="@condtion.alias" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="t">所在分类</td>
+                            <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="catTreeIds" style="width:300px;" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t" style="width:80px;">发布时间</td>
+                            <td><input type="text" class="easyui-datebox" name="showTime" value="@condtion.showTime" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t">宽度(像素)</td>
+                            <td><input type="number" class="easyui-numberbox" data-options="required:true" name="imgWidth" value="@condtion.imgWidth" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t">高度(像素)</td>
+                            <td><input type="number" class="easyui-numberbox" data-options="required:true" name="imgHeight" value="@condtion.imgHeight" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t">停留时间(秒)</td>
+                            <td><input type="number" class="easyui-numberbox" data-options="required:true" name="waitSecond" value="@condtion.waitSecond" /></td>
+                        </tr>
+                        <tr>
+                            <td class="t">描述</td>
+                            <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:200px;" value="@condtion.describe" /></td>
+                        </tr>
 
-            </table>
-        </form>
-        <table class="formtable" style="width:100%; margin-top:5px;">
-            <tr>
-                <td class="t" style="width:80px;" rowspan="2">上传</td>
-                <td>
-                    <input type="file" id="@(pageId)file_upload" name="fileupload" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" id="@(pageId)selectfilebtn">浏览服务器</a>
-                </td>
-            </tr>
-            <tr>
-                <td class="t">图集</td>
-                <td>
-                    <input type="hidden" name="files" value="," />
-                    <ul id="@(pageId)piclist" class="infofileinfolist">
-                        @if (files.Count > 0)
-                {
-                    foreach (var f in files)
-                    {
-                    @Html.Action("getFileInfoListHtml", "Files", new { pageId = pageId, fileId = f.Id });
-                    }
-                }
-                    </ul>
-                    <ul id="@(pageId)dellist" style="display:none;"></ul>
-                </td>
-            </tr>
-        </table>
+                    </table>
+                </form>
+            </div>
+            <div title="图集">
+                <table class="formtable" style="width:100%; margin-top:5px;">
+                    <tr>
+                        <td class="t" style="width:80px;" rowspan="2">上传</td>
+                        <td>
+                            <input type="file" id="@(pageId)file_upload" name="fileupload" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" id="@(pageId)selectfilebtn">浏览服务器</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="t">图集</td>
+                        <td>
+                            <input type="hidden" name="files" value="," />
+                            <ul id="@(pageId)piclist" class="infofileinfolist">
+                                @if (files.Count > 0)
+                                {
+                                    foreach (var f in files)
+                                    {
+                                        @Html.Action("getFileInfoListHtml", "Files", new { pageId = pageId, fileId = f.Id });
+                                    }
+                                }
+                            </ul>
+                            <ul id="@(pageId)dellist" style="display:none;"></ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
