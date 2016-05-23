@@ -1,0 +1,27 @@
+﻿
+@{
+    Layout = null;
+    string pageId = ViewBag.pageId;
+    string url = ViewBag.url;
+    VMEditFileSortRequest file = ViewBag.file;
+}
+<li>
+    <form>
+        <input type="hidden" value="@file.fileId" name="fileId" />
+        <input type="hidden" value="@url" name="url" />
+        <div class="imglist"><img src="@url" /></div>
+        <table class="btntable" style="width:100%">
+            <tr>
+                <td style="width:33%;">
+                    <a href="#" class="@(pageId)setleft easyui-linkbutton" data-options="iconCls:'icon-back',plain:true"></a>
+                </td>
+                <td style="width:33%;">
+                    <a href="#" class="@(pageId)setdelete easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true"></a>
+                </td>
+                <td style="width:33%;">
+                    <a href="#" class="@(pageId)setright easyui-linkbutton" data-options="iconCls:'icon-front',plain:true"></a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</li>

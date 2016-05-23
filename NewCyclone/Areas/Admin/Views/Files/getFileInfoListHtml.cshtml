@@ -5,7 +5,7 @@
     string url = ViewBag.url;
     VMEditFileInfoRequest file = ViewBag.file;
 }
-<li id="@file.fileId">
+<li>
     <form>
         <input type="hidden" value="@file.fileId" name="fileId" />
         <input type="hidden" value="@url" name="url" />
@@ -19,15 +19,15 @@
                     </table>
                 </td>
                 <td rowspan="3">
-                    <img src="@url" style="height:114px; width:114px;" />
+                    <div class="imglist"><img src="@url" /></div>
                 </td>
-                <td>标题：<input type="text" class="easyui-textbox" value="@file.title" name="filetitle" style="width:150px;" /></td>
+                <td>标题：<input type="text" class="easyui-textbox" value="@file.title" name="title" style="width:150px;" /></td>
             </tr>
             <tr>
-                <td>链接：<input type="text" class="easyui-textbox" value="@file.link" name="filelink" style="width:200px;" /></td>
+                <td>链接：<input type="text" class="easyui-textbox" value="@file.link" name="link" style="width:200px;" /></td>
             </tr>
             <tr>
-                <td>描述：<input type="text" class="easyui-textbox" value="@file.describe" name="filedescribe" data-options="multiline:true" style="width:300px; height:40px;" /></td>
+                <td>描述：<input type="text" class="easyui-textbox" value="@file.describe" name="describe" data-options="multiline:true" style="width:300px; height:40px;" /></td>
             </tr>
         </table>
     </form>

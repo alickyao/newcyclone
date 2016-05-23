@@ -29,7 +29,30 @@ namespace NewCyclone.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// 显示一个带描述的文件
+        /// 显示一个可排序的图片文件
+        /// </summary>
+        /// <param name="pageId">指定页面的ID</param>
+        /// <param name="fileId">文件的ID</param>
+        /// <param name="url">或者文件的URL</param>
+        /// <returns></returns>
+        public ActionResult getFileSortListHtml(string pageId, string fileId, string url=null) {
+            setPageId(pageId);
+            ViewBag.url = url;
+            VMEditFileSortRequest f = new VMEditFileSortRequest();
+            if (!string.IsNullOrEmpty(fileId)) {
+                SysFileSort info = new SysFileSort(fileId);
+                f = new VMEditFileSortRequest() {
+                    fileId = info.Id,
+                    sort = info.sort
+                };
+                ViewBag.url = info.url;
+            }
+            ViewBag.file = f;
+            return View();
+        }
+
+        /// <summary>
+        /// 显示一个带描述的图片文件
         /// </summary>
         /// <param name="pageId">页面的ID</param>
         /// <param name="fileId">文件的ID</param>

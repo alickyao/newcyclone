@@ -13,15 +13,17 @@
         var treeSet = $.parseJSON('@Html.Raw(q)');
         var selectcat = $("#@(pageId)selectcat");
         var form = $("#@(pageId)editform");
+        window.setTimeout( function () {
+            var Editor = KindEditor.create("#@(pageId)content", {
+                uploadJson: '/File/upload?path=editor',//指定上传文件的服务器端程序。
+                fileManagerJson: '/Scripts/kindeditor/asp.net/file_manager_json.ashx',//指定浏览远程图片的服务器端程序。
+                allowFileManager: true,//true时显示浏览远程服务器按钮。
+                afterBlur: function () {
+                    Editor.sync("#@(pageId)content");
+                }
+            });
+        },300);
 
-        var Editor = KindEditor.create("#@(pageId)content", {
-            uploadJson: '/File/upload?path=editor',//指定上传文件的服务器端程序。
-            fileManagerJson: '/Scripts/kindeditor/asp.net/file_manager_json.ashx',//指定浏览远程图片的服务器端程序。
-            allowFileManager: true,//true时显示浏览远程服务器按钮。
-            afterBlur: function () {
-                Editor.sync("#@(pageId)content");
-            }
-        });
 
         //分类树
         $.getJSON("/api/ApiSysCatTree/getTreelist?fun=webcms", function (json) {
@@ -43,7 +45,10 @@
         $('#@(pageId)file_upload').uploadify({
             'swf': '/Content/uploadify.swf',
             'uploader': '/File/upload?path=webpage',
-            'buttonText': '上传图集',
+            'buttonImage': '/Areas/Admin/Content/btn-upload.png',
+            'height': 26,
+            'width': 102,
+            //'buttonText': '上传图集',
             'multi': true,
             'fileTypeDesc': 'Image Files',
             'fileTypeExts': '*.gif; *.jpg; *.png',
@@ -52,29 +57,12 @@
                 data = $.parseJSON(data);
                 if (data.error == "0") {
                     //将上传的图片追加到图集的末尾
-
-                    //获取现有的图片的数量
-                    var c = $("#@(pageId)piclist").find("li").length;
-                    c = c + 1;
                     var piclist = $("#@(pageId)piclist");
-                    var str = '<li id="" url="'+ data.url +'">' +
-                                    '<div class="imglist"><img src="' + data.url + '" /></div>' +
-                                    '<table class="btntable" style="width:100%">' +
-                                        '<tr>' +
-                                            '<td style="width:33%;">' +
-                                                '<a href="#" class="@(pageId)setleft easyui-linkbutton" data-options="iconCls:\'icon-back\',plain:true"></a>' +
-                                                    '</td>' +
-                                            '<td style="width:33%;">' +
-                                                '<a href="#" class="@(pageId)setdelete easyui-linkbutton" data-options="iconCls:\'icon-cancel\',plain:true"></a>' +
-                                                    '</td>' +
-                                            '<td style="width:33%;">' +
-                                                '<a href="#" class="@(pageId)setright easyui-linkbutton" data-options="iconCls:\'icon-front\',plain:true"></a>' +
-                                            '</td>' +
-                                        '</tr>' +
-                                    '</table>' +
-                                '</li>';
-                    piclist.append(str);
-                    $.parser.parse(piclist);
+                    var url = "@Url.Action("getFileSortListHtml", "Files", new { pageId = pageId })";
+                    $.get(url + "&url=" + data.url, function (data) {
+                        piclist.append(data);
+                        $.parser.parse(piclist);
+                    });
                 }
                 else {
                     $.messager.alert('错误', data.message, 'error');
@@ -90,7 +78,7 @@
         $(document).off("click", leftbtn);
         $(document).on("click", leftbtn, function () {
             //向左
-            var li = $(this).parent().parent().parent().parent().parent();
+            var li = $(this).parentsUntil("li").parent().first();
             if (li.prev().length == 0) {
                 return false;
             }
@@ -99,7 +87,7 @@
         $(document).off("click", rightbtn);
         $(document).on("click", rightbtn, function () {
             //向右
-            var li = $(this).parent().parent().parent().parent().parent();
+            var li = $(this).parentsUntil("li").parent().first();
             if (li.next().length == 0) {
                 return false;
             }
@@ -107,8 +95,8 @@
         });
         $(document).off("click", delbtn);
         $(document).on("click", delbtn, function () {
-            var li = $(this).parent().parent().parent().parent().parent();
-            if (li.attr("Id") != "") {
+            var li = $(this).parentsUntil("li").parent().first();
+            if (li.find("input[name='fileId']").val() != "") {
                 li.appendTo("#@(pageId)dellist");
             }
             else {
@@ -116,78 +104,135 @@
             }
         });
 
+        $("#@(pageId)selectfilebtn").linkbutton({
+            onClick: function () {
+                var newpageId = "@SysHelp.getNewId()";
+                var url = "@Url.Action("listUpload", "Files")";
+                url += "?pageId=" + newpageId + "&path=webpage";
+                var dd = $("#@(pageId)ddshowfiles");
+                dd.dialog({
+                    href: url,
+                    title: '请选择',
+                    buttons: [
+                        {
+                            text: '选择',
+                            iconCls:'icon-ok',
+                            handler: function () {
+                                var grid = $("#" + newpageId + "grid");
+                                var rows = grid.datagrid("getChecked");
+                                if (rows.length > 0) {
+                                    var urls = [];
+                                    var e = false;
+                                    for (var i = 0; i < rows.length; i++) {
+                                        if (rows[i].isDir) {
+                                            $.messager.alert("错误", "不能选择文件夹", "error");
+                                            e = true;
+                                            break;
+                                        }
+                                        urls.push(rows[i].url);
+                                    }
+                                    if (!e && urls.length > 0) {
+                                        var piclist = $("#@(pageId)piclist");
+                                        var url = "@Url.Action("getFileSortListHtml", "Files",new { pageId = pageId })";
+                                        for (var i = 0; i < urls.length; i++) {
+                                            $.get(url + "&url=" + urls[i], function (data) {
+                                                piclist.append(data);
+                                                $.parser.parse(piclist);
+                                            });
+                                        }
+                                        toastr.info("已添加"+ urls.length +"张图片");
+                                        dd.dialog("close");
+                                    }
+                                }
+                                else {
+                                    $.messager.alert("错误", "请勾选文件", "error");
+                                }
+                            }
+                        },
+                        {
+                            text: '取消',
+                            iconCls: 'icon-clear',
+                            handler: function () {
+                                dd.dialog("close");
+                            }
+                        }
+                    ]
+                }).dialog("open");
+            }
+        });
+
     });
 </script>
-<form id="@(pageId)editform">
-    <input type="hidden" name="Id" value="@condtion.Id" />
-    <input type="hidden" name="fun" value="@condtion.fun" />
-    <table class="formtable" style="width:100%">
-        <tr>
-            <td class="t" style="width:80px;">标题</td>
-            <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" value="@condtion.caption" /></td>
-        </tr>
-        <tr>
-            <td class="t">别名&nbsp;<a href="#" title="设置别名后，可通过别名获取该文档的详情" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
-            <td>
-                <input type="text" class="easyui-textbox" name="alias" data-options="validType:'checkWebDocAlias[\'@condtion.Id\']'" value="@condtion.alias" />
-            </td>
-        </tr>
-        <tr>
-            <td class="t">所在分类</td>
-            <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="catTreeIds" style="width:300px;" /></td>
-        </tr>
-        <tr>
-            <td class="t" style="width:80px;">发布时间</td>
-            <td><input type="text" class="easyui-datebox" name="showTime" value="@condtion.showTime" /></td>
-        </tr>
-        <tr>
-            <td class="t">SEO标题</td>
-            <td><input type="text" class="easyui-textbox" name="seoTitle" style="width:250px;" value="@condtion.seoTitle" /></td>
-        </tr>
-        <tr>
-            <td class="t">SEO关键字</td>
-            <td><input type="text" class="easyui-textbox" name="seoKeyWords" style="width:400px;" value="@condtion.seoKeyWords" /></td>
-        </tr>
-        <tr>
-            <td class="t">描述</td>
-            <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:60px;" value="@condtion.describe" /></td>
-        </tr>
-        <tr>
-            <td class="t">上传图集</td>
-            <td>
-                <input type="file" id="@(pageId)file_upload" name="fileupload" />
-            </td>
-        </tr>
-        <tr>
-            <td class="t">图集</td>
-            <td>
-                <input type="hidden" name="files" value="," />
-                <ul id="@(pageId)piclist" class="sortfilelist">
-                    @foreach (var file in files) {
-                        <li id="@file.Id">
-                            <div class="imglist"><img src="@file.url" /></div>
-                            <table class="btntable" style="width:100%">
-                                <tr>
-                                    <td style="width:33%;">
-                                        <a href="#" class="@(pageId)setleft easyui-linkbutton" data-options="iconCls:'icon-back',plain:true"></a>
-                                    </td>
-                                    <td style="width:33%;">
-                                        <a href="#" class="@(pageId)setdelete easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true"></a>
-                                    </td>
-                                    <td style="width:33%;">
-                                        <a href="#" class="@(pageId)setright easyui-linkbutton" data-options="iconCls:'icon-front',plain:true"></a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                    }
-                </ul>
-                <ul id="@(pageId)dellist" style="display:none;"></ul>
-            </td>
-        </tr>
-        <tr>
-            <td class="t">正文</td>
-            <td><textarea name="content" id="@(pageId)content" style="width: 100%; height: 400px;">@condtion.content</textarea></td>
-        </tr>
-    </table>
-</form>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div id="@(pageId)ddshowfiles" class="easyui-dialog dialogwin" data-options="inline:true,resizable:true,modal:true,closed:true,title:''" style="width:90%;height:90%">
+    </div>
+    <div data-options="region:'center',border:false">
+        <form id="@(pageId)editform">
+            <input type="hidden" name="Id" value="@condtion.Id" />
+            <input type="hidden" name="fun" value="@condtion.fun" />
+            <table class="formtable" style="width:100%">
+                <tr>
+                    <td class="t" style="width:80px;">标题</td>
+                    <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" value="@condtion.caption" /></td>
+                </tr>
+                <tr>
+                    <td class="t">别名&nbsp;<a href="#" title="设置别名后，可通过别名获取该文档的详情" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
+                    <td>
+                        <input type="text" class="easyui-textbox" name="alias" data-options="validType:'checkWebDocAlias[\'@condtion.Id\']'" value="@condtion.alias" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="t">所在分类</td>
+                    <td><input type="text" class="easyui-combotree" id="@(pageId)selectcat" name="catTreeIds" style="width:300px;" /></td>
+                </tr>
+                <tr>
+                    <td class="t" style="width:80px;">发布时间</td>
+                    <td><input type="text" class="easyui-datebox" name="showTime" value="@condtion.showTime" /></td>
+                </tr>
+                <tr>
+                    <td class="t">SEO标题</td>
+                    <td><input type="text" class="easyui-textbox" name="seoTitle" style="width:250px;" value="@condtion.seoTitle" /></td>
+                </tr>
+                <tr>
+                    <td class="t">SEO关键字</td>
+                    <td><input type="text" class="easyui-textbox" name="seoKeyWords" style="width:400px;" value="@condtion.seoKeyWords" /></td>
+                </tr>
+                <tr>
+                    <td class="t">描述</td>
+                    <td><input type="text" class="easyui-textbox" name="describe" data-options="multiline:true" style="width:500px; height:60px;" value="@condtion.describe" /></td>
+                </tr>
+                <tr>
+                    <td class="t">正文</td>
+                    <td><textarea name="content" id="@(pageId)content" style="width: 100%; height: 400px;">@condtion.content</textarea></td>
+                </tr>
+            </table>
+        </form>
+        <table class="formtable" style="width:100%; margin-top:5px;">
+            <tr>
+                <td class="t" style="width:80px;" rowspan="2">上传</td>
+                <td>
+                    <input type="file" id="@(pageId)file_upload" name="fileupload" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" id="@(pageId)selectfilebtn">浏览服务器</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="t">图集</td>
+                <td>
+                    <input type="hidden" name="files" value="," />
+                    <ul id="@(pageId)piclist" class="sortfilelist">
+                        @foreach (var file in files)
+                {
+                    @Html.Action("getFileSortListHtml", "Files", new { pageid = pageId, fileId = file.Id })
+                }
+                    </ul>
+                    <ul id="@(pageId)dellist" style="display:none;"></ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

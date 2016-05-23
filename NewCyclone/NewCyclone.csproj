@@ -117,6 +117,7 @@
     <Content Include="App_Set\FunWebCms.xml" />
     <Content Include="App_Set\SysMenu.xml" />
     <Content Include="App_Set\SysRole.xml" />
+    <Content Include="Areas\Admin\Content\btn-upload.png" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -471,6 +472,7 @@
     <Content Include="Areas\Admin\Views\ManagerWebDoc\editrote.cshtml" />
     <Content Include="Areas\Admin\Views\Files\listUpload.cshtml" />
     <Content Include="Areas\Admin\Views\Files\getFileInfoListHtml.cshtml" />
+    <Content Include="Areas\Admin\Views\Files\getFileSortListHtml.cshtml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.min.js" />

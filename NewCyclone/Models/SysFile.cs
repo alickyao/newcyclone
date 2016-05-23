@@ -79,6 +79,12 @@ namespace NewCyclone.Models
                 db.Db_SysFileSet.Remove(d);
                 db.SaveChanges();
             }
+
+            try
+            {
+                deleteFile(this.url);
+            }
+            catch { }
         }
 
         /// <summary>
@@ -114,7 +120,7 @@ namespace NewCyclone.Models
                     fileSize = 0,
                     hasFile = (dir.GetFileSystemInfos().Length > 0),
                     isDir = true,
-                    lastWriteTime = dir.LastWriteTime,
+                    lastWriteTime = dir.LastWriteTime.ToUniversalTime().AddHours(8),
                     name = dir.Name,
                     url = rootUrl+ dir.Name,
                     fileType = string.Empty,
@@ -129,7 +135,7 @@ namespace NewCyclone.Models
                     fileSize = file.Length,
                     hasFile = false,
                     isDir = false,
-                    lastWriteTime = file.LastWriteTime,
+                    lastWriteTime = file.LastWriteTime.ToUniversalTime().ToUniversalTime().AddHours(8),
                     name = file.Name,
                     url = rootUrl + file.Name,
                     fileType = file.Extension,

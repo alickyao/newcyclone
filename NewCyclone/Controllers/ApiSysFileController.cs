@@ -44,7 +44,7 @@ namespace NewCyclone.Controllers
             try
             {
                 SysFile.deleteFile(condtion.rows);
-                result.msg = "删除成功";
+                result.msg = "文件删除成功";
                 string urls = String.Join(",", condtion.rows);
                 SysUserLog.saveLog("直接删除文件:" + condtion.rows.Count + "个，" + urls, SysUserLogType.删除);
             }
@@ -70,7 +70,7 @@ namespace NewCyclone.Controllers
             try
             {
                 result.result = SysFileSort.editSort(condtion);
-                result.msg = "排序调整成功";
+                result.msg = "文件排序调整成功";
             }
             catch (SysException e)
             {
@@ -83,7 +83,7 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 编辑带描述的文件信息（包括排序）
+        /// 编辑带描述的文件信息与排序
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
@@ -94,7 +94,7 @@ namespace NewCyclone.Controllers
             try
             {
                 result.result = SysFileInfo.editInfo(condtion);
-                result.msg = "信息调整成功";
+                result.msg = "文件信息调整成功";
             }
             catch (SysException e)
             {

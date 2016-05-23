@@ -179,90 +179,59 @@
                                         showmsg(json);
                                         btn.linkbutton("enable");
                                         if (json.code == 0) {
-
+                                            //新增/编辑/删除图片
                                             var filelist = $("#@(pageId)piclist").find("li");
                                             var dellist = $("#@(pageId)dellist").find("li");
                                             if (filelist.length > 0) {
                                                 var oldfiles = [];
                                                 var newfiles = [];
-                                                if (d.fun == "pic") {//图文
-                                                    $.each(filelist, function (i, n) {
-                                                        if ($(n).attr("Id") == "") {
-                                                            //new
-                                                            newfiles.push({
-                                                                url: $(n).attr("url"),
-                                                                sort: i
-                                                            });
-                                                        }
-                                                        else {
-                                                            //old
-                                                            oldfiles.push({
-                                                                fileId: $(n).attr("Id"),
-                                                                sort: i
-                                                            });
-                                                        }
-                                                    });
+                                                var delfiles = [];
 
-                                                    if (newfiles.length > 0) {
-                                                        //新增
-                                                        $.post("/api/ApiWebPages/appendsortpic", { docId: json.result.Id, rows: newfiles }, function (json) {
-                                                            console.log(json);
-                                                        });
-                                                    }
-                                                    if (oldfiles.length > 0) {
-                                                        //调整排序
-                                                        $.post("/api/ApiSysFile/editFilesSort", { rows: oldfiles }, function (json) {
-                                                            console.log(json);
-                                                        });
-                                                    }
-                                                }
-                                                else if (d.fun == "rote") {//轮播
+                                                if (filelist.length > 0) {
                                                     $.each(filelist, function (i, n) {
-
                                                         var d = $(n).find("form").serializeObject();
+                                                        d.sort = i;
                                                         if (d.fileId == "") {
-                                                            //new
-                                                            newfiles.push({
-                                                                url: d.url,
-                                                                sort: i,
-                                                                title: d.filetitle,
-                                                                link: d.filelink,
-                                                                describe: d.filedescribe
-                                                            });
+                                                            //新增
+                                                            newfiles.push(d);
                                                         }
                                                         else {
-                                                            //old
-                                                            oldfiles.push({
-                                                                fileId: d.fileId,
-                                                                sort: i,
-                                                                title: d.filetitle,
-                                                                link: d.filelink,
-                                                                describe: d.filedescribe
-                                                            });
+                                                            //编辑
+                                                            oldfiles.push(d);
                                                         }
                                                     });
+                                                    var addNewUrl = "";
+                                                    var editOldUrl = "";
+                                                    if (d.fun == "pic") {
+                                                        addNewUrl = "/api/ApiWebPages/appendsortpic";
+                                                        editOldUrl = "/api/ApiSysFile/editFilesSort";
+                                                    }
+                                                    else if (d.fun == "rote") {
+                                                        addNewUrl = "/api/ApiWebPages/appendinfopic";
+                                                        editOldUrl = "/api/ApiSysFile/editFilesInfo";
+                                                    }
+
                                                     if (newfiles.length > 0) {
-                                                        $.post("/api/ApiWebPages/appendinfopic", { docId: json.result.Id, rows: newfiles }, function (json) {
+                                                        $.post(addNewUrl, { docId: json.result.Id, rows: newfiles }, function (json) {
                                                             console.log(json);
                                                         })
                                                     }
                                                     if (oldfiles.length > 0) {
-                                                        $.post("/api/ApiSysFile/editFilesInfo", { rows: oldfiles }, function (json) {
+                                                        $.post(editOldUrl, { rows: oldfiles }, function (json) {
                                                             console.log(json);
                                                         });
                                                     }
                                                 }
-                                            }
-
-                                            //删除
-                                            if (dellist.length > 0) {
-                                                var delfiles = [];
-                                                $.each(dellist, function (i, n) {
-                                                    delfiles.push($(n).attr("Id"));
-                                                });
-                                                $.post("/api/ApiWebPages/delpic", { rows: delfiles }, function (json) {
-                                                    console.log(json);
-                                                });
+                                                //删除
+                                                if (dellist.length > 0) {
+                                                    $.each(dellist, function (i, n) {
+                                                        var d = $(n).find("form").serializeObject();
+                                                        delfiles.push(d.fileId);
+                                                    });
+                                                    $.post("/api/ApiWebPages/delpic", { rows: delfiles }, function (json) {
+                                                        console.log(json);
+                                                    });
+                                                }
                                             }
 
                                             dd.dialog("close");

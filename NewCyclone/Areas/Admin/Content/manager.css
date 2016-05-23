@@ -74,3 +74,11 @@
     .infofileinfolist li {
         margin-bottom:5px;
     }
+        .infofileinfolist li .imglist {
+            width:114px;
+            height:114px;
+            overflow:hidden;
+        }
+            .infofileinfolist li .imglist img {
+                width:100%;
+            }
