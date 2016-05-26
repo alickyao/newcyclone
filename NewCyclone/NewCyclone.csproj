@@ -803,6 +803,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Areas\Web\Controllers\HomeController.cs" />
     <Compile Include="Areas\Web\WebAreaRegistration.cs" />
+    <Compile Include="Areas\WxWeb\Controllers\AuthController.cs" />
     <Compile Include="Areas\WxWeb\Controllers\ResponseController.cs" />
     <Compile Include="Areas\WxWeb\WxWebAreaRegistration.cs" />
     <Compile Include="Controllers\ApiSysFileController.cs" />
@@ -941,6 +942,7 @@
     <Folder Include="Areas\Web\Models\" />
     <Folder Include="Areas\Web\Views\Shared\" />
     <Folder Include="Areas\WxWeb\Models\" />
+    <Folder Include="Areas\WxWeb\Views\Auth\" />
     <Folder Include="Areas\WxWeb\Views\Response\" />
     <Folder Include="Areas\WxWeb\Views\Shared\" />
     <Folder Include="Scripts\kindeditor\attached\" />
