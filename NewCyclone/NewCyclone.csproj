@@ -473,6 +473,8 @@
     <Content Include="Areas\Admin\Views\Files\listUpload.cshtml" />
     <Content Include="Areas\Admin\Views\Files\getFileInfoListHtml.cshtml" />
     <Content Include="Areas\Admin\Views\Files\getFileSortListHtml.cshtml" />
+    <Content Include="Areas\WxWeb\Views\web.config" />
+    <None Include="Properties\PublishProfiles\ok.pubxml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.min.js" />
@@ -801,6 +803,8 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Areas\Web\Controllers\HomeController.cs" />
     <Compile Include="Areas\Web\WebAreaRegistration.cs" />
+    <Compile Include="Areas\WxWeb\Controllers\ResponseController.cs" />
+    <Compile Include="Areas\WxWeb\WxWebAreaRegistration.cs" />
     <Compile Include="Controllers\ApiSysFileController.cs" />
     <Compile Include="Controllers\ApiSysMsgController.cs" />
     <Compile Include="Controllers\ApiSysCatTreeController.cs" />
@@ -936,6 +940,9 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Web\Models\" />
     <Folder Include="Areas\Web\Views\Shared\" />
+    <Folder Include="Areas\WxWeb\Models\" />
+    <Folder Include="Areas\WxWeb\Views\Response\" />
+    <Folder Include="Areas\WxWeb\Views\Shared\" />
     <Folder Include="Scripts\kindeditor\attached\" />
   </ItemGroup>
   <ItemGroup>
