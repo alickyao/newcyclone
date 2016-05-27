@@ -39,6 +39,8 @@
         <InheritanceConnector EntityType="SysModel.Db_FileSort" />
         <EntityTypeShape EntityType="SysModel.Db_FileInfo" Width="1.5" PointX="0.5" PointY="17" />
         <InheritanceConnector EntityType="SysModel.Db_FileInfo" />
+        <EntityTypeShape EntityType="SysModel.Db_SysNotice" Width="1.5" PointX="11.375" PointY="0.5" />
+        <InheritanceConnector EntityType="SysModel.Db_SysNotice" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

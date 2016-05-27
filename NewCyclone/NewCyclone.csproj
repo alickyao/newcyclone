@@ -116,6 +116,7 @@
   <ItemGroup>
     <Content Include="App_Set\FunWebCms.xml" />
     <Content Include="App_Set\SysMenu.xml" />
+    <Content Include="App_Set\WxMenuType.xml" />
     <Content Include="App_Set\SysRole.xml" />
     <Content Include="Areas\Admin\Content\btn-upload.png" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -812,6 +813,7 @@
     <Compile Include="Controllers\ApiSysUserController.cs" />
     <Compile Include="Controllers\ApiTestController.cs" />
     <Compile Include="Controllers\ApiWebPagesController.cs" />
+    <Compile Include="Controllers\ApiWeiXinController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DataBase\Db_CatTree.cs">
@@ -848,6 +850,9 @@
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\Db_SysMsg.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\Db_SysNotice.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\Db_SysTree.cs">
@@ -892,6 +897,7 @@
     <Compile Include="Models\SysTree.cs" />
     <Compile Include="Models\SysUi.cs" />
     <Compile Include="Models\SysUser.cs" />
+    <Compile Include="Models\WeiXinService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

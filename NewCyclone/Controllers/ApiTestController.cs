@@ -17,11 +17,20 @@ namespace NewCyclone.Controllers
         /// 测试
         /// </summary>
         [HttpGet]
-        [ApiAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse<VMDiskFileQueryResponse> test(string path)
+        public BaseResponse test()
         {
-            BaseResponse<VMDiskFileQueryResponse> res = new BaseResponse<VMDiskFileQueryResponse>();
-            res.result = SysFile.listFiles(path);
+            BaseResponse res = new BaseResponse();
+            //
+            try
+            {
+                //new WeiXinMenuService();
+                //WeiXinBase.queryToken();
+                //WeiXinMenu.createStandardMenu();
+            }
+            catch (SysException e) {
+                res = e.getresult(res, true);
+            }
+            
             return res;
         }
     }

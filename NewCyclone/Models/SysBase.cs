@@ -310,4 +310,18 @@ namespace NewCyclone.Models
             }
         }
     }
+
+    /// <summary>
+    /// HTTP协议类型
+    /// </summary>
+    public enum EnumHttpRequestType {
+        /// <summary>
+        /// http协议
+        /// </summary>
+        http,
+        /// <summary>
+        /// https协议
+        /// </summary>
+        https
+    }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using NewCyclone.DataBase;
 using System.Security.Principal;
+using System.ComponentModel.DataAnnotations;
 
 namespace NewCyclone.Models
 {
@@ -345,6 +346,113 @@ namespace NewCyclone.Models
             return result;
         }
     }
+
+
+    /// <summary>
+    /// 系统通知
+    /// </summary>
+    public class SysNotice : SysMsg {
+        /// <summary>
+        /// 是否提示
+        /// </summary>
+        public bool alert { get; set; }
+
+        /// <summary>
+        /// 消息标题
+        /// </summary>
+        public string title { get; set; }
+
+        /// <summary>
+        /// 是否已读
+        /// </summary>
+        public bool isRead { get; set; }
+
+        /// <summary>
+        /// 标记读取的时间
+        /// </summary>
+        public Nullable<DateTime> readTime { get; set; }
+
+        /// <summary>
+        /// 读取的用户ID
+        /// </summary>
+        public SysUser readUser { get; set; }
+
+        /// <summary>
+        /// 点击跳转的URL地址
+        /// </summary>
+        public string linkUrl { get; set; }
+
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        /// <param name="id"></param>
+        public SysNotice(long id) : base(id) {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysMsgSet.OfType<Db_SysNotice>().Single(p => p.Id == id);
+                this.alert = d.alert;
+                this.title = d.title;
+                this.isRead = d.isRead;
+                this.readTime = d.readTime;
+                this.linkUrl = d.linkUrl;
+                if (!string.IsNullOrEmpty(d.readUser)) {
+                    this.readUser = new SysUser(d.readUser);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 创建一个系统通知
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static SysNotice createNotice(VMMsgCreateSysNoticeRequest condtion) {
+            SysValidata.valiData(condtion);
+            using (var db = new SysModelContainer()) {
+                Db_SysNotice c = new Db_SysNotice() {
+                    alert = condtion.alert,
+                    createdOn = DateTime.Now,
+                    isRead = false,
+                    linkUrl = condtion.linkUrl,
+                    message = condtion.message,
+                    msgType = SysMessageType.通知.GetHashCode(),
+                    title = condtion.title
+                };
+
+                Db_SysMsg newrow = db.Db_SysMsgSet.Add(c);
+                db.SaveChanges();
+                SysNotice n = new SysNotice(newrow.Id);
+                return n;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 创建系统通知请求
+    /// </summary>
+    public class VMMsgCreateSysNoticeRequest {
+        /// <summary>
+        /// 是否提示-设置为true，后台系统会播放声音及弹出提示框
+        /// </summary>
+        public bool alert { get; set; }
+
+        /// <summary>
+        /// 消息标题-显示框上的标题
+        /// </summary>
+        [Required]
+        public string title { get; set; }
+
+        /// <summary>
+        /// 消息正文-显示在提示框中的消息内容
+        /// </summary>
+        [Required]
+        public string message { get; set; }
+
+        /// <summary>
+        /// 点击消息跳转的链接地址
+        /// </summary>
+        public string linkUrl { get; set; }
+    }
+
 
     /// <summary>
     /// 检索系统消息请求
