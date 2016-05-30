@@ -7,6 +7,8 @@ using System.Text;
 using System.Web;
 using System.Web.Http.Controllers;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace NewCyclone.Models
 {
@@ -308,6 +310,59 @@ namespace NewCyclone.Models
             finally {
                 file.Close();
             }
+        }
+
+        /// <summary>
+        /// XML字符串反序列化为对象
+        /// </summary>
+        /// <typeparam name="T">返回类型</typeparam>
+        /// <param name="str">XML格式字符串</param>
+        /// <returns></returns>
+        public static T desrializeStrToXml<T>(string str)
+        {
+            XmlSerializer mySerializer = new XmlSerializer(typeof(T));
+            StreamReader mem = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(str)),Encoding.UTF8);
+            return (T)mySerializer.Deserialize(mem);
+        }
+        /// <summary>
+        /// 将对象转换为XML字符串
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string srializeObjToXml<T>(T obj) {
+            string xmlstring = string.Empty;
+            XmlSerializer xmlserializer = new XmlSerializer(typeof(T));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                xmlserializer.Serialize(ms, obj);
+                xmlstring = Encoding.UTF8.GetString(ms.ToArray());
+            }
+            return xmlstring;
+        }
+
+        /// <summary>
+        /// DateTime时间格式转换为Unix时间戳格式
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static int convertDateTimeInt(System.DateTime time)
+        {
+            System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+            return (int)(time - startTime).TotalSeconds;
+        }
+
+        /// <summary>
+        /// 时间戳转为C#格式时间
+        /// </summary>
+        /// <param name="timeStamp"></param>
+        /// <returns></returns>
+        private static DateTime convertIntToDataTime(long timeStamp)
+        {
+            DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            long lTime = long.Parse(timeStamp + "0000000");
+            TimeSpan toNow = new TimeSpan(lTime);
+            return dtStart.Add(toNow);
         }
     }
 

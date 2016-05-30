@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using NewCyclone.Models;
+using NewCyclone.Models.WeiXin;
 
 namespace NewCyclone.Areas.WxWeb.Controllers
 {
@@ -48,16 +49,29 @@ namespace NewCyclone.Areas.WxWeb.Controllers
                 #endregion
             }
             else {
-                #region -- 推送消息
-                using (Stream stream = Request.InputStream) {
-                    Byte[] postBytes = new Byte[stream.Length];
-                    stream.Read(postBytes, 0, (Int32)stream.Length);
-                    string postString = Encoding.UTF8.GetString(postBytes);
-                    SysNotice.createNotice(new VMMsgCreateSysNoticeRequest {
-                        alert = false,
-                        message = postString,
-                        title = "收到微信消息"
-                    });
+                #region -- 推送消息与事件
+                string postString = string.Empty;
+                try
+                {
+                    using (Stream stream = Request.InputStream)
+                    {
+                        Byte[] postBytes = new Byte[stream.Length];
+                        stream.Read(postBytes, 0, (Int32)stream.Length);
+                        postString = Encoding.UTF8.GetString(postBytes);
+                        WxReceiveMsg msg = WeiXinMsgService.deserializePostString(postString);
+                        Response.Write(msg.returnMsg());
+                        Response.Write("");
+                    }
+                }
+                catch (SysException e) {
+                    BaseResponse result = new BaseResponse();
+                    result = e.getresult(result);
+                    Response.Write("");
+                }
+                catch (Exception e) {
+                    BaseResponse result = new BaseResponse();
+                    result = SysException.getResult(result, e, postString);
+                    Response.Write("");
                 }
                 #endregion
             }

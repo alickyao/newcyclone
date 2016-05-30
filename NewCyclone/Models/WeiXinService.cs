@@ -8,6 +8,8 @@ using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace NewCyclone.Models.WeiXin
 {
@@ -61,9 +63,9 @@ namespace NewCyclone.Models.WeiXin
                     if (code == "0") {
                         t = JsonConvert.DeserializeAnonymousType<T>(response, t);
                     }
-                    else{
+                    else {
                         e = JsonConvert.DeserializeAnonymousType<WxBaseResponse>(response, e);
-                        throw new SysException(string.Format("微信接口返回异常:{0},错误代码:[{1}]",e.errmsg,e.errcode), string.Format("url:{0},method:{1};返回[code:{2},msg:{3}],数据包:", url, method, e.errcode, e.errmsg) + datas);
+                        throw new SysException(string.Format("微信接口返回异常:{0},错误代码:[{1}]", e.errmsg, e.errcode), string.Format("url:{0},method:{1};返回[code:{2},msg:{3}],数据包:", url, method, e.errcode, e.errmsg) + datas);
                     }
 
                     //保存到系统通知
@@ -124,7 +126,7 @@ namespace NewCyclone.Models.WeiXin
     #endregion
 
     /// <summary>
-    /// 微信接口-基础
+    /// 微信接口-基础服务
     /// </summary>
     public class WeiXinBase {
 
@@ -152,6 +154,13 @@ namespace NewCyclone.Models.WeiXin
         protected static string appSecret
         {
             get { return System.Configuration.ConfigurationManager.AppSettings["appSecret"].ToString(); }
+        }
+
+        /// <summary>
+        /// 公众号原始ID
+        /// </summary>
+        protected static string originalId {
+            get { return System.Configuration.ConfigurationManager.AppSettings["originalId"].ToString(); }
         }
 
 
@@ -231,7 +240,7 @@ namespace NewCyclone.Models.WeiXin
         /// 一级菜单最多4个汉字，二级菜单最多7个汉字，多出来的部分将会以“...”代替。
         /// </summary>
         [Required]
-        [StringLength(40,ErrorMessage ="菜单标题不能超过40个字节")]
+        [StringLength(40, ErrorMessage = "菜单标题不能超过40个字节")]
         public string name { get; set; }
 
         /// <summary>
@@ -296,7 +305,7 @@ namespace NewCyclone.Models.WeiXin
     #endregion
 
     /// <summary>
-    /// 微信菜单
+    /// 微信菜单服务
     /// </summary>
     public class WeiXinMenuService : WeiXinBase
     {
@@ -371,10 +380,12 @@ namespace NewCyclone.Models.WeiXin
 
     #region -- 消息模型
 
+
     /// <summary>
     /// 基础消息
     /// </summary>
-    public abstract class WxBaseMsg {
+    [Serializable]
+    public class WxBaseMsg {
         /// <summary>
         /// 接收方帐号（OpenId或者开发者微信号）
         /// </summary>
@@ -392,23 +403,296 @@ namespace NewCyclone.Models.WeiXin
         /// </summary>
         public string MsgType { get; set; }
     }
+
+    /// <summary>
+    /// 接收到的消息
+    /// </summary>
+    [Serializable]
+    public  class WxReceiveMsg : WxBaseMsg
+    {
+        /// <summary>
+        /// 消息id，64位整型
+        /// </summary>
+        public long MsgId { get; set; }
+
+        /// <summary>
+        /// 消息返回
+        /// </summary>
+        /// <returns></returns>
+        public virtual string returnMsg() {
+            return "";
+        }
+    }
+
     /// <summary>
     /// 文本消息
     /// </summary>
-    public class WxTextMsg : WxBaseMsg
+    [Serializable]
+    public class WxTextMsg : WxReceiveMsg
     {
         /// <summary>
-        /// 回复的消息内容
+        /// 文本消息内容
         /// </summary>
         public string Content { get; set; }
+
+        /// <summary>
+        /// 接收消息的服务器地址
+        /// </summary>
+        public string URL { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string returnMsg()
+        {
+            return WeiXinMsgService.getTextMsg("您好", this.FromUserName);
+        }
+    }
+
+    /// <summary>
+    /// 图片消息
+    /// </summary>
+    public class WxPicMsg : WxReceiveMsg {
+        /// <summary>
+        /// 图片链接
+        /// </summary>
+        public string PicUrl { get; set; }
+        /// <summary>
+        /// 图片消息媒体id，可以调用多媒体文件下载接口拉取数据。
+        /// </summary>
+        public string MediaId { get; set; }
+
+        /// <summary>
+        /// 接收消息的服务器地址
+        /// </summary>
+        public string URL { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string returnMsg()
+        {
+            return WeiXinMsgService.getTextMsg("已经收到图片", this.FromUserName);
+        }
+    }
+    /// <summary>
+    /// 语音消息
+    /// </summary>
+    public class WxVoiceMsg : WxReceiveMsg {
+        /// <summary>
+        /// 语音消息媒体id，可以调用多媒体文件下载接口拉取数据。
+        /// </summary>
+        public string MediaId { get; set; }
+        /// <summary>
+        /// 语音格式，如amr，speex等
+        /// </summary>
+        public string Format { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Recognition { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string returnMsg()
+        {
+            return WeiXinMsgService.getTextMsg("已经收到语音消息", this.FromUserName);
+        }
+    }
+
+    /// <summary>
+    /// 视频消息
+    /// </summary>
+    public class WxVideoMsg : WxReceiveMsg {
+        /// <summary>
+        /// 视频消息媒体id，可以调用多媒体文件下载接口拉取数据。
+        /// </summary>
+        public string MediaId { get; set; }
+        /// <summary>
+        /// 视频消息缩略图的媒体id，可以调用多媒体文件下载接口拉取数据。
+        /// </summary>
+        public string ThumbMediaId { get; set; }
+
+        /// <summary>
+        /// 接收消息的服务器地址
+        /// </summary>
+        public string URL { get; set; }
+
+        public override string returnMsg()
+        {
+            return WeiXinMsgService.getTextMsg("已经收到视频消息", this.FromUserName);
+        }
+    }
+
+    /// <summary>
+    /// 小视频消息
+    /// </summary>
+    public class WxShortvideoMsg : WxReceiveMsg {
+        /// <summary>
+        /// 视频消息媒体id，可以调用多媒体文件下载接口拉取数据。
+        /// </summary>
+        public string MediaId { get; set; }
+        /// <summary>
+        /// 视频消息缩略图的媒体id，可以调用多媒体文件下载接口拉取数据。
+        /// </summary>
+        public string ThumbMediaId { get; set; }
+
+        /// <summary>
+        /// 接收消息的服务器地址
+        /// </summary>
+        public string URL { get; set; }
+
+        public override string returnMsg()
+        {
+            return WeiXinMsgService.getTextMsg("已经收到小视频消息", this.FromUserName);
+        }
+    }
+
+    /// <summary>
+    /// 地理位置消息
+    /// </summary>
+    public class WxLocationMsg : WxReceiveMsg {
+        /// <summary>
+        /// 地理位置维度
+        /// </summary>
+        public double Location_X { get; set; }
+        /// <summary>
+        /// 地理位置经度
+        /// </summary>
+        public double Location_Y { get; set; }
+        /// <summary>
+        /// 地图缩放大小
+        /// </summary>
+        public int Scale { get; set; }
+        /// <summary>
+        /// 地理位置信息
+        /// </summary>
+        public string Label { get; set; }
+
+        /// <summary>
+        /// 接收消息的服务器地址
+        /// </summary>
+        public string URL { get; set; }
+
+        public override string returnMsg()
+        {
+            return WeiXinMsgService.getTextMsg("已经收到地理位置", this.FromUserName);
+        }
+    }
+
+    /// <summary>
+    /// 链接消息
+    /// </summary>
+    public class WxLinkMsg : WxReceiveMsg {
+        /// <summary>
+        /// 消息标题
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
+        /// 消息描述
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
+        /// 消息链接
+        /// </summary>
+        public string Url { get; set; }
+
+        /// <summary>
+        /// 接收消息的服务器地址
+        /// </summary>
+        public string URL { get; set; }
+
+        public override string returnMsg()
+        {
+            return WeiXinMsgService.getTextMsg("已经收到您发送的链接", this.FromUserName);
+        }
     }
 
     #endregion
 
     /// <summary>
-    /// 微信消息
+    /// 微信消息服务
     /// </summary>
     public class WeiXinMsgService : WeiXinBase {
 
+        /// <summary>
+        /// 返序列化微信推送的XML格式消息
+        /// </summary>
+        /// <param name="postString">微信推送的XML数据</param>
+        public static WxReceiveMsg deserializePostString(string postString) {
+            XmlDocument xmldoc = new XmlDocument();
+            xmldoc.LoadXml(postString);
+            XmlNode MsgType = xmldoc.SelectSingleNode("/xml/MsgType");
+            if (MsgType != null)
+            {
+                WxReceiveMsg t = new WxReceiveMsg();
+                switch (MsgType.InnerText) {
+                    case "text":
+                        t = ConvertObj<WxTextMsg>(postString);
+                        break;
+                    case "image":
+                        t = ConvertObj<WxPicMsg>(postString);
+                        break;
+                    case "voice":
+                        t = ConvertObj<WxVoiceMsg>(postString);
+                        break;
+                    case "video":
+                        t = ConvertObj<WxVideoMsg>(postString);
+                        break;
+                    case "shortvideo":
+                        t = ConvertObj<WxShortvideoMsg>(postString);
+                        break;
+                    case "location":
+                        t = ConvertObj<WxLocationMsg>(postString);
+                        break;
+                    case "link":
+                        t = ConvertObj<WxLinkMsg>(postString);
+                        break;
+                }
+                return t;
+            }
+            else {
+                throw new SysException("错误的XML文件格式", postString);
+            }
+        }
+
+        /// <summary>
+        /// 将微信发送的XML字符串序列化为对象
+        /// </summary>
+        /// <typeparam name="T">返回的类型</typeparam>
+        /// <param name="xmlstr">微信发送的XML字符串</param>
+        /// <returns></returns>
+        public static T ConvertObj<T>(string xmlstr)
+        {
+            XElement xdoc = XElement.Parse(xmlstr);
+            var type = typeof(T);
+            var t = Activator.CreateInstance<T>();
+            foreach (XElement element in xdoc.Elements())
+            {
+                var pr = type.GetProperty(element.Name.ToString());
+                pr.SetValue(t, Convert.ChangeType(element.Value, pr.PropertyType), null);
+            }
+            return t;
+        }
+
+        /// <summary>
+        /// 获取一个文本消息
+        /// </summary>
+        /// <param name="content">文本消息内容</param>
+        /// <param name="toUserOpenId">接收者的OpenId</param>
+        /// <returns>XML格式的字符串</returns>
+        public static string getTextMsg(string content, string toUserOpenId) {
+            StringBuilder sb = new StringBuilder("<xml>");
+            sb.AppendFormat("<ToUserName><![CDATA[{0}]]></ToUserName>",toUserOpenId);
+            sb.AppendFormat("<FromUserName><![CDATA[{0}]]></FromUserName>", originalId);
+            sb.AppendFormat("<CreateTime>{0}</CreateTime>", SysHelp.convertDateTimeInt(DateTime.Now));
+            sb.Append("<MsgType><![CDATA[text]]></MsgType>");
+            sb.AppendFormat("<Content><![CDATA[{0}]]></Content>", content);
+            sb.Append("</xml>");
+            return sb.ToString();
+        }
     }
 }

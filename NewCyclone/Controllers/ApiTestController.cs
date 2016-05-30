@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using NewCyclone.Models;
+using NewCyclone.Models.WeiXin;
+using System.Text;
 
 namespace NewCyclone.Controllers
 {
@@ -20,17 +22,15 @@ namespace NewCyclone.Controllers
         public BaseResponse test()
         {
             BaseResponse res = new BaseResponse();
-            //
             try
             {
-                //new WeiXinMenuService();
-                //WeiXinBase.queryToken();
-                //WeiXinMenu.createStandardMenu();
+                string str = @"<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName> <CreateTime>1348831860</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[this is a test]]></Content><MsgId>1234567890123456</MsgId></xml>";
+                WxReceiveMsg msg = WeiXinMsgService.deserializePostString(str);
+                res.msg = msg.returnMsg();
             }
             catch (SysException e) {
                 res = e.getresult(res, true);
             }
-            
             return res;
         }
     }
