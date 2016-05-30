@@ -1,0 +1,252 @@
+﻿
+@{
+    Layout = null;
+    string pageId = ViewBag.pageId;
+}
+<script>
+    $(document).ready(function () {
+        $.getJSON("/api/ApiWeiXinSet/getMenuTypeList", function (json) {
+            var menuType = json.result;
+            var grid = $("#@(pageId)grid");
+            var grid2 = $("#@(pageId)grid2");
+            var dd = $("#@(pageId)dd");
+
+            //加载网格
+            function loadGrid() {
+                grid.datagrid("loading");
+                $.getJSON("/api/ApiWeiXinSet/getMenu", function (json) {
+                    grid.datagrid("loaded");
+                    console.log(json);
+                });
+            }
+            //一级菜单网格
+            grid.datagrid({
+                fit: true,
+                border: false,
+                fitColumns: false,
+                striped: true,
+                pagination: false,
+                rownumbers: true,
+                singleSelect: true,
+                idField: "Id",
+                columns: [[
+                    {
+                        field: 'name', title: '名称', align: 'left', width: 150, editor: { type: "textbox", options: { required: true } }
+                    },
+                    {
+                        field: 'type', title: '类型', width: 150, editor: { type: "combobox", options: { required: true, valueField: 'clickType', textField: 'text', data: menuType } }
+                    },
+                    {
+                        field: 'key', title: '菜单KEY值', width: 150, editor: { type: "textbox", options: { required: false } }
+                    },
+                    {
+                        field: 'url', title: '网页链接', width: 250, editor: { type: "textbox", options: { required: false } }
+                    },
+                    {
+                        field: 'media_id', title: '素材的ID', width: 150, editor: { type: "textbox", options: { required: false } }
+                    }
+                ]],
+                toolbar: [
+                    {
+                        text: "新增行",
+                        iconCls: 'icon-add',
+                        handler: function () {
+                            var rows = grid.datagrid("getRows");
+                            if (rows.length >= 3) {
+                                $.messager.alert('您的操作有误', "一级菜单不能超过3个", 'error');
+                                return;
+                            }
+                            var index = rows.length;
+                            grid.datagrid("insertRow", {
+                                index: index,
+                                row: {
+                                    Id: index,
+                                    type: 'click',
+                                    sub_button:[]
+                                }
+                            }).datagrid("beginEdit", index);
+                        }
+                    },
+                    {
+                        text:'编辑行',
+                        iconCls: 'icon-edit',
+                        handler: function () {
+                            var row = grid.datagrid("getSelected");
+                            if (row == null) {
+                                $.messager.alert('您的操作有误', "请选择一行", 'error');
+                                return;
+                            }
+                            var index = grid.datagrid("getRowIndex", row);
+                            grid.datagrid("beginEdit", index);
+                        }
+                    },
+                    {
+                        text: '移除行',
+                        iconCls: 'icon-remove',
+                        handler: function () {
+
+                        }
+                    },
+                    {
+                        text: '保存',
+                        iconCls: 'icon-save',
+                        handler: function () {
+                            var rows = grid.datagrid("getRows");
+                            if (rows.length > 0) {
+                                var validate = false;
+                                for (var i = 0; i < rows.length; i++) {
+                                    validate = grid.datagrid("validateRow", i);
+                                    if (validate) {
+                                        grid.datagrid("endEdit", i);
+                                    }
+                                }
+                                if (!validate) {
+                                    return;
+                                }
+                                else {
+                                    console.log(rows);
+                                }
+                            }
+                            else {
+                                $.messager.alert('您的操作有误', "没有数据需要保存", 'error');
+                            }
+                        }
+                    },
+                    {
+                        text: '维护二级菜单',
+                        iconCls: 'icon-more',
+                        handler: function () {
+                            var row = grid.datagrid("getSelected");
+                            if (row == null) {
+                                $.messager.alert('您的操作有误', "请选择一行", 'error');
+                                return;
+                            }
+                            dd.dialog("open");
+                        }
+                    },
+                    {
+                        text: '上传菜单',
+                        iconCls: 'icon-arrow_up',
+                        handler: function () {
+
+                        }
+                    },
+                    {
+                        text: '删除菜单',
+                        iconCls: 'icon-clear',
+                        handler: function () {
+
+                        }
+                    }
+                ]
+            });
+
+            //二级菜单网格
+            grid2.datagrid({
+                fit: true,
+                border: false,
+                fitColumns: false,
+                striped: true,
+                pagination: false,
+                rownumbers: true,
+                singleSelect: true,
+                idField: "sId",
+                columns: [[
+                    {
+                        field: 'name', title: '名称', align: 'left', width: 100, editor: { type: "textbox", options: { required: true } }
+                    },
+                    {
+                        field: 'type', title: '类型', width: 100, editor: { type: "combobox", options: { required: true, valueField: 'clickType', textField: 'text', data: menuType } }
+                    },
+                    {
+                        field: 'key', title: '菜单KEY值', width: 100, editor: { type: "textbox", options: { required: false } }
+                    },
+                    {
+                        field: 'url', title: '网页链接', width: 250, editor: { type: "textbox", options: { required: false } }
+                    },
+                    {
+                        field: 'media_id', title: '素材的ID', width: 150, editor: { type: "textbox", options: { required: false } }
+                    }
+                ]],
+                toolbar: [
+                    {
+                        text: "新增行",
+                        iconCls: 'icon-add',
+                        handler: function () {
+                            var rows = grid2.datagrid("getRows");
+                            if (rows.length >= 5) {
+                                $.messager.alert('您的操作有误', "二级菜单不能超过5个", 'error');
+                                return;
+                            }
+                            var index = rows.length;
+                            grid2.datagrid("insertRow", {
+                                index: index,
+                                row: {
+                                    sId: index,
+                                    type: 'click'
+                                }
+                            }).datagrid("beginEdit", index);
+                        }
+                    },
+                    {
+                        text: '编辑行',
+                        iconCls: 'icon-edit',
+                        handler: function () {
+                            var row = grid2.datagrid("getSelected");
+                            if (row == null) {
+                                $.messager.alert('您的操作有误', "请选择一行", 'error');
+                                return;
+                            }
+                            var index = grid2.datagrid("getRowIndex", row);
+                            grid2.datagrid("beginEdit", index);
+                        }
+                    },
+                    {
+                        text: '移除行',
+                        iconCls: 'icon-remove',
+                        handler: function () {
+
+                        }
+                    },
+                    {
+                        text: '保存',
+                        iconCls: 'icon-save',
+                        handler: function () {
+                            var rows = grid2.datagrid("getRows");
+                            if (rows.length > 0) {
+                                var validate = false;
+                                for (var i = 0; i < rows.length; i++) {
+                                    validate = grid2.datagrid("validateRow", i);
+                                    if (validate) {
+                                        grid2.datagrid("endEdit", i);
+                                    }
+                                }
+                                if (!validate) {
+                                    return;
+                                }
+                                else {
+                                    console.log(rows);
+                                }
+                            }
+                            else {
+                                $.messager.alert('您的操作有误', "没有数据需要保存", 'error');
+                            }
+                        }
+                    }
+                ]
+            });
+
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'east',border:false,title:'菜单按钮类型说明',split:true" style="width:400px;">
+        <div id="@(pageId)info" class="easyui-panel" data-options="fit:true,border:false,href:'@Url.Action("menuButtonDescribe")'" style="padding:5px;"></div>
+    </div>
+    <div data-options="region:'center',border:false,title:'菜单管理'">
+        <div class="easyui-dialog" id="@(pageId)dd" style="width:90%; height:90%;" data-options="inline:true,resizable:true,modal:true,closed:true,title:'二级菜单'">
+            <table id="@(pageId)grid2"></table>
+        </div>
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>

@@ -475,6 +475,8 @@
     <Content Include="Areas\Admin\Views\Files\getFileInfoListHtml.cshtml" />
     <Content Include="Areas\Admin\Views\Files\getFileSortListHtml.cshtml" />
     <Content Include="Areas\WxWeb\Views\web.config" />
+    <Content Include="Areas\Admin\Views\WeiXin\menu.cshtml" />
+    <Content Include="Areas\Admin\Views\WeiXin\menuButtonDescribe.cshtml" />
     <None Include="Properties\PublishProfiles\ok.pubxml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
@@ -774,6 +776,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\FilesController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManagerController.cs" />
+    <Compile Include="Areas\Admin\Controllers\WeiXinController.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
     <Compile Include="Areas\HelpPage\Controllers\HelpController.cs" />
