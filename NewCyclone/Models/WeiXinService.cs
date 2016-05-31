@@ -22,12 +22,12 @@ namespace NewCyclone.Models.WeiXin
         /// <summary>
         /// 返回对象
         /// </summary>
-        public T t;
+        protected T t;
 
         /// <summary>
         /// 错误详情
         /// </summary>
-        public WxBaseResponse e;
+        protected WxBaseResponse e;
 
         /// <summary>
         /// 构造
@@ -353,12 +353,12 @@ namespace NewCyclone.Models.WeiXin
                     int j = 0;
                     foreach (var m2 in m1.sub_button) {
                         j++;
-                        if (j >= 5) {
+                        if (j > 5) {
                             throw new SysException("二级菜单不能超过5个", request);
                         }
                     }
                 }
-                if (i >= 3) {
+                if (i > 3) {
                     throw new SysException("一级菜单不能超过3个", request);
                 }
             }
@@ -693,6 +693,171 @@ namespace NewCyclone.Models.WeiXin
             sb.AppendFormat("<Content><![CDATA[{0}]]></Content>", content);
             sb.Append("</xml>");
             return sb.ToString();
+        }
+    }
+
+
+    #region -- 素材模型
+    /// <summary>
+    /// 查询永久素材总数返回对象
+    /// </summary>
+    public class WxQueryMaterialCountReplay
+    {
+        /// <summary>
+        /// 语音总数量
+        /// </summary>
+        public int voice_count { get; set; }
+        /// <summary>
+        /// 视频总数量
+        /// </summary>
+        public int video_count { get; set; }
+        /// <summary>
+        /// 图片总数量
+        /// </summary>
+        public int image_count { get; set; }
+        /// <summary>
+        /// 图文总数量
+        /// </summary>
+        public int news_count { get; set; }
+    }
+
+    #endregion
+
+    /// <summary>
+    /// 素材管理服务
+    /// </summary>
+    public class WeiXinMaterialService : WeiXinBase {
+        /// <summary>
+        /// 查询素材总数
+        /// </summary>
+        /// <returns></returns>
+        public static WxQueryMaterialCountReplay querycount() {
+            string url = geturl("material", "get_materialcount", EnumHttpRequestType.https);
+            WxQueryMaterialCountReplay t = new WeiXinGetResponse<WxQueryMaterialCountReplay>(url, "get").getRetrun();
+            return t;
+        }
+
+
+        public static void uploadFile1()
+        {
+            string fileurl = "/upload/webpage/160523/swml_160523153853.jpg";
+            string path = HttpContext.Current.Server.MapPath(fileurl);
+
+            string url = geturl("material", "add_material", EnumHttpRequestType.https);
+            url += "&type=image";
+
+
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+            CookieContainer cookieContainer = new CookieContainer();
+            request.CookieContainer = cookieContainer;
+            request.AllowAutoRedirect = true;
+            request.Method = "POST";
+            string boundary = DateTime.Now.Ticks.ToString("X"); // 随机分隔线
+            request.ContentType = "multipart/form-data;charset=utf-8;boundary=" + boundary;
+            byte[] itemBoundaryBytes = Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
+            byte[] endBoundaryBytes = Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
+
+            int pos = path.LastIndexOf("\\");
+            string fileName = path.Substring(pos + 1);
+
+            StringBuilder sbHeader = new StringBuilder(string.Format("Content-Disposition:form-data;name=\"file\";filename=\"{0}\"\r\nContent-Type:application/octet-stream\r\n\r\n", fileName));
+
+            byte[] postHeaderBytes = Encoding.UTF8.GetBytes(sbHeader.ToString());
+
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            byte[] bArr = new byte[fs.Length];
+            fs.Read(bArr, 0, bArr.Length);
+            fs.Close();
+
+            Stream postStream = request.GetRequestStream();
+            postStream.Write(itemBoundaryBytes, 0, itemBoundaryBytes.Length);
+            postStream.Write(postHeaderBytes, 0, postHeaderBytes.Length);
+            postStream.Write(bArr, 0, bArr.Length);
+            postStream.Write(endBoundaryBytes, 0, endBoundaryBytes.Length);
+            postStream.Close();
+
+            //发送请求并获取相应回应数据
+            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+            //直到request.GetResponse()程序才开始向目标网页发送Post请求
+            Stream instream = response.GetResponseStream();
+            StreamReader sr = new StreamReader(instream, Encoding.UTF8);
+            //返回结果网页（html）代码
+            string content = sr.ReadToEnd();
+        }
+
+        public static void uploadFile() {
+            string fileurl = "/upload/webpage/160523/swml_160523153853.jpg";
+            string path = HttpContext.Current.Server.MapPath(fileurl);
+
+            string url = geturl("media", "upload", EnumHttpRequestType.https);
+            url += "&type=image";
+
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+            CookieContainer cookieContainer = new CookieContainer();
+            request.CookieContainer = cookieContainer;
+            request.AllowAutoRedirect = true;
+            request.Method = "POST";
+            string boundary = DateTime.Now.Ticks.ToString("X"); // 随机分隔线
+            request.ContentType = "multipart/form-data;charset=utf-8;boundary=" + boundary;
+            byte[] itemBoundaryBytes = Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
+            byte[] endBoundaryBytes = Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
+
+            int pos = path.LastIndexOf("\\");
+            string fileName = path.Substring(pos + 1);
+
+            StringBuilder sbHeader = new StringBuilder(string.Format("Content-Disposition:form-data;name=\"file\";filename=\"{0}\"\r\nContent-Type:application/octet-stream\r\n\r\n", fileName));
+
+            byte[] postHeaderBytes = Encoding.UTF8.GetBytes(sbHeader.ToString());
+
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            byte[] bArr = new byte[fs.Length];
+            fs.Read(bArr, 0, bArr.Length);
+            fs.Close();
+
+            Stream postStream = request.GetRequestStream();
+            postStream.Write(itemBoundaryBytes, 0, itemBoundaryBytes.Length);
+            postStream.Write(postHeaderBytes, 0, postHeaderBytes.Length);
+            postStream.Write(bArr, 0, bArr.Length);
+            postStream.Write(endBoundaryBytes, 0, endBoundaryBytes.Length);
+            postStream.Close();
+
+            //发送请求并获取相应回应数据
+            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+            //直到request.GetResponse()程序才开始向目标网页发送Post请求
+            Stream instream = response.GetResponseStream();
+            StreamReader sr = new StreamReader(instream, Encoding.UTF8);
+            //返回结果网页（html）代码
+            string content = sr.ReadToEnd();
+        }
+
+        public static void downloadFile(string mid) {
+            string file = string.Empty;
+            string content = string.Empty;
+            string strpath = string.Empty;
+            string savepath = string.Empty;
+            string stUrl = geturl("media", "get", EnumHttpRequestType.https);
+            stUrl += "&media_id=" + mid;
+            HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(stUrl);
+
+            req.Method = "GET";
+            using (WebResponse wr = req.GetResponse())
+            {
+                HttpWebResponse myResponse = (HttpWebResponse)req.GetResponse();
+
+                strpath = myResponse.ResponseUri.ToString();
+                WebClient mywebclient = new WebClient();
+                savepath = HttpContext.Current.Server.MapPath("/upload/weixin") + "\\" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + (new Random()).Next().ToString().Substring(0, 4) + ".jpg";
+                try
+                {
+                    mywebclient.DownloadFile(strpath, savepath);
+                    file = savepath;
+                }
+                catch (Exception ex)
+                {
+                    savepath = ex.ToString();
+                }
+
+            }
         }
     }
 }

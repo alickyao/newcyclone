@@ -1,0 +1,9 @@
+﻿
+@{
+    Layout = null;
+    string pageId = ViewBag.pageId;
+    WxQueryMaterialCountReplay s = WeiXinMaterialService.querycount();
+}
+
+@s.news_count<br />
+@s.image_count<br />

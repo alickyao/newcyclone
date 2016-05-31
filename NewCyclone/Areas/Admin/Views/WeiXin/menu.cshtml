@@ -17,8 +17,66 @@
                 $.getJSON("/api/ApiWeiXinSet/getMenu", function (json) {
                     grid.datagrid("loaded");
                     console.log(json);
+                    if (json.code == "0") {
+                        grid.datagrid("loadData", { total: json.result.menu.button.length, rows: json.result.menu.button });
+                    }
                 });
             }
+            //向上移动行
+            function uprow(grid) {
+                var row = grid.datagrid("getSelected");
+                if (row == null) {
+                    $.messager.alert('您的操作有误', "请选择一行", 'error');
+                    return;
+                }
+
+                var editrow = grid.datagrid("getChanges");
+                if (editrow.length > 0) {
+                    $.messager.alert('您的操作有误', "请先完成编辑", 'error');
+                    return;
+                }
+                var index = grid.datagrid("getRowIndex", row);
+                if (index == 0) {
+                    return;
+                }
+                var row1 = grid.datagrid("selectRow", index - 1).datagrid("getSelected");
+                grid.datagrid("deleteRow", index - 1);
+                grid.datagrid("insertRow", {
+                    index: index,
+                    row: row1
+                });
+                grid.datagrid("selectRow", index - 1);
+                grid.datagrid("acceptChanges");
+            }
+            //向下移动行
+            function downrow(grid) {
+
+                var row = grid.datagrid("getSelected");
+                if (row == null) {
+                    $.messager.alert('您的操作有误', "请选择一行", 'error');
+                    return;
+                }
+                var editrow = grid.datagrid("getChanges");
+                if (editrow.length > 0) {
+                    $.messager.alert('您的操作有误', "请先完成编辑", 'error');
+                    return;
+                }
+
+                var index = grid.datagrid("getRowIndex", row);
+                var allrow = grid.datagrid("getRows");
+                if (index >= (allrow.length - 1)) {
+                    return;
+                }
+                var row1 = grid.datagrid("selectRow", index + 1).datagrid("getSelected");
+                grid.datagrid("deleteRow", index + 1);
+                grid.datagrid("insertRow", {
+                    index: index,
+                    row: row1
+                });
+                grid.datagrid("selectRow", index + 1);
+                grid.datagrid("acceptChanges");
+            }
+
             //一级菜单网格
             grid.datagrid({
                 fit: true,
@@ -31,10 +89,19 @@
                 idField: "Id",
                 columns: [[
                     {
-                        field: 'name', title: '名称', align: 'left', width: 150, editor: { type: "textbox", options: { required: true } }
+                        field: 'name', title: '名称', align: 'left', width: 100, editor: { type: "textbox", options: { required: true, validType: 'length[1,4]' } }
                     },
                     {
-                        field: 'type', title: '类型', width: 150, editor: { type: "combobox", options: { required: true, valueField: 'clickType', textField: 'text', data: menuType } }
+                        field: 'sub_button', title: '二级菜单', width: 60, align:'right',  formatter: function (value, row, index) {
+                            var count = 0;
+                            if (value != null) {
+                                count = value.length;
+                            }
+                            return count+"个";
+                        }
+                    },
+                    {
+                        field: 'type', title: '类型', width: 100, editor: { type: "combobox", options: { required: true, valueField: 'clickType', textField: 'text', data: menuType } }
                     },
                     {
                         field: 'key', title: '菜单KEY值', width: 150, editor: { type: "textbox", options: { required: false } }
@@ -43,7 +110,7 @@
                         field: 'url', title: '网页链接', width: 250, editor: { type: "textbox", options: { required: false } }
                     },
                     {
-                        field: 'media_id', title: '素材的ID', width: 150, editor: { type: "textbox", options: { required: false } }
+                        field: 'media_id', title: '素材的ID', width: 100, editor: { type: "textbox", options: { required: false } }
                     }
                 ]],
                 toolbar: [
@@ -62,9 +129,9 @@
                                 row: {
                                     Id: index,
                                     type: 'click',
-                                    sub_button:[]
+                                    sub_button: []
                                 }
-                            }).datagrid("beginEdit", index);
+                            }).datagrid("beginEdit", index).datagrid("selectRow", index);
                         }
                     },
                     {
@@ -84,11 +151,18 @@
                         text: '移除行',
                         iconCls: 'icon-remove',
                         handler: function () {
-
+                            var row = grid.datagrid("getSelected");
+                            if (row == null) {
+                                $.messager.alert('您的操作有误', "请选择一行", 'error');
+                                return;
+                            }
+                            var index = grid.datagrid("getRowIndex", row);
+                            grid.datagrid("deleteRow", index);
+                            grid.datagrid("acceptChanges");
                         }
                     },
                     {
-                        text: '保存',
+                        text: '完成编辑',
                         iconCls: 'icon-save',
                         handler: function () {
                             var rows = grid.datagrid("getRows");
@@ -105,6 +179,7 @@
                                 }
                                 else {
                                     console.log(rows);
+                                    grid.datagrid("acceptChanges");
                                 }
                             }
                             else {
@@ -113,14 +188,36 @@
                         }
                     },
                     {
+                        text: '上移',
+                        iconCls: 'icon-arrow_up',
+                        handler: function () {
+                            uprow(grid);
+                        }
+                    },
+                    {
+                        text: '下移',
+                        iconCls: 'icon-arrow_down',
+                        handler: function () {
+                            downrow(grid);
+                        }
+                    },
+                    
+                    {
                         text: '维护二级菜单',
                         iconCls: 'icon-more',
                         handler: function () {
+                            var editrow = grid.datagrid("getChanges");
+                            if (editrow.length > 0) {
+                                $.messager.alert('您的操作有误', "请先完成编辑", 'error');
+                                return false;
+                            }
+
                             var row = grid.datagrid("getSelected");
                             if (row == null) {
                                 $.messager.alert('您的操作有误', "请选择一行", 'error');
                                 return;
                             }
+                            grid2.datagrid("loadData", { totle: row.sub_button.length, rows: row.sub_button });
                             dd.dialog("open");
                         }
                     },
@@ -128,18 +225,50 @@
                         text: '上传菜单',
                         iconCls: 'icon-arrow_up',
                         handler: function () {
-
+                            var editrow = grid.datagrid("getChanges");
+                            if (editrow.length > 0) {
+                                $.messager.alert('您的操作有误', "请先完成编辑", 'error');
+                                return;
+                            }
+                            var rows = grid.datagrid("getRows");
+                            if (rows.length > 0) {
+                                var button = [];
+                                $.each(rows, function (i, n) {
+                                    button.push(n);
+                                });
+                                console.log(button);
+                                grid.datagrid("loading");
+                                $.post("/api/ApiWeiXinSet/createStandardMenu", { button: button }, function (json) {
+                                    console.log(json);
+                                    showmsg(json);
+                                    grid.datagrid("loaded");
+                                });
+                            }
+                            else {
+                                $.messager.alert('您的操作有误', "没有菜单项需要上传", 'error');
+                            }
                         }
                     },
                     {
                         text: '删除菜单',
                         iconCls: 'icon-clear',
                         handler: function () {
-
+                            $.messager.confirm('请确认', '该操作会删除微信公众账号的菜单设置<br />确认执行？', function (r) {
+                                if (r) {
+                                    grid.datagrid("loading");
+                                    $.getJSON("/api/ApiWeiXinSet/delMenu", function (json) {
+                                        showmsg(json);
+                                        grid.datagrid("loadData", { total: 0, rows: [] });
+                                        grid.datagrid("loaded");
+                                    });
+                                }
+                            });
                         }
                     }
                 ]
             });
+
+            loadGrid();
 
             //二级菜单网格
             grid2.datagrid({
@@ -153,7 +282,7 @@
                 idField: "sId",
                 columns: [[
                     {
-                        field: 'name', title: '名称', align: 'left', width: 100, editor: { type: "textbox", options: { required: true } }
+                        field: 'name', title: '名称', align: 'left', width: 100, editor: { type: "textbox", options: { required: true, validType: 'length[1,7]' } }
                     },
                     {
                         field: 'type', title: '类型', width: 100, editor: { type: "combobox", options: { required: true, valueField: 'clickType', textField: 'text', data: menuType } }
@@ -205,7 +334,28 @@
                         text: '移除行',
                         iconCls: 'icon-remove',
                         handler: function () {
-
+                            var row = grid2.datagrid("getSelected");
+                            if (row == null) {
+                                $.messager.alert('您的操作有误', "请选择一行", 'error');
+                                return;
+                            }
+                            var index = grid2.datagrid("getRowIndex", row);
+                            grid2.datagrid("deleteRow", index);
+                            grid2.datagrid("acceptChanges");
+                        }
+                    },
+                    {
+                        text: '上移',
+                        iconCls: 'icon-arrow_up',
+                        handler: function () {
+                            uprow(grid2);
+                        }
+                    },
+                    {
+                        text: '下移',
+                        iconCls: 'icon-arrow_down',
+                        handler: function () {
+                            downrow(grid2);
                         }
                     },
                     {
@@ -226,16 +376,39 @@
                                 }
                                 else {
                                     console.log(rows);
+                                    grid2.datagrid("acceptChanges");
                                 }
                             }
                             else {
-                                $.messager.alert('您的操作有误', "没有数据需要保存", 'error');
+                                grid2.datagrid("acceptChanges");
                             }
                         }
                     }
                 ]
             });
+            
 
+            //对话框关闭事件 - 保存二级菜单到对应的一级菜单
+            dd.dialog({
+                onBeforeClose: function () {
+                    var editrow = grid2.datagrid("getChanges");
+                    if (editrow.length > 0) {
+                        $.messager.alert('您的操作有误', "请先完成编辑", 'error');
+                        return false;
+                    }
+                    var rows = grid2.datagrid("getRows");
+                    var grid1selectrow = grid.datagrid("getSelected");
+                    grid1selectrow.sub_button = [];
+                    for (var i = 0; i < rows.length; i++) {
+                        grid1selectrow.sub_button.push(rows[i]);
+                    }
+                    var index = grid.datagrid("getRowIndex", grid1selectrow);
+                    grid.datagrid('updateRow', {
+                        index: index,
+                        row: grid1selectrow
+                    });
+                }
+            });
         });
     });
 </script>
@@ -243,10 +416,21 @@
     <div data-options="region:'east',border:false,title:'菜单按钮类型说明',split:true" style="width:400px;">
         <div id="@(pageId)info" class="easyui-panel" data-options="fit:true,border:false,href:'@Url.Action("menuButtonDescribe")'" style="padding:5px;"></div>
     </div>
-    <div data-options="region:'center',border:false,title:'菜单管理'">
-        <div class="easyui-dialog" id="@(pageId)dd" style="width:90%; height:90%;" data-options="inline:true,resizable:true,modal:true,closed:true,title:'二级菜单'">
-            <table id="@(pageId)grid2"></table>
+    <div data-options="region:'center',border:false">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'south',border:false,title:'数据填写说明',split:true" style="height:100px;">
+                <ul>
+                    <li>菜单的key值：当类型不是[2,9,10]时必填</li>
+                    <li>网页链接：view类型时必填</li>
+                    <li>素材的ID：当类型为9,10时必填</li>
+                </ul>
+            </div>
+            <div data-options="region:'center',border:false">
+                <div class="easyui-dialog" id="@(pageId)dd" style="width:90%; height:90%;" data-options="inline:true,resizable:true,modal:true,closed:true,title:'二级菜单'">
+                    <table id="@(pageId)grid2"></table>
+                </div>
+                <table id="@(pageId)grid"></table>
+            </div>
         </div>
-        <table id="@(pageId)grid"></table>
     </div>
 </div>

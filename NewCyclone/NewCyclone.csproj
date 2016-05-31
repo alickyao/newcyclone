@@ -477,6 +477,7 @@
     <Content Include="Areas\WxWeb\Views\web.config" />
     <Content Include="Areas\Admin\Views\WeiXin\menu.cshtml" />
     <Content Include="Areas\Admin\Views\WeiXin\menuButtonDescribe.cshtml" />
+    <Content Include="Areas\Admin\Views\WeiXin\material.cshtml" />
     <None Include="Properties\PublishProfiles\ok.pubxml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />

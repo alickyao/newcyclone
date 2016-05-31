@@ -32,5 +32,13 @@ namespace NewCyclone.Areas.Admin.Controllers
             setPageId();
             return View();
         }
+        /// <summary>
+        /// 素材列表
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult material() {
+            setPageId();
+            return View();
+        }
     }
 }
