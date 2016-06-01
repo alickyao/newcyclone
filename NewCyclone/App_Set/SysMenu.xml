@@ -57,15 +57,30 @@
         <text>微信公众平台管理</text>
         <children>
           <SysMenu>
-            <text>菜单管理</text>
-            <url><![CDATA[/Admin/WeiXin/menu]]></url>
+            <text>菜单与自动回复</text>
+            <children>
+              <SysMenu>
+                <text>菜单管理</text>
+                <url><![CDATA[/Admin/WeiXin/menu]]></url>
+              </SysMenu>
+              <SysMenu>
+                <text>自定义消息回复</text>
+                <children>
+                  <SysMenu>
+                    <text>文本消息</text>
+                    <url><![CDATA[/Admin/WeiXin/callbackTextMsg]]></url>
+                  </SysMenu>
+                  <SysMenu>
+                    <text>图文消息</text>
+                    <url><![CDATA[/Admin/WeiXin/callbackNewsMsg]]></url>
+                  </SysMenu>
+                </children>
+              </SysMenu>
+            </children>
           </SysMenu>
           <SysMenu>
             <text>素材管理</text>
             <url><![CDATA[/Admin/WeiXin/material]]></url>
-          </SysMenu>
-          <SysMenu>
-            <text>自定义消息回复</text>
           </SysMenu>
           <SysMenu>
             <text>数据分析</text>

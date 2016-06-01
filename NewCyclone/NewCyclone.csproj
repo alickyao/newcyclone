@@ -478,6 +478,8 @@
     <Content Include="Areas\Admin\Views\WeiXin\menu.cshtml" />
     <Content Include="Areas\Admin\Views\WeiXin\menuButtonDescribe.cshtml" />
     <Content Include="Areas\Admin\Views\WeiXin\material.cshtml" />
+    <Content Include="Areas\Admin\Views\WeiXin\callbackTextMsg.cshtml" />
+    <Content Include="Areas\Admin\Views\WeiXin\callbackNewsMsg.cshtml" />
     <None Include="Properties\PublishProfiles\ok.pubxml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
@@ -872,6 +874,18 @@
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\Db_WebRote.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\Db_WXCallBackMsg.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\Db_WXCallBackNesMsg.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\Db_WXCallBackNesMsgDetail.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\Db_WXCallBackTextMsg.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\SysModel.Context.cs">

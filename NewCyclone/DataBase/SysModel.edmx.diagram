@@ -41,6 +41,14 @@
         <InheritanceConnector EntityType="SysModel.Db_FileInfo" />
         <EntityTypeShape EntityType="SysModel.Db_SysNotice" Width="1.5" PointX="11.375" PointY="0.5" />
         <InheritanceConnector EntityType="SysModel.Db_SysNotice" />
+        <EntityTypeShape EntityType="SysModel.Db_WXCallBackMsg" Width="1.5" PointX="5.5" PointY="11.875" />
+        <InheritanceConnector EntityType="SysModel.Db_WXCallBackMsg" />
+        <EntityTypeShape EntityType="SysModel.Db_WXCallBackTextMsg" Width="1.5" PointX="7.625" PointY="11.875" />
+        <InheritanceConnector EntityType="SysModel.Db_WXCallBackTextMsg" />
+        <EntityTypeShape EntityType="SysModel.Db_WXCallBackNesMsg" Width="1.5" PointX="7.625" PointY="13.625" />
+        <InheritanceConnector EntityType="SysModel.Db_WXCallBackNesMsg" />
+        <EntityTypeShape EntityType="SysModel.Db_WXCallBackNesMsgDetail" Width="1.5" PointX="10.125" PointY="13.625" />
+        <AssociationConnector Association="SysModel.Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

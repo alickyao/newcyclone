@@ -10,6 +10,8 @@ using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.Xml;
 using System.Xml.Linq;
+using System.Collections;
+using NewCyclone.DataBase;
 
 namespace NewCyclone.Models.WeiXin
 {
@@ -405,7 +407,7 @@ namespace NewCyclone.Models.WeiXin
     }
 
     /// <summary>
-    /// 接收到的消息
+    /// 接收到的消息或者事件
     /// </summary>
     [Serializable]
     public  class WxReceiveMsg : WxBaseMsg
@@ -611,6 +613,97 @@ namespace NewCyclone.Models.WeiXin
         }
     }
 
+    /// <summary>
+    /// 事件推送
+    /// </summary>
+    public class WxEventMsg:WxReceiveMsg {
+        /// <summary>
+        /// 事件类型 subscribe 关注，LOCATION  CLICK  VIEW
+        /// </summary>
+        public string Event { get; set; }
+    }
+
+    /// <summary>
+    /// 关注事件
+    /// </summary>
+    public class WxEventSubscribeMsg : WxEventMsg {
+        /// <summary>
+        /// 关注事件为字符串空值
+        /// </summary>
+        public string EventKey { get; set; }
+
+        public override string returnMsg()
+        {
+            return WeiXinMsgService.getTextMsg("欢迎关注", this.FromUserName);
+        }
+    }
+    /// <summary>
+    /// 菜单点击事件
+    /// </summary>
+    public class WxEventClickMsg : WxEventMsg {
+        /// <summary>
+        /// 事件KEY值，与自定义菜单接口中KEY值对应
+        /// </summary>
+        public string EventKey { get; set; }
+
+        public override string returnMsg()
+        {
+            return WeiXinMsgService.getTextMsg("您点击的按钮的KEY是：" + this.EventKey, this.FromUserName);
+        }
+    }
+
+    /// <summary>
+    /// 菜单点击跳转URL事件
+    /// </summary>
+    public class WxEventViewMsg : WxEventMsg
+    {
+        /// <summary>
+        /// 事件KEY值，设置的跳转URL
+        /// </summary>
+        public string EventKey { get; set; }
+    }
+
+    /// <summary>
+    /// 上报地理位置事件
+    /// 用户同意上报地理位置后，每次进入公众号会话时，都会在进入时上报地理位置，或在进入会话后每5秒上报一次地理位置，公众号可以在公众平台网站中修改以上设置。上报地理位置时，微信会将上报地理位置事件推送到开发者填写的URL。
+    /// </summary>
+    public class WxEventLatitudeMsg : WxEventMsg {
+        /// <summary>
+        /// 地理位置纬度
+        /// </summary>
+        public double Latitude { get; set; }
+        /// <summary>
+        /// 地理位置经度
+        /// </summary>
+        public double Longitude { get; set; }
+        /// <summary>
+        /// 地理位置精度
+        /// </summary>
+        public double Precision { get; set; }
+    }
+
+    /// <summary>
+    /// 被动回复的图文消息详情
+    /// </summary>
+    public class WxReturnPicMsgDetail {
+        /// <summary>
+        /// 图文消息标题
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
+        /// 图文消息描述
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
+        /// 图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200
+        /// </summary>
+        public string PicUrl { get; set; }
+        /// <summary>
+        /// 点击图文消息跳转链接
+        /// </summary>
+        public string Url { get; set; }
+    }
+
     #endregion
 
     /// <summary>
@@ -630,26 +723,45 @@ namespace NewCyclone.Models.WeiXin
             {
                 WxReceiveMsg t = new WxReceiveMsg();
                 switch (MsgType.InnerText) {
-                    case "text":
+                    case "text"://文字
                         t = ConvertObj<WxTextMsg>(postString);
                         break;
-                    case "image":
+                    case "image"://图片
                         t = ConvertObj<WxPicMsg>(postString);
                         break;
-                    case "voice":
+                    case "voice"://语音
                         t = ConvertObj<WxVoiceMsg>(postString);
                         break;
-                    case "video":
+                    case "video"://视频
                         t = ConvertObj<WxVideoMsg>(postString);
                         break;
-                    case "shortvideo":
+                    case "shortvideo"://小视频
                         t = ConvertObj<WxShortvideoMsg>(postString);
                         break;
-                    case "location":
+                    case "location"://位置
                         t = ConvertObj<WxLocationMsg>(postString);
                         break;
-                    case "link":
+                    case "link"://链接
                         t = ConvertObj<WxLinkMsg>(postString);
+                        break;
+                    case "event"://事件
+                        XmlNode EventType = xmldoc.SelectSingleNode("/xml/Event");
+                        if (EventType != null) {
+                            switch (EventType.InnerText) {
+                                case "subscribe":
+                                    t = ConvertObj<WxEventSubscribeMsg>(postString);
+                                    break;
+                                case "LOCATION":
+                                    t = ConvertObj<WxEventLatitudeMsg>(postString);
+                                    break;
+                                case "CLICK":
+                                    t = ConvertObj<WxEventClickMsg>(postString);
+                                    break;
+                                case "VIEW":
+                                    t = ConvertObj<WxEventViewMsg>(postString);
+                                    break;
+                            }
+                        }
                         break;
                 }
                 return t;
@@ -694,8 +806,403 @@ namespace NewCyclone.Models.WeiXin
             sb.Append("</xml>");
             return sb.ToString();
         }
+
+        /// <summary>
+        /// 获取图文消息（多个）
+        /// </summary>
+        /// <param name="news"></param>
+        /// <param name="toUserOpenId"></param>
+        /// <returns></returns>
+        public static string getNewsMsg(List<WxReturnPicMsgDetail> news, string toUserOpenId) {
+            StringBuilder sb = new StringBuilder("<xml>");
+            sb.AppendFormat("<ToUserName><![CDATA[{0}]]></ToUserName>", toUserOpenId);
+            sb.AppendFormat("<FromUserName><![CDATA[{0}]]></FromUserName>", originalId);
+            sb.AppendFormat("<CreateTime>{0}</CreateTime>", SysHelp.convertDateTimeInt(DateTime.Now));
+            sb.Append("<MsgType><![CDATA[news]]></MsgType>");
+            sb.AppendFormat("<ArticleCount>{0}</ArticleCount>", news.Count);
+            sb.Append("<Articles>");
+            foreach (var n in news) {
+                sb.Append("<item>");
+                sb.AppendFormat("<Title><![CDATA[{0}]]></Title>", n.Title);
+                sb.AppendFormat("<Description><![CDATA[{0}]]></Description>", n.Description);
+                sb.AppendFormat("<PicUrl><![CDATA[{0}]]></PicUrl>", n.PicUrl);
+                sb.AppendFormat("<Url><![CDATA[{0}]]></Url>", n.Url);
+                sb.Append("</item>");
+            }
+            sb.Append("</Articles>");
+            sb.Append("</xml>");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 获取图文消息（单个）
+        /// </summary>
+        /// <param name="news"></param>
+        /// <param name="toUserOpenId"></param>
+        /// <returns></returns>
+        public static string getNewsMsg(WxReturnPicMsgDetail news, string toUserOpenId) {
+            StringBuilder sb = new StringBuilder("<xml>");
+            sb.AppendFormat("<ToUserName><![CDATA[{0}]]></ToUserName>", toUserOpenId);
+            sb.AppendFormat("<FromUserName><![CDATA[{0}]]></FromUserName>", originalId);
+            sb.AppendFormat("<CreateTime>{0}</CreateTime>", SysHelp.convertDateTimeInt(DateTime.Now));
+            sb.Append("<MsgType><![CDATA[news]]></MsgType>");
+            sb.AppendFormat("<ArticleCount>{0}</ArticleCount>", 1);
+            sb.Append("<Articles>");
+            sb.Append("<item>");
+            sb.AppendFormat("<Title><![CDATA[{0}]]></Title>", news.Title);
+            sb.AppendFormat("<Description><![CDATA[{0}]]></Description>", news.Description);
+            sb.AppendFormat("<PicUrl><![CDATA[{0}]]></PicUrl>", news.PicUrl);
+            sb.AppendFormat("<Url><![CDATA[{0}]]></Url>", news.Url);
+            sb.Append("</item>");
+            sb.Append("</Articles>");
+            sb.Append("</xml>");
+            return sb.ToString();
+        }
     }
 
+
+
+    #region -- 被动消息回复模型
+
+    /// <summary>
+    /// 被动消息编辑基础请求参数
+    /// </summary>
+    public class WxEditCallBackMsgRequst {
+        /// <summary>
+        /// ID
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// 对应点击事件的key值
+        /// </summary>
+        [Required]
+        [StringLength(50)]
+        public string key { get; set; }
+        /// <summary>
+        /// 标题
+        /// </summary>
+        [Required]
+        public string caption { get; set; }
+    }
+
+    /// <summary>
+    /// 创建/编辑自动回复文本消息请求
+    /// </summary>
+    public class WxEditCallBackTextMsgReqest : WxEditCallBackMsgRequst {
+
+        /// <summary>
+        /// 文本内容
+        /// </summary>
+        [Required]
+        public string content { get; set; }
+    }
+
+    /// <summary>
+    /// 创建/编辑自动回复图文消息请求
+    /// </summary>
+    public class WxEditCallBackNewsMsgRequest : WxEditCallBackMsgRequst {
+        /// <summary>
+        /// 图文消息列表-最多不超过10个
+        /// </summary>
+        [Required]
+        public List<WeiXinCallBackNewsMsgDetail> detail { get; set; }
+    }
+
+    /// <summary>
+    /// 查询文本请求
+    /// </summary>
+    public class WxQueryCallBackMsgRequest : BaseRequest
+    {
+        /// <summary>
+        /// 类型 test/news
+        /// </summary>
+        public string fun { get; set; }
+
+        /// <summary>
+        /// 对应的点击事件的key  全字匹配
+        /// </summary>
+        public string key { get; set; }
+        /// <summary>
+        /// 对应的标题  模糊匹配
+        /// </summary>
+        public string caption { get; set; }
+    }
+
+    #endregion
+
+    /// <summary>
+    /// 被动消息回复 继承自 SysDoc
+    /// </summary>
+    public class WeiXinCallBackMsg : SysDoc
+    {
+        /// <summary>
+        /// 类型  text/news
+        /// </summary>
+        public string fun { get; set; }
+        /// <summary>
+        /// 对应点击事件的key值
+        /// </summary>
+        public string key { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        public WeiXinCallBackMsg(string id) : base(id)
+        {
+            using (var db = new SysModelContainer())
+            {
+                var d = db.Db_SysDocSet.OfType<Db_WXCallBackMsg>().Single(p => p.Id == id);
+                this.fun = d.fun;
+                this.key = d.key;
+            }
+        }
+
+        /// <summary>
+        /// 查询被动消息回复数据
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponseList<WeiXinCallBackMsg> query(WxQueryCallBackMsgRequest condtion) {
+            BaseResponseList<WeiXinCallBackMsg> result = new BaseResponseList<WeiXinCallBackMsg>();
+            using (var db = new SysModelContainer()) {
+                var rows = (from c in db.Db_SysDocSet.OfType<Db_WXCallBackMsg>().AsEnumerable()
+                            where (!c.isDeleted)
+                            && (string.IsNullOrEmpty(condtion.fun) ? true : (c.fun == condtion.fun))
+                            && (string.IsNullOrEmpty(condtion.key) ? true : (c.key == condtion.key))
+                            && (string.IsNullOrEmpty(condtion.caption) ? true : (c.caption.Contains(condtion.caption)))
+                            orderby c.createdOn descending
+                            select (c.Id));
+
+                result.total = rows.Count();
+                if (result.total > 0) {
+                    if (condtion.page != 0) {
+                        rows = rows.Skip(condtion.getSkip()).Take(condtion.pageSize);
+                    }
+                    result.rows = rows.Select(p => new WeiXinCallBackMsg(p)).ToList();
+                }
+            }
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// 被动回复的文本消息
+    /// </summary>
+    public class WeiXinCallBackTestMsg : WeiXinCallBackMsg {
+
+        /// <summary>
+        /// 文本内容
+        /// </summary>
+        public string content { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        public WeiXinCallBackTestMsg(string id) : base(id) {
+            using (var db = new SysModelContainer())
+            {
+                var d = db.Db_SysDocSet.OfType<Db_WXCallBackTextMsg>().Single(p => p.Id == id);
+                this.content = d.content;
+            }
+        }
+
+        /// <summary>
+        /// 创建/编辑
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static WeiXinCallBackTestMsg editTextMsg(WxEditCallBackTextMsgReqest condtion) {
+            SysValidata.valiData(condtion);
+            using (var db = new SysModelContainer()) {
+
+                if (string.IsNullOrEmpty(condtion.Id))
+                {
+                    condtion.Id = SysHelp.getNewId();
+                }
+                var c = db.Db_SysDocSet.OfType<Db_WXCallBackTextMsg>().SingleOrDefault(p => p.Id == condtion.Id);
+                if (c == null)
+                {
+                    Db_WXCallBackTextMsg d = new Db_WXCallBackTextMsg()
+                    {
+                        caption = condtion.caption,
+                        content = condtion.content,
+                        fun = "text",
+                        key = condtion.key,
+                        createdBy = HttpContext.Current.User.Identity.Name,
+                        createdOn = DateTime.Now,
+                        isDeleted = false,
+                        modifiedBy = HttpContext.Current.User.Identity.Name,
+                        modifiedOn = DateTime.Now,
+                        Id = condtion.Id
+                    };
+                    db.Db_SysDocSet.Add(d);
+                }
+                else {
+                    c.caption = condtion.caption;
+                    c.content = condtion.content;
+                    c.key = condtion.key;
+                    c.modifiedOn = DateTime.Now;
+                    c.modifiedBy = HttpContext.Current.User.Identity.Name;
+                }
+                db.SaveChanges();
+                return new WeiXinCallBackTestMsg(condtion.Id);
+            }
+        }
+
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponseList<WeiXinCallBackTestMsg> queryTextMsg(WxQueryCallBackMsgRequest condtion) {
+            BaseResponseList<WeiXinCallBackTestMsg> result = new BaseResponseList<WeiXinCallBackTestMsg>();
+            using (var db = new SysModelContainer()) {
+                var rows = (from c in db.Db_SysDocSet.OfType<Db_WXCallBackTextMsg>().AsEnumerable()
+                            where (!c.isDeleted)
+                            && (string.IsNullOrEmpty(condtion.key) ? true : c.key == condtion.key)
+                            && (string.IsNullOrEmpty(condtion.caption) ? true : c.caption.Contains(condtion.caption))
+                            orderby c.createdOn descending
+                            select c.Id
+                            );
+                result.total = rows.Count();
+                if (result.total > 0) {
+                    if (condtion.page != 0) {
+                        rows = rows.Take(condtion.getSkip()).Take(condtion.pageSize);
+                    }
+                    result.rows = rows.Select(p => new WeiXinCallBackTestMsg(p)).ToList();
+                }
+            }
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// 被动回复的图文消息
+    /// </summary>
+    public class WeiXinCallBackNewsMsg : WeiXinCallBackMsg {
+
+        private List<WeiXinCallBackNewsMsgDetail> _detail = new List<WeiXinCallBackNewsMsgDetail>();
+
+        /// <summary>
+        /// 详情
+        /// </summary>
+        public List<WeiXinCallBackNewsMsgDetail> detail {
+            get { return _detail; }
+            set { detail = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        public WeiXinCallBackNewsMsg(string id) : base(id) {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysDocSet.OfType<Db_WXCallBackNesMsg>().Single(p => p.Id == id);
+                if (d.Db_WXCallBackNesMsgDetail.Count > 0) {
+                    this.detail = d.Db_WXCallBackNesMsgDetail.Select(p => new WeiXinCallBackNewsMsgDetail() {
+                        description = p.description,
+                        picUrl = p.picUrl,
+                        title = p.title,
+                        url = p.url
+                    }).ToList();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 创建/编辑自动回复的图文消息
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static WeiXinCallBackNewsMsg editNewsMsg(WxEditCallBackNewsMsgRequest condtion) {
+            SysValidata.valiData(condtion);
+            using (var db = new SysModelContainer()) {
+                if (string.IsNullOrEmpty(condtion.Id)) {
+                    condtion.Id = SysHelp.getNewId();
+                }
+                var c = db.Db_SysDocSet.OfType<Db_WXCallBackNesMsg>().SingleOrDefault(p => p.Id == condtion.Id);
+                if (c == null)
+                {
+                    //新增
+                    Db_WXCallBackNesMsg d = new Db_WXCallBackNesMsg() {
+                        caption = condtion.caption,
+                        fun = "news",
+                        key = condtion.key,
+                        createdBy = HttpContext.Current.User.Identity.Name,
+                        createdOn = DateTime.Now,
+                        isDeleted = false,
+                        modifiedBy = HttpContext.Current.User.Identity.Name,
+                        modifiedOn = DateTime.Now,
+                        Id = condtion.Id
+                    };
+                    foreach (var l in condtion.detail) {
+                        d.Db_WXCallBackNesMsgDetail.Add(new Db_WXCallBackNesMsgDetail() {
+                            description = l.description,
+                            picUrl = l.picUrl,
+                            title = l.title,
+                            url = l.url
+                        });
+                    }
+                    db.Db_SysDocSet.Add(d);
+                }
+                else {
+                    //编辑
+                    db.Db_WXCallBackNesMsgDetailSet.RemoveRange(c.Db_WXCallBackNesMsgDetail);
+                    db.SaveChanges();
+
+                    c.caption = condtion.caption;
+                    c.key = condtion.key;
+                    c.modifiedOn = DateTime.Now;
+                    c.modifiedBy = HttpContext.Current.User.Identity.Name;
+                    foreach (var l in condtion.detail)
+                    {
+                        c.Db_WXCallBackNesMsgDetail.Add(new Db_WXCallBackNesMsgDetail()
+                        {
+                            description = l.description,
+                            picUrl = l.picUrl,
+                            title = l.title,
+                            url = l.url
+                        });
+                    }
+                }
+                db.SaveChanges();
+                return new WeiXinCallBackNewsMsg(condtion.Id);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 被动回复的图文消息详情
+    /// </summary>
+    public class WeiXinCallBackNewsMsgDetail {
+
+        /// <summary>
+        /// 图文消息标题
+        /// </summary>
+        [Required]
+        public string title { get; set; }
+
+        /// <summary>
+        /// 图文消息描述
+        /// </summary>
+        [Required]
+        public string description { get; set; }
+
+        /// <summary>
+        /// 图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200
+        /// </summary>
+        [Required]
+        public string picUrl { get; set; }
+
+        /// <summary>
+        /// 点击图文消息跳转链接
+        /// </summary>
+        [Required]
+        public string url { get; set; }
+    }
 
     #region -- 素材模型
     /// <summary>
@@ -721,6 +1228,44 @@ namespace NewCyclone.Models.WeiXin
         public int news_count { get; set; }
     }
 
+    /// <summary>
+    /// 素材类型
+    /// </summary>
+    public enum WxMaterialType {
+        /// <summary>
+        /// 图文
+        /// </summary>
+        news,
+        /// <summary>
+        /// 图片
+        /// </summary>
+        image,
+    }
+    /// <summary>
+    /// 查询素材请求
+    /// </summary>
+    public class WxQueryMaterialListRequest {
+        /// <summary>
+        /// 素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）
+        /// </summary>
+        internal string type { get; set; }
+        /// <summary>
+        /// 从全部素材的该偏移位置开始返回，0表示从第一个素材 返回
+        /// </summary>
+        public int offset { get; set; }
+
+        /// <summary>
+        /// 返回素材的数量，取值在1到20之间
+        /// </summary>
+        public int count { get; set; }
+    }
+
+    public class WxQueryMaterialListBaseReplay {
+        public int total_count { get; set; }
+        public int item_count { get; set; }
+
+    }
+
     #endregion
 
     /// <summary>
@@ -728,23 +1273,33 @@ namespace NewCyclone.Models.WeiXin
     /// </summary>
     public class WeiXinMaterialService : WeiXinBase {
         /// <summary>
-        /// 查询素材总数
+        /// 查询永久素材的总数
         /// </summary>
         /// <returns></returns>
-        public static WxQueryMaterialCountReplay querycount() {
+        public static WxQueryMaterialCountReplay queryCount() {
             string url = geturl("material", "get_materialcount", EnumHttpRequestType.https);
             WxQueryMaterialCountReplay t = new WeiXinGetResponse<WxQueryMaterialCountReplay>(url, "get").getRetrun();
             return t;
         }
 
+        /// <summary>
+        /// 查询永久素材
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="type"></param>
+        public static void queryMaterial(WxQueryMaterialListRequest condtion, WxMaterialType type) {
 
+        }
+
+        /// <summary>
+        /// 上传永久图像素材
+        /// </summary>
         public static void uploadFile1()
         {
             string fileurl = "/upload/webpage/160523/swml_160523153853.jpg";
             string path = HttpContext.Current.Server.MapPath(fileurl);
 
             string url = geturl("material", "add_material", EnumHttpRequestType.https);
-            url += "&type=image";
 
 
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
@@ -760,7 +1315,7 @@ namespace NewCyclone.Models.WeiXin
             int pos = path.LastIndexOf("\\");
             string fileName = path.Substring(pos + 1);
 
-            StringBuilder sbHeader = new StringBuilder(string.Format("Content-Disposition:form-data;name=\"file\";filename=\"{0}\"\r\nContent-Type:application/octet-stream\r\n\r\n", fileName));
+            StringBuilder sbHeader = new StringBuilder(string.Format("Content-Disposition:form-data;name=\"media\";filename=\"{0}\"\r\nContent-Type:application/octet-stream\r\n\r\n", fileName));
 
             byte[] postHeaderBytes = Encoding.UTF8.GetBytes(sbHeader.ToString());
 
@@ -785,6 +1340,47 @@ namespace NewCyclone.Models.WeiXin
             string content = sr.ReadToEnd();
         }
 
+        /// <summary>
+        /// 下载永久素材 - 未实现
+        /// </summary>
+        /// <param name="mid"></param>
+        public static void downloadFile1(string mid) {
+            string url = geturl("material", "get_material", EnumHttpRequestType.https);
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+            request.Method = "POST";
+            Hashtable t = new Hashtable();
+            t["media_id"] = mid;
+            string d = JsonConvert.SerializeObject(t);
+            byte[] buffer = Encoding.UTF8.GetBytes(d);
+            request.ContentLength = buffer.Length;
+            request.GetRequestStream().Write(buffer, 0, buffer.Length);
+
+            using (HttpWebResponse wr = request.GetResponse() as HttpWebResponse) {
+                string strpath = wr.ResponseUri.ToString();
+                WebClient mywebclient = new WebClient();
+                string savepath = HttpContext.Current.Server.MapPath("/upload/weixin") + "\\" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + (new Random()).Next().ToString().Substring(0, 4) + ".txt";
+                try
+                {
+                    mywebclient.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                    mywebclient.Headers.Add("ContentLength", buffer.Length.ToString());
+                    byte[] a = mywebclient.UploadData(url, buffer);
+                    string a89324 = Encoding.UTF8.GetString(a);
+                    //mywebclient.DownloadFile(strpath, savepath);
+                    //string file = savepath;
+                }
+                catch (Exception ex)
+                {
+                    savepath = ex.ToString();
+                }
+
+
+
+            }
+        }
+
+        /// <summary>
+        /// 上传零时素材
+        /// </summary>
         public static void uploadFile() {
             string fileurl = "/upload/webpage/160523/swml_160523153853.jpg";
             string path = HttpContext.Current.Server.MapPath(fileurl);
@@ -830,6 +1426,10 @@ namespace NewCyclone.Models.WeiXin
             string content = sr.ReadToEnd();
         }
 
+        /// <summary>
+        /// 下载零时素材
+        /// </summary>
+        /// <param name="mid"></param>
         public static void downloadFile(string mid) {
             string file = string.Empty;
             string content = string.Empty;
@@ -860,4 +1460,7 @@ namespace NewCyclone.Models.WeiXin
             }
         }
     }
+
+
+    
 }

@@ -40,5 +40,23 @@ namespace NewCyclone.Areas.Admin.Controllers
             setPageId();
             return View();
         }
+
+        /// <summary>
+        /// 自定义回复文本消息管理
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult callbackTextMsg() {
+            setPageId();
+            return View();
+        }
+
+        /// <summary>
+        /// 自定义回复图文消息管理
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult callbackNewsMsg() {
+            setPageId();
+            return View();
+        }
     }
 }

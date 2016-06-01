@@ -27,8 +27,9 @@ namespace NewCyclone.Controllers
                 //string str = @"<xml><ToUserName><![CDATA[toUser]]></ToUserName><FromUserName><![CDATA[fromUser]]></FromUserName> <CreateTime>1348831860</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[this is a test]]></Content><MsgId>1234567890123456</MsgId></xml>";
                 //WxReceiveMsg msg = WeiXinMsgService.deserializePostString(str);
                 //res.msg = msg.returnMsg();
-                WeiXinMaterialService.uploadFile1();
+                //WeiXinMaterialService.uploadFile1();
                 //WeiXinMaterialService.downloadFile("tK4Hq4h_5otxhcq-5Ica-VhaGC2NZIKHgFZwXXacBfrJF-c2ve805PH_-ticarGg");
+                WeiXinMaterialService.downloadFile1("-VE5rnxHEQzvk8-SAkP4NDrqYMgvJxTl8XyreGUQmTg");
             }
             catch (SysException e) {
                 res = e.getresult(res, true);
