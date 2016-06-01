@@ -152,17 +152,20 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 创建/编辑 自动回复文本消息列表
+        /// 创建/编辑 自动回复文本消息列表 可批量执行
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
-        public BaseResponse<WeiXinCallBackTestMsg> editCallBackTextMsg(WxEditCallBackTextMsgReqest condtion) {
-            BaseResponse<WeiXinCallBackTestMsg> result = new BaseResponse<WeiXinCallBackTestMsg>();
+        public BaseResponse<List<WeiXinCallBackTestMsg>> editCallBackTextMsg(BaseRequestList<WxEditCallBackTextMsgReqest> condtion) {
+            BaseResponse<List<WeiXinCallBackTestMsg>> result = new BaseResponse<List<WeiXinCallBackTestMsg>>();
             try
             {
-                result.result = WeiXinCallBackTestMsg.editTextMsg(condtion);
+                result.result = new List<WeiXinCallBackTestMsg>();
+                foreach (var row in condtion.rows) {
+                    result.result.Add(WeiXinCallBackTestMsg.editTextMsg(row));
+                }
                 result.msg = "保存成功";
             }
             catch (SysException e)

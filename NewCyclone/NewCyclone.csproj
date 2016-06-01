@@ -480,6 +480,7 @@
     <Content Include="Areas\Admin\Views\WeiXin\material.cshtml" />
     <Content Include="Areas\Admin\Views\WeiXin\callbackTextMsg.cshtml" />
     <Content Include="Areas\Admin\Views\WeiXin\callbackNewsMsg.cshtml" />
+    <Content Include="Areas\Admin\Views\WeiXin\callbackHelp.cshtml" />
     <None Include="Properties\PublishProfiles\ok.pubxml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />

@@ -1070,7 +1070,7 @@ namespace NewCyclone.Models.WeiXin
                 result.total = rows.Count();
                 if (result.total > 0) {
                     if (condtion.page != 0) {
-                        rows = rows.Take(condtion.getSkip()).Take(condtion.pageSize);
+                        rows = rows.Skip(condtion.getSkip()).Take(condtion.pageSize);
                     }
                     result.rows = rows.Select(p => new WeiXinCallBackTestMsg(p)).ToList();
                 }

@@ -1,5 +1,180 @@
 ﻿
 @{
     Layout = null;
+    string pageId = ViewBag.pageId;
+    WxQueryCallBackMsgRequest condtion = ViewBag.condtion;
+    string q = JsonConvert.SerializeObject(condtion);
 }
-文本消息
+<script>
+    $(document).ready(function () {
+        var request = $.parseJSON('@Html.Raw(q)');
+        var grid = $("#@(pageId)grid");
+
+        function loadGrid() {
+            console.log(request);
+            grid.datagrid("loading");
+            $.post("/api/ApiWeiXinSet/queryCallBackTextMsg", request, function (json) {
+                console.log(json);
+                grid.datagrid("loaded");
+                grid.datagrid("unselectAll");
+                grid.datagrid("acceptChanges");
+                gridLoadData(grid, json);
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: false,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            columns: [[
+                { field: 'caption', title: '标题', width: 100, editor: { type: "textbox", options: { required: true } } },
+                { field: 'key', title: 'key值', width: 80, editor: { type: "textbox", options: { required: true, validType: 'length[1,50]' } } },
+                { field: 'content', title: '内容', width: 500, editor: { type: "textbox", options: { required: true } } },
+                {
+                    field: 'createdOn', title: '创建时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'createdBy', title: '创建者',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return value.showName;
+                        }
+                    }
+                },
+                {
+                    field: 'modifiedOn', title: '修改时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'modifiedBy', title: '修改者',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return value.showName;
+                        }
+                    }
+                },
+            ]],
+            toolbar: [
+                {
+                    text: "新增",
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        grid.datagrid("insertRow", {
+                            index: 0,
+                            row: {
+                                Id:null,
+                                caption: "",
+                                key: "",
+                                content: ""
+                            }
+                        }).datagrid("beginEdit", 0).datagrid("selectRow", 0);
+                    }
+                },
+                {
+                    text: "编辑",
+                    iconCls: 'icon-edit',
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('您的操作有误', "请选择一行", 'error');
+                            return;
+                        }
+                        var index = grid.datagrid("getRowIndex", row);
+                        grid.datagrid("beginEdit", index);
+                    }
+                },
+                {
+                    text: "保存",
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        var allrows = grid.datagrid("getRows");
+                        var validate = false;
+                        for (var i = 0; i < allrows.length; i++) {
+                            validate = grid.datagrid("validateRow", i);
+                            if (validate) {
+                                grid.datagrid("endEdit", i);
+                            }
+                        }
+                        if (!validate) {
+                            return;
+                        }
+                        var inserted = grid.datagrid("getChanges", "inserted");
+                        var updated = grid.datagrid("getChanges", "updated");
+                        var rows = inserted.concat(updated);//合并两个数组
+                        if (rows.length > 0) {
+                            grid.datagrid("loading");
+                            $.post("/api/ApiWeiXinSet/editCallBackTextMsg", { rows: rows }, function (json) {
+                                console.log(json);
+                                showmsg(json);
+                                loadGrid();
+                            });
+                        }
+                        else {
+                            $.messager.alert('您的操作有误', "没有数据需要保存", 'error');
+                        }
+                    }
+                },
+                {
+                    text: "删除",
+                    iconCls: 'icon-clear',
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('您的操作有误', "请选择一行", 'error');
+                            return;
+                        }
+                        if (row.Id == null) {
+                            grid.datagrid("deleteRow", grid.datagrid("getRowIndex", row));
+                        }
+                        else {
+                            $.messager.confirm('请确认', '删除'+row.caption+'？', function (r) {
+                                if (r) {
+                                    grid.datagrid("loading");
+                                    $.getJSON("/api/ApiWeiXinSet/delCallBackMsg/" + row.Id, function (json) {
+                                        showmsg(json);
+                                        loadGrid();
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            ]
+        });
+
+        loadGrid();
+
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            }
+        });
+
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+    <div data-options="region:'north',border:false,title:'说明',split:false,collapsed:false,iconCls:'icon-help'" style="height:93px;">
+        @Html.Partial("callbackHelp")
+    </div>
+</div>

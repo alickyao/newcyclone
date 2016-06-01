@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using NewCyclone.Models.WeiXin;
 
 namespace NewCyclone.Areas.Admin.Controllers
 {
@@ -41,21 +42,33 @@ namespace NewCyclone.Areas.Admin.Controllers
             return View();
         }
 
+        public ActionResult callbackHelp() {
+            return View();
+        }
+
         /// <summary>
         /// 自定义回复文本消息管理
         /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="pageId"></param>
         /// <returns></returns>
-        public ActionResult callbackTextMsg() {
-            setPageId();
+        public ActionResult callbackTextMsg(WxQueryCallBackMsgRequest condtion, string pageId)
+        {
+            setPageId(pageId);
+            ViewBag.condtion = condtion;
             return View();
         }
 
         /// <summary>
         /// 自定义回复图文消息管理
         /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="pageId"></param>
         /// <returns></returns>
-        public ActionResult callbackNewsMsg() {
-            setPageId();
+        public ActionResult callbackNewsMsg(WxQueryCallBackMsgRequest condtion, string pageId) {
+            setPageId(pageId);
+            condtion.fun = "news";
+            ViewBag.condtion = condtion;
             return View();
         }
     }
