@@ -165,6 +165,13 @@ namespace NewCyclone.Models.WeiXin
             get { return System.Configuration.ConfigurationManager.AppSettings["originalId"].ToString(); }
         }
 
+        /// <summary>
+        /// 主机域名/IP访问地址
+        /// </summary>
+        protected static string hostName {
+            get { return System.Configuration.ConfigurationManager.AppSettings["hostName"].ToString(); }
+        }
+
 
         /// <summary>
         /// 获取远程请求的URL
@@ -448,7 +455,7 @@ namespace NewCyclone.Models.WeiXin
         /// <returns></returns>
         public override string returnMsg()
         {
-            return WeiXinMsgService.getTextMsg("您好", this.FromUserName);
+            return base.returnMsg();
         }
     }
 
@@ -476,7 +483,7 @@ namespace NewCyclone.Models.WeiXin
         /// <returns></returns>
         public override string returnMsg()
         {
-            return WeiXinMsgService.getTextMsg("已经收到图片", this.FromUserName);
+            return base.returnMsg();
         }
     }
     /// <summary>
@@ -501,7 +508,7 @@ namespace NewCyclone.Models.WeiXin
         /// <returns></returns>
         public override string returnMsg()
         {
-            return WeiXinMsgService.getTextMsg("已经收到语音消息", this.FromUserName);
+            return base.returnMsg();
         }
     }
 
@@ -525,7 +532,7 @@ namespace NewCyclone.Models.WeiXin
 
         public override string returnMsg()
         {
-            return WeiXinMsgService.getTextMsg("已经收到视频消息", this.FromUserName);
+            return base.returnMsg();
         }
     }
 
@@ -549,7 +556,7 @@ namespace NewCyclone.Models.WeiXin
 
         public override string returnMsg()
         {
-            return WeiXinMsgService.getTextMsg("已经收到小视频消息", this.FromUserName);
+            return base.returnMsg();
         }
     }
 
@@ -581,7 +588,7 @@ namespace NewCyclone.Models.WeiXin
 
         public override string returnMsg()
         {
-            return WeiXinMsgService.getTextMsg("已经收到地理位置", this.FromUserName);
+            return base.returnMsg();
         }
     }
 
@@ -609,7 +616,7 @@ namespace NewCyclone.Models.WeiXin
 
         public override string returnMsg()
         {
-            return WeiXinMsgService.getTextMsg("已经收到您发送的链接", this.FromUserName);
+            return base.returnMsg();
         }
     }
 
@@ -634,7 +641,21 @@ namespace NewCyclone.Models.WeiXin
 
         public override string returnMsg()
         {
-            return WeiXinMsgService.getTextMsg("欢迎关注", this.FromUserName);
+            var l = WeiXinCallBackMsg.query(new WxQueryCallBackMsgRequest() {
+                key = "subscribe"
+            });
+            if (l.total > 0) {
+                var info = l.rows[0];
+                if (info.fun == "text") {
+                    WeiXinCallBackTextMsg msg = new WeiXinCallBackTextMsg(info.Id);
+                    return WeiXinMsgService.getTextMsg(msg, this.FromUserName);
+                }
+                if (info.fun == "news") {
+                    WeiXinCallBackNewsMsg msg = new WeiXinCallBackNewsMsg(info.Id);
+                    return WeiXinMsgService.getNewsMsg(msg, this.FromUserName);
+                }
+            }
+            return base.returnMsg();
         }
     }
     /// <summary>
@@ -648,7 +669,33 @@ namespace NewCyclone.Models.WeiXin
 
         public override string returnMsg()
         {
-            return WeiXinMsgService.getTextMsg("您点击的按钮的KEY是：" + this.EventKey, this.FromUserName);
+            if (EventKey.IndexOf("alert&") != -1) {
+                SysNotice.createNotice(new VMMsgCreateSysNoticeRequest()
+                {
+                    alert = true,
+                    message = "微信用户点击事件提醒，Key=" + this.EventKey,
+                    title = "微信接口"
+                });
+            }
+            var l = WeiXinCallBackMsg.query(new WxQueryCallBackMsgRequest()
+            {
+                key = this.EventKey
+            });
+            if (l.total > 0)
+            {
+                var info = l.rows[0];
+                if (info.fun == "text")
+                {
+                    WeiXinCallBackTextMsg msg = new WeiXinCallBackTextMsg(info.Id);
+                    return WeiXinMsgService.getTextMsg(msg, this.FromUserName);
+                }
+                if (info.fun == "news")
+                {
+                    WeiXinCallBackNewsMsg msg = new WeiXinCallBackNewsMsg(info.Id);
+                    return WeiXinMsgService.getNewsMsg(msg, this.FromUserName);
+                }
+            }
+            return base.returnMsg();
         }
     }
 
@@ -661,6 +708,11 @@ namespace NewCyclone.Models.WeiXin
         /// 事件KEY值，设置的跳转URL
         /// </summary>
         public string EventKey { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string MenuId { get; set; }
     }
 
     /// <summary>
@@ -791,14 +843,14 @@ namespace NewCyclone.Models.WeiXin
         }
 
         /// <summary>
-        /// 获取一个文本消息
+        /// 获取一个被动回复的文本消息
         /// </summary>
         /// <param name="content">文本消息内容</param>
         /// <param name="toUserOpenId">接收者的OpenId</param>
         /// <returns>XML格式的字符串</returns>
         public static string getTextMsg(string content, string toUserOpenId) {
             StringBuilder sb = new StringBuilder("<xml>");
-            sb.AppendFormat("<ToUserName><![CDATA[{0}]]></ToUserName>",toUserOpenId);
+            sb.AppendFormat("<ToUserName><![CDATA[{0}]]></ToUserName>", toUserOpenId);
             sb.AppendFormat("<FromUserName><![CDATA[{0}]]></FromUserName>", originalId);
             sb.AppendFormat("<CreateTime>{0}</CreateTime>", SysHelp.convertDateTimeInt(DateTime.Now));
             sb.Append("<MsgType><![CDATA[text]]></MsgType>");
@@ -808,12 +860,25 @@ namespace NewCyclone.Models.WeiXin
         }
 
         /// <summary>
-        /// 获取图文消息（多个）
+        /// 获取一个被动回复的文本消息
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="toUserOpenId"></param>
+        /// <returns></returns>
+        public static string getTextMsg(WeiXinCallBackTextMsg content, string toUserOpenId) {
+            return getTextMsg(content.content, toUserOpenId);
+        }
+
+        /// <summary>
+        /// 获取一个被动回复的图文消息（多个图文集合）
         /// </summary>
         /// <param name="news"></param>
         /// <param name="toUserOpenId"></param>
         /// <returns></returns>
         public static string getNewsMsg(List<WxReturnPicMsgDetail> news, string toUserOpenId) {
+            if (news.Count == 0) {
+                throw new SysException("图文集长度不能为0", news);
+            }
             StringBuilder sb = new StringBuilder("<xml>");
             sb.AppendFormat("<ToUserName><![CDATA[{0}]]></ToUserName>", toUserOpenId);
             sb.AppendFormat("<FromUserName><![CDATA[{0}]]></FromUserName>", originalId);
@@ -835,28 +900,41 @@ namespace NewCyclone.Models.WeiXin
         }
 
         /// <summary>
-        /// 获取图文消息（单个）
+        /// 获取一个被动回复的图文消息（从后台维护的图文列表中生成）
         /// </summary>
         /// <param name="news"></param>
         /// <param name="toUserOpenId"></param>
         /// <returns></returns>
-        public static string getNewsMsg(WxReturnPicMsgDetail news, string toUserOpenId) {
-            StringBuilder sb = new StringBuilder("<xml>");
-            sb.AppendFormat("<ToUserName><![CDATA[{0}]]></ToUserName>", toUserOpenId);
-            sb.AppendFormat("<FromUserName><![CDATA[{0}]]></FromUserName>", originalId);
-            sb.AppendFormat("<CreateTime>{0}</CreateTime>", SysHelp.convertDateTimeInt(DateTime.Now));
-            sb.Append("<MsgType><![CDATA[news]]></MsgType>");
-            sb.AppendFormat("<ArticleCount>{0}</ArticleCount>", 1);
-            sb.Append("<Articles>");
-            sb.Append("<item>");
-            sb.AppendFormat("<Title><![CDATA[{0}]]></Title>", news.Title);
-            sb.AppendFormat("<Description><![CDATA[{0}]]></Description>", news.Description);
-            sb.AppendFormat("<PicUrl><![CDATA[{0}]]></PicUrl>", news.PicUrl);
-            sb.AppendFormat("<Url><![CDATA[{0}]]></Url>", news.Url);
-            sb.Append("</item>");
-            sb.Append("</Articles>");
-            sb.Append("</xml>");
-            return sb.ToString();
+        public static string getNewsMsg(WeiXinCallBackNewsMsg news, string toUserOpenId) {
+            if (news.files.Count == 0)
+            {
+                return "";
+            }
+            else {
+                List<WxReturnPicMsgDetail> nlist = new List<WxReturnPicMsgDetail>();
+                int i = 0;
+                foreach (var f in news.files) {
+                    string picUrl = hostName;
+                    if (i == 0)
+                    {
+                        //头图微信要求360X200像素
+                        picUrl += SysFile.getThumbnail(360, 200, f.url);
+                    }
+                    else {
+                        //其他  200X200像素
+                        picUrl += SysFile.getThumbnail(200, 200, f.url);
+                    }
+                    i++;
+                    nlist.Add(new WxReturnPicMsgDetail()
+                    {
+                        Description = f.describe,
+                        PicUrl = hostName + f.url,
+                        Title = f.title,
+                        Url = f.link
+                    });
+                }
+                return getNewsMsg(nlist, toUserOpenId);
+            }
         }
     }
 
@@ -996,7 +1074,7 @@ namespace NewCyclone.Models.WeiXin
     /// <summary>
     /// 被动回复的文本消息
     /// </summary>
-    public class WeiXinCallBackTestMsg : WeiXinCallBackMsg {
+    public class WeiXinCallBackTextMsg : WeiXinCallBackMsg {
 
         /// <summary>
         /// 文本内容
@@ -1007,7 +1085,7 @@ namespace NewCyclone.Models.WeiXin
         /// 
         /// </summary>
         /// <param name="id"></param>
-        public WeiXinCallBackTestMsg(string id) : base(id) {
+        public WeiXinCallBackTextMsg(string id) : base(id) {
             using (var db = new SysModelContainer())
             {
                 var d = db.Db_SysDocSet.OfType<Db_WXCallBackTextMsg>().Single(p => p.Id == id);
@@ -1020,7 +1098,7 @@ namespace NewCyclone.Models.WeiXin
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        public static WeiXinCallBackTestMsg editTextMsg(WxEditCallBackTextMsgReqest condtion) {
+        public static WeiXinCallBackTextMsg editTextMsg(WxEditCallBackTextMsgReqest condtion) {
             SysValidata.valiData(condtion);
             if (getKeyCount(condtion.key,condtion.Id) > 0) {
                 throw new SysException("key已被使用");
@@ -1057,7 +1135,7 @@ namespace NewCyclone.Models.WeiXin
                     c.modifiedBy = HttpContext.Current.User.Identity.Name;
                 }
                 db.SaveChanges();
-                return new WeiXinCallBackTestMsg(condtion.Id);
+                return new WeiXinCallBackTextMsg(condtion.Id);
             }
         }
 
@@ -1066,8 +1144,8 @@ namespace NewCyclone.Models.WeiXin
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        public static BaseResponseList<WeiXinCallBackTestMsg> queryTextMsg(WxQueryCallBackMsgRequest condtion) {
-            BaseResponseList<WeiXinCallBackTestMsg> result = new BaseResponseList<WeiXinCallBackTestMsg>();
+        public static BaseResponseList<WeiXinCallBackTextMsg> queryTextMsg(WxQueryCallBackMsgRequest condtion) {
+            BaseResponseList<WeiXinCallBackTextMsg> result = new BaseResponseList<WeiXinCallBackTextMsg>();
             using (var db = new SysModelContainer()) {
                 var rows = (from c in db.Db_SysDocSet.OfType<Db_WXCallBackTextMsg>().AsEnumerable()
                             where (!c.isDeleted)
@@ -1081,7 +1159,7 @@ namespace NewCyclone.Models.WeiXin
                     if (condtion.page != 0) {
                         rows = rows.Skip(condtion.getSkip()).Take(condtion.pageSize);
                     }
-                    result.rows = rows.Select(p => new WeiXinCallBackTestMsg(p)).ToList();
+                    result.rows = rows.Select(p => new WeiXinCallBackTextMsg(p)).ToList();
                 }
             }
             return result;

@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 06/01/2016 13:14:23
+-- Date Created: 06/02/2016 14:01:05
 -- Generated from EDMX file: D:\project\git\newcyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
@@ -22,6 +22,12 @@ IF OBJECT_ID(N'[dbo].[FK_Db_SysDocDb_DocCat]', 'F') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_SysDocDb_DocFile]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysDocFileSet] DROP CONSTRAINT [FK_Db_SysDocDb_DocFile];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WXCallBackMsg_inherits_Db_SysDoc]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackMsg] DROP CONSTRAINT [FK_Db_WXCallBackMsg_inherits_Db_SysDoc];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WXCallBackNesMsg_inherits_Db_WXCallBackMsg]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackNesMsg] DROP CONSTRAINT [FK_Db_WXCallBackNesMsg_inherits_Db_WXCallBackMsg];
 GO
 IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_SysUser]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_SysUser];
@@ -56,6 +62,9 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_Db_SysNotice_inherits_Db_SysMsg]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysNotice] DROP CONSTRAINT [FK_Db_SysNotice_inherits_Db_SysMsg];
 GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WXCallBackTextMsg_inherits_Db_WXCallBackMsg]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackTextMsg] DROP CONSTRAINT [FK_Db_WXCallBackTextMsg_inherits_Db_WXCallBackMsg];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -81,6 +90,12 @@ IF OBJECT_ID(N'[dbo].[Db_SysDocCatSet]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysDocFileSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysDocFileSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_WXCallBackMsg]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet_Db_WXCallBackMsg];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_WXCallBackNesMsg]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet_Db_WXCallBackNesMsg];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_ManagerUser]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysUserSet_Db_ManagerUser];
@@ -114,6 +129,9 @@ IF OBJECT_ID(N'[dbo].[Db_SysFileSet_Db_FileInfo]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysNotice]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysMsgSet_Db_SysNotice];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_WXCallBackTextMsg]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet_Db_WXCallBackTextMsg];
 GO
 
 -- --------------------------------------------------
@@ -185,31 +203,6 @@ CREATE TABLE [dbo].[Db_SysDocFileSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [Db_SysDocId] nvarchar(50)  NOT NULL,
     [Db_SysFileId] nvarchar(50)  NOT NULL
-);
-GO
-
--- Creating table 'Db_WXCallBackNesMsgDetailSet'
-CREATE TABLE [dbo].[Db_WXCallBackNesMsgDetailSet] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [Db_WXCallBackNesMsgId] nvarchar(50)  NOT NULL,
-    [title] nvarchar(max)  NOT NULL,
-    [description] nvarchar(max)  NOT NULL,
-    [picUrl] nvarchar(max)  NOT NULL,
-    [url] nvarchar(max)  NOT NULL
-);
-GO
-
--- Creating table 'Db_SysDocSet_Db_WXCallBackMsg'
-CREATE TABLE [dbo].[Db_SysDocSet_Db_WXCallBackMsg] (
-    [fun] nvarchar(50)  NOT NULL,
-    [key] nvarchar(50)  NOT NULL,
-    [Id] nvarchar(50)  NOT NULL
-);
-GO
-
--- Creating table 'Db_SysDocSet_Db_WXCallBackNesMsg'
-CREATE TABLE [dbo].[Db_SysDocSet_Db_WXCallBackNesMsg] (
-    [Id] nvarchar(50)  NOT NULL
 );
 GO
 
@@ -317,9 +310,23 @@ CREATE TABLE [dbo].[Db_SysMsgSet_Db_SysNotice] (
 );
 GO
 
+-- Creating table 'Db_SysDocSet_Db_WXCallBackMsg'
+CREATE TABLE [dbo].[Db_SysDocSet_Db_WXCallBackMsg] (
+    [fun] nvarchar(50)  NOT NULL,
+    [key] nvarchar(50)  NOT NULL,
+    [Id] nvarchar(50)  NOT NULL
+);
+GO
+
 -- Creating table 'Db_SysDocSet_Db_WXCallBackTextMsg'
 CREATE TABLE [dbo].[Db_SysDocSet_Db_WXCallBackTextMsg] (
     [content] nvarchar(max)  NOT NULL,
+    [Id] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_SysDocSet_Db_WXCallBackNesMsg'
+CREATE TABLE [dbo].[Db_SysDocSet_Db_WXCallBackNesMsg] (
     [Id] nvarchar(50)  NOT NULL
 );
 GO
@@ -367,24 +374,6 @@ GO
 -- Creating primary key on [Id] in table 'Db_SysDocFileSet'
 ALTER TABLE [dbo].[Db_SysDocFileSet]
 ADD CONSTRAINT [PK_Db_SysDocFileSet]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
--- Creating primary key on [Id] in table 'Db_WXCallBackNesMsgDetailSet'
-ALTER TABLE [dbo].[Db_WXCallBackNesMsgDetailSet]
-ADD CONSTRAINT [PK_Db_WXCallBackNesMsgDetailSet]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
--- Creating primary key on [Id] in table 'Db_SysDocSet_Db_WXCallBackMsg'
-ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackMsg]
-ADD CONSTRAINT [PK_Db_SysDocSet_Db_WXCallBackMsg]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
--- Creating primary key on [Id] in table 'Db_SysDocSet_Db_WXCallBackNesMsg'
-ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackNesMsg]
-ADD CONSTRAINT [PK_Db_SysDocSet_Db_WXCallBackNesMsg]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -454,9 +443,21 @@ ADD CONSTRAINT [PK_Db_SysMsgSet_Db_SysNotice]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
+-- Creating primary key on [Id] in table 'Db_SysDocSet_Db_WXCallBackMsg'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackMsg]
+ADD CONSTRAINT [PK_Db_SysDocSet_Db_WXCallBackMsg]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
 -- Creating primary key on [Id] in table 'Db_SysDocSet_Db_WXCallBackTextMsg'
 ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackTextMsg]
 ADD CONSTRAINT [PK_Db_SysDocSet_Db_WXCallBackTextMsg]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_SysDocSet_Db_WXCallBackNesMsg'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackNesMsg]
+ADD CONSTRAINT [PK_Db_SysDocSet_Db_WXCallBackNesMsg]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -492,39 +493,6 @@ GO
 CREATE INDEX [IX_FK_Db_SysDocDb_DocFile]
 ON [dbo].[Db_SysDocFileSet]
     ([Db_SysDocId]);
-GO
-
--- Creating foreign key on [Db_WXCallBackNesMsgId] in table 'Db_WXCallBackNesMsgDetailSet'
-ALTER TABLE [dbo].[Db_WXCallBackNesMsgDetailSet]
-ADD CONSTRAINT [FK_Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail]
-    FOREIGN KEY ([Db_WXCallBackNesMsgId])
-    REFERENCES [dbo].[Db_SysDocSet_Db_WXCallBackNesMsg]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail'
-CREATE INDEX [IX_FK_Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail]
-ON [dbo].[Db_WXCallBackNesMsgDetailSet]
-    ([Db_WXCallBackNesMsgId]);
-GO
-
--- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_WXCallBackMsg'
-ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackMsg]
-ADD CONSTRAINT [FK_Db_WXCallBackMsg_inherits_Db_SysDoc]
-    FOREIGN KEY ([Id])
-    REFERENCES [dbo].[Db_SysDocSet]
-        ([Id])
-    ON DELETE CASCADE ON UPDATE NO ACTION;
-GO
-
--- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_WXCallBackNesMsg'
-ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackNesMsg]
-ADD CONSTRAINT [FK_Db_WXCallBackNesMsg_inherits_Db_WXCallBackMsg]
-    FOREIGN KEY ([Id])
-    REFERENCES [dbo].[Db_SysDocSet_Db_WXCallBackMsg]
-        ([Id])
-    ON DELETE CASCADE ON UPDATE NO ACTION;
 GO
 
 -- Creating foreign key on [loginName] in table 'Db_SysUserSet_Db_ManagerUser'
@@ -626,9 +594,27 @@ ADD CONSTRAINT [FK_Db_SysNotice_inherits_Db_SysMsg]
     ON DELETE CASCADE ON UPDATE NO ACTION;
 GO
 
+-- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_WXCallBackMsg'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackMsg]
+ADD CONSTRAINT [FK_Db_WXCallBackMsg_inherits_Db_SysDoc]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_SysDocSet]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
 -- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_WXCallBackTextMsg'
 ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackTextMsg]
 ADD CONSTRAINT [FK_Db_WXCallBackTextMsg_inherits_Db_WXCallBackMsg]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_SysDocSet_Db_WXCallBackMsg]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_WXCallBackNesMsg'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_WXCallBackNesMsg]
+ADD CONSTRAINT [FK_Db_WXCallBackNesMsg_inherits_Db_WXCallBackMsg]
     FOREIGN KEY ([Id])
     REFERENCES [dbo].[Db_SysDocSet_Db_WXCallBackMsg]
         ([Id])

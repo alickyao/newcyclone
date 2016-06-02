@@ -148,11 +148,11 @@ namespace NewCyclone.Controllers
         /// <returns></returns>
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
-        public BaseResponse<BaseResponseList<WeiXinCallBackTestMsg>> queryCallBackTextMsg(WxQueryCallBackMsgRequest condtion) {
-            BaseResponse<BaseResponseList<WeiXinCallBackTestMsg>> result = new BaseResponse<BaseResponseList<WeiXinCallBackTestMsg>>();
+        public BaseResponse<BaseResponseList<WeiXinCallBackTextMsg>> queryCallBackTextMsg(WxQueryCallBackMsgRequest condtion) {
+            BaseResponse<BaseResponseList<WeiXinCallBackTextMsg>> result = new BaseResponse<BaseResponseList<WeiXinCallBackTextMsg>>();
             try
             {
-                result.result = WeiXinCallBackTestMsg.queryTextMsg(condtion);
+                result.result = WeiXinCallBackTextMsg.queryTextMsg(condtion);
             }
             catch (SysException e)
             {
@@ -171,13 +171,13 @@ namespace NewCyclone.Controllers
         /// <returns></returns>
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
-        public BaseResponse<List<WeiXinCallBackTestMsg>> editCallBackTextMsg(VMEditListRequest<WxEditCallBackTextMsgReqest> condtion) {
-            BaseResponse<List<WeiXinCallBackTestMsg>> result = new BaseResponse<List<WeiXinCallBackTestMsg>>();
+        public BaseResponse<List<WeiXinCallBackTextMsg>> editCallBackTextMsg(VMEditListRequest<WxEditCallBackTextMsgReqest> condtion) {
+            BaseResponse<List<WeiXinCallBackTextMsg>> result = new BaseResponse<List<WeiXinCallBackTextMsg>>();
             try
             {
-                result.result = new List<WeiXinCallBackTestMsg>();
+                result.result = new List<WeiXinCallBackTextMsg>();
                 foreach (var row in condtion.rows) {
-                    result.result.Add(WeiXinCallBackTestMsg.editTextMsg(row));
+                    result.result.Add(WeiXinCallBackTextMsg.editTextMsg(row));
                 }
                 result.msg = "保存成功";
             }
