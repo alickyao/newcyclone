@@ -1,0 +1,196 @@
+﻿@{
+    //编辑被动回复的微信图文消息
+    Layout = null;
+    string pageId = ViewBag.pageId;
+    List<SysFileInfo> files = ViewBag.files;
+    WxEditCallBackMsgRequst condtion = ViewBag.condtion;
+}
+<script>
+    $(document).ready(function () {
+        var form = $("#@(pageId)editform");
+
+        $('#@(pageId)file_upload').uploadify({
+            'swf': '/Content/uploadify.swf',
+            'uploader': '/File/upload?path=weixin/callback',
+            'buttonImage': '/Areas/Admin/Content/btn-upload.png',
+            'height': 26,
+            'width':102,
+            //'buttonText': '上传图集',
+            'multi': true,
+            'fileTypeDesc': 'Image Files',
+            'fileTypeExts': '*.gif; *.jpg; *.png',
+            'onUploadSuccess': function (file, data, response) {
+                data = $.parseJSON(data);
+                if (data.error == "0") {
+                    //将上传的图片追加到图集的末尾
+                    var piclist = $("#@(pageId)piclist");
+                    var url = "@Url.Action("getFileInfoListHtml", "Files",new { pageId = pageId })";
+                    $.get(url + "&url=" + data.url, function (data) {
+                        piclist.append(data);
+                        $.parser.parse(piclist);
+                    });
+                }
+                else {
+                    $.messager.alert('错误', data.message, 'error');
+                }
+            }
+        });
+
+
+        var leftbtn = ".@(pageId)setup";
+        var rightbtn = ".@(pageId)setdown";
+        var delbtn = ".@(pageId)setdelete";
+
+
+        $(document).off("click", leftbtn);
+        $(document).on("click", leftbtn, function () {
+            //向上
+            var li = $(this).parentsUntil("li").parent().first();
+            if (li.prev().length == 0) {
+                return false;
+            }
+            li.prev().before(li[0]);
+        });
+        $(document).off("click", rightbtn);
+        $(document).on("click", rightbtn, function () {
+            //向下
+            var li = $(this).parentsUntil("li").parent().first();
+            if (li.next().length == 0) {
+                return false;
+            }
+            li.next().after(li[0]);
+        });
+        //删除
+        $(document).off("click", delbtn);
+        $(document).on("click", delbtn, function () {
+            var li = $(this).parentsUntil("li").parent().first();
+            if (li.find("input[name='fileId']").val() != "") {
+                li.appendTo("#@(pageId)dellist");
+            }
+            else {
+                li.remove();
+            }
+        });
+
+
+        $("#@(pageId)selectfilebtn").linkbutton({
+            onClick: function () {
+                var newpageId = "@SysHelp.getNewId()";
+                var url = "@Url.Action("listUpload", "Files")";
+                url += "?pageId=" + newpageId + "&path=weixin/callback";
+                var dd = $("#@(pageId)ddshowfiles");
+                dd.dialog({
+                    href: url,
+                    title: '请选择',
+                    buttons: [
+                        {
+                            text: '选择',
+                            iconCls:'icon-ok',
+                            handler: function () {
+                                var grid = $("#" + newpageId + "grid");
+                                var rows = grid.datagrid("getChecked");
+                                if (rows.length > 0) {
+                                    var urls = [];
+                                    var e = false;
+                                    for (var i = 0; i < rows.length; i++) {
+                                        if (rows[i].isDir) {
+                                            $.messager.alert("错误", "不能选择文件夹", "error");
+                                            e = true;
+                                            break;
+                                        }
+                                        urls.push(rows[i].url);
+                                    }
+                                    if (!e && urls.length > 0) {
+                                        var piclist = $("#@(pageId)piclist");
+                                        var url = "@Url.Action("getFileInfoListHtml", "Files",new { pageId = pageId })";
+                                        for (var i = 0; i < urls.length; i++) {
+                                            $.get(url + "&url=" + urls[i], function (data) {
+                                                piclist.append(data);
+                                                $.parser.parse(piclist);
+                                            });
+                                        }
+                                        toastr.info("已添加"+ urls.length +"张图片");
+                                        dd.dialog("close");
+                                    }
+                                }
+                                else {
+                                    $.messager.alert("错误", "请勾选文件", "error");
+                                }
+                            }
+                        },
+                        {
+                            text: '取消',
+                            iconCls: 'icon-clear',
+                            handler: function () {
+                                dd.dialog("close");
+                            }
+                        }
+                    ]
+                }).dialog("open");
+            }
+        });
+
+
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div id="@(pageId)ddshowfiles" class="easyui-dialog dialogwin" data-options="inline:true,resizable:true,modal:true,closed:true,title:''" style="width:90%;height:90%">
+    </div>
+    <div data-options="region:'center',border:false">
+        <form id="@(pageId)editform">
+            <input type="hidden" name="Id" value="@condtion.Id" />
+            <table class="formtable" style="width:100%; margin-top:5px;">
+                <tr>
+                    <td class="t" style="width:80px;">标题</td>
+                    <td><input type="text" class="easyui-textbox" name="caption" style="width:300px;" data-options="required:true" value="@condtion.caption" /></td>
+                </tr>
+                <tr>
+                    <td class="t">key&nbsp;<a href="#" title="这里的key值需要与菜单中的key值对应，否则不会起什么作用" data-options="position:'right'" class="easyui-tooltip">提示</a></td>
+                    <td>
+                        <input type="text" class="easyui-textbox" name="key" data-options="required:true,validType:'checkWeixinMsgKey[\'@condtion.Id\']'" value="@condtion.key" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <table class="formtable" style="width:100%; margin-top:5px;">
+            <tr>
+                <td class="t" style="width:80px;" rowspan="2">上传</td>
+                <td>
+                    <input type="file" id="@(pageId)file_upload" name="fileupload" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" id="@(pageId)selectfilebtn">浏览服务器</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="t">说明</td>
+                <td>
+                    <ul>
+                        <li>图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200</li>
+                        <li>无论上传多大的图，在提交到微信接口时系统都会自动进行裁剪到上述尺寸</li>
+                        <li>排第一位的图片将作为大图处理，消息总条目数量最多不超过10个，否则微信将返回无响应</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td class="t">图文集</td>
+                <td>
+                    <input type="hidden" name="files" value="," />
+                    <ul id="@(pageId)piclist" class="infofileinfolist">
+                        @if (files.Count > 0)
+                        {
+                            foreach (var f in files)
+                            {
+                                @Html.Action("getFileInfoListHtml", "Files", new { pageId = pageId, fileId = f.Id });
+                            }
+                        }
+                    </ul>
+                    <ul id="@(pageId)dellist" style="display:none;"></ul>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</div>
