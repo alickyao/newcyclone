@@ -1,0 +1,151 @@
+﻿@{
+    Layout = null;
+    string parentPageId = ViewBag.pageId;
+    string pageId = SysHelp.getNewId();
+    string type = JsonConvert.SerializeObject(SysHelp.getEnumList(typeof(SysMessageType)));
+    string q = JsonConvert.SerializeObject(new VMMsgSearchMsgRequest()
+    {
+        page = 1,
+        pageSize = 20,
+        msgType = new List<int>() {
+            1,2
+        }
+    });
+}
+<script>
+    $(document).ready(function () {
+        var grid = $("#@(pageId)msgGrid");
+        var msgtype = $.parseJSON('@Html.Raw(type)');
+        var request = $.parseJSON('@Html.Raw(q)');
+
+        var selecttype = $("#@(pageId)msgType");
+
+        selecttype.combobox({
+            valueField: "id",
+            textField: "text",
+            data: msgtype,
+            panelHeight:"auto",
+            editable: false,
+            multiple: true,
+            onHidePanel: function () {
+                var v = selecttype.combobox("getValues");
+                request.msgType = v;
+                loadGrid();
+            }
+        });
+        selecttype.combobox("setValues", request.msgType);
+
+        function loadGrid() {
+            grid.datagrid("loading");
+            $.post("/api/ApiSysMsg/searchMsgList", request, function (json) {
+                grid.datagrid("loaded");
+                if (json.code == 0) {
+                    grid.datagrid("loadData", json.result);
+                }
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: false,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+                var dd = $("#@(parentPageId)dd");
+                var title = "";
+                var url = "";
+                switch (rowData.msgType) {
+                    case 0://通知
+
+                        break;
+                    case 1://日志
+                        title = "日志详情"
+                        url = "@Url.Action("userLogInfo", "ManagerMsg")/" + rowData.Id;
+                        break;
+                    case 2://异常
+                        title = "异常详情"
+                        url = "@Url.Action("exceptionLogInfo", "ManagerMsg")/" + rowData.Id;
+                        break;
+                }
+                if (url != "") {
+                    dd.dialog({
+                        title: title,
+                        href: url
+                    });
+                    dd.dialog("open");
+                }
+            },
+            columns: [[
+                //{
+                //    field: 'Id', title: 'ID',
+                //},
+                {
+                    field: 'msgTypeicon', title: '类型', align: 'center',
+                    styler: function (value, row, index) {
+                        var filename = "";
+                        switch (row.msgType) {
+                            case 0://通知
+                                filename = "tip.png"
+                                break;
+                            case 1://日志
+                                filename = "pencil.png"
+                                break;
+                            case 2://异常
+                                filename = "no.png"
+                                break;
+                        }
+                        return "background:url('/Content/themes/icons/" + filename + "') no-repeat center center;"
+                    }
+                },
+                //{
+                //    field: 'msgType', title: '类型', align: 'center', formatter: function (value, row, index) {
+                //        return msgtype[value].text;
+                //    }
+                //},
+                //{
+                //    field: 'createdOn', title: '创建时间',
+                //    formatter: function (value, row, index) {
+                //        if (value != null) {
+                //            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                //        }
+                //    }
+                //},
+                {
+                    field: 'showTime',title:'时间',align:'right'
+                },
+                {
+                    field: 'message', title: '消息'
+                }
+            ]],
+            toolbar: "#@(pageId)tb"
+        });
+
+        //翻页设置
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            },
+            layout: ['refresh', 'prev', 'next']
+        });
+
+        loadGrid();
+
+        window.setInterval(loadGrid, 30000);
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)msgGrid"></table>
+        <div id="@(pageId)tb">
+            <select id="@(pageId)msgType" style="width:100px;"></select>
+        </div>
+    </div>
+</div>

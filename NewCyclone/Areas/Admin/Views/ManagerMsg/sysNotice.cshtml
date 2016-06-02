@@ -1,0 +1,125 @@
+﻿
+@{
+    Layout = null;
+    string parentPageId = ViewBag.pageId;
+    string pageId = SysHelp.getNewId();
+}
+<script>
+    $(document).ready(function () {
+        var grid = $("#@(pageId)noticeGrid");
+
+        var request = {
+            page: 1,
+            pageSize:20
+        }
+
+        function loadGrid() {
+            grid.datagrid("loading");
+            $.post("/api/ApiSysMsg/searchNotice?alert=true", request, function (json) {
+                grid.datagrid("loaded");
+                if (json.code == 0) {
+                    grid.datagrid("loadData", json.result);
+                }
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: true,
+            striped: true,
+            pagination: true,
+            rownumbers: false,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+                var dd = $("#@(parentPageId)dd");
+
+                if (!rowData.isRead) {
+                    $.getJSON("/api/ApiSysMsg/setNoticeToReaded/" + rowData.Id, function (json) {
+                        console.log(json);
+                        if (json.code == 0) {
+                            grid.datagrid("updateRow", {
+                                index: rowIndex,
+                                row: json.result
+                            });
+                        }
+                    });
+                }
+
+                if (rowData.linkUrl != null && rowData.linkUrl != "") {
+                    console.log(linkUrl);
+                }
+                else {
+                    console.log("为设置跳转的通知");
+                }
+            },
+            rowStyler: function (index, row) {
+                return row.isRead ? "" : "color:#ff6a00";
+            },
+            columns: [[
+                {
+                    field: 'Id', title: 'ID',align:'right'
+                },
+                {
+                    field: 'msgTypeicon', title: '&nbsp;', align: 'center',
+                    styler: function (value, row, index) {
+                        return "background:url('/Content/themes/icons/tip.png') no-repeat center center;"
+                    }
+                },
+                {
+                    field: 'showTime',title:'时间',align:'right'
+                },
+                {
+                    field:'title',title:'来自'
+                },
+                {
+                    field: 'message', title: '消息'
+                },
+                {
+                    field: 'isRead', title: '已读', align:'center' , formatter: function (value, row, index) {
+                        return value ? "是" : "否";
+                    }
+                },
+                {
+                    field: 'readTime', title: '处理时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'readUser', title: '处理人',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return value.showName
+                        }
+                    }
+                },
+            ]]
+        });
+
+        //翻页设置
+        grid.datagrid('getPager').pagination({
+            onSelectPage: function (pPageIndex, pPageSize) {
+                request.page = pPageIndex;
+                request.pageSize = pPageSize;
+                loadGrid();
+            },
+            layout: ['refresh', 'first', 'prev', 'next']
+        });
+
+        loadGrid();
+
+        window.setInterval(loadGrid, 30000);
+
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)noticeGrid"></table>
+    </div>
+</div>

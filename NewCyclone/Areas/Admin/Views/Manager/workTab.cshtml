@@ -1,157 +1,17 @@
 ﻿
 @{
-    string pageId = SysHelp.getNewId("HHmmss");
-    string type = JsonConvert.SerializeObject(SysHelp.getEnumList(typeof(SysMessageType)));
-    string q = JsonConvert.SerializeObject(new VMMsgSearchMsgRequest() {
-        page = 1,
-        pageSize =10,
-        msgType = new List<int>() {
-            0,1,2
-        }
-    });
+    Layout = null;
+    string pageId = SysHelp.getNewId();
 }
-<script>
-    $(document).ready(function () {
-        var grid = $("#@(pageId)msgGrid");
-        var msgtype = $.parseJSON('@Html.Raw(type)');
-        var request = $.parseJSON('@Html.Raw(q)');
-
-        var selecttype = $("#@(pageId)msgType");
-
-        selecttype.combobox({
-            valueField: "id",
-            textField: "text",
-            data: msgtype,
-            panelHeight:"auto",
-            editable: false,
-            multiple: true,
-            onHidePanel: function () {
-                var v = selecttype.combobox("getValues");
-                request.msgType = v;
-                loadGrid();
-            }
-        });
-        selecttype.combobox("setValues", request.msgType);
-
-        function loadGrid() {
-            grid.datagrid("loading");
-            $.post("/api/ApiSysMsg/searchMsgList", request, function (json) {
-                grid.datagrid("loaded");
-                if (json.code == 0) {
-                    grid.datagrid("loadData", json.result);
-                }
-            });
-        }
-
-        grid.datagrid({
-            fit: true,
-            border: false,
-            fitColumns: true,
-            striped: true,
-            pagination: true,
-            rownumbers: false,
-            pageNumber: request.page,
-            pageSize: request.pageSize,
-            singleSelect: true,
-            idField: "Id",
-            onDblClickRow: function (rowIndex, rowData) {
-                var dd = $("#@(pageId)dd");
-                var title = "";
-                var url = "";
-                switch (rowData.msgType) {
-                    case 0://通知
-                        
-                        break;
-                    case 1://日志
-                        title = "日志详情"
-                        url = "@Url.Action("userLogInfo", "ManagerMsg")/" + rowData.Id;
-                        break;
-                    case 2://异常
-                        title = "异常详情"
-                        url = "@Url.Action("exceptionLogInfo", "ManagerMsg")/" + rowData.Id;
-                        break;
-                }
-                if (url != "") {
-                    dd.dialog({
-                        title: title,
-                        href: url
-                    });
-                    dd.dialog("open");
-                }
-            },
-            columns: [[
-                {
-                    field: 'Id', title: 'ID',
-                },
-                {
-                    field: 'msgTypeicon', title: '类型', align: 'center',
-                    styler: function (value, row, index) {
-                        var filename = "";
-                        switch (row.msgType) {
-                            case 0://通知
-                                filename = "tip.png"
-                                break;
-                            case 1://日志
-                                filename = "pencil.png"
-                                break;
-                            case 2://异常
-                                filename = "no.png"
-                                break;
-                        }
-                        return "background:url('/Content/themes/icons/" + filename + "') no-repeat center center;"
-                    }
-                },
-                {
-                    field: 'msgType', title: '类型', align: 'center', formatter: function (value, row, index) {
-                        return msgtype[value].text;
-                    }
-                },
-                {
-                    field: 'createdOn', title: '创建时间',
-                    formatter: function (value, row, index) {
-                        if (value != null) {
-                            return new Date(value).Format("yyyy-MM-dd hh:mm");
-                        }
-                    }
-                },
-                {
-                    field: 'message', title: '消息'
-                }
-            ]],
-            toolbar: "#@(pageId)tb"
-        });
-
-        //翻页设置
-        grid.datagrid('getPager').pagination({
-            onSelectPage: function (pPageIndex, pPageSize) {
-                request.page = pPageIndex;
-                request.pageSize = pPageSize;
-                loadGrid();
-            }
-        });
-
-        loadGrid();
-
-        window.setInterval(loadGrid, 30000);
-    });
-</script>
-<div id="@(pageId)dd" class="easyui-dialog" data-options="inline:true,resizable:false,modal:true,closed:true" style="width:80%;height:80%; padding:5px;"></div>
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'center',border:false" style="padding:2px;">
-        <table>
-            <tr>
-                <td>默认后台主界面</td>
-                <td>
-
-                </td>
-            </tr>
-        </table>
+    <div id="@(pageId)dd" class="easyui-dialog dialogwin" data-options="inline:true,resizable:false,modal:true,closed:true,title:'消息'" style="width:90%;height:90%">
     </div>
-    <div data-options="region:'south',border:false,split:true,title:'系统消息'" style="height:250px;">
-        <table id="@(pageId)msgGrid">
-        </table>
-        <div id="@(pageId)tb">
-            <select id="@(pageId)msgType" style="width:200px;"></select>
+    <div data-options="region:'center',border:false">
+        <div class="easyui-layout" data-options="fit:true,border:false">
+            <div data-options="region:'center',border:false">
+                <div class="easyui-panel" data-options="href:'@Url.Action("sysNotice","ManagerMsg",new { pageId=pageId})',title:'需处理',border:false" style="height:400px;"></div>
+            </div>
+            <div data-options="region:'east',split:true,border:false,collapsed:false,title:'消息/日志/通知',href:'@Url.Action("sysMsgList","ManagerMsg",new { pageId=pageId})'" style="width: 400px;"></div>
         </div>
     </div>
 </div>

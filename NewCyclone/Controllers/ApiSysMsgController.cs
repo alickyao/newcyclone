@@ -91,5 +91,49 @@ namespace NewCyclone.Controllers
             }
             return result;
         }
+
+        /// <summary>
+        /// 检索系统通知
+        /// </summary>
+        /// <param name="alert">是否只查询需要提示的内容</param>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        public BaseResponse<BaseResponseList<SysNotice>> searchNotice(bool alert, BaseRequest condtion) {
+            BaseResponse<BaseResponseList<SysNotice>> result = new BaseResponse<BaseResponseList<SysNotice>>();
+            try
+            {
+                result.result = SysNotice.queryNotice(alert, condtion);
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, condtion);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 设置通知为已读状态
+        /// </summary>
+        /// <param name="id">通知的ID</param>
+        /// <returns></returns>
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        [HttpGet]
+        public BaseResponse<SysNotice> setNoticeToReaded(long id) {
+            BaseResponse<SysNotice> result = new BaseResponse<SysNotice>();
+            try
+            {
+                SysNotice msg = new SysNotice(id);
+                result.result = msg.setToRead();
+                result.msg = "已设置为已读";
+            }
+            catch (SysException e) {
+                result = e.getresult(result);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, id);
+            }
+            return result;
+        }
     }
 }

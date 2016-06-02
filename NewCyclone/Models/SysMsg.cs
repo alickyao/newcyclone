@@ -66,6 +66,11 @@ namespace NewCyclone.Models
         public DateTime createdOn { get; set; }
 
         /// <summary>
+        /// 简化的时间
+        /// </summary>
+        public string showTime { get; set; }
+
+        /// <summary>
         /// 消息内容
         /// </summary>
         public string message { get; set; }
@@ -86,6 +91,25 @@ namespace NewCyclone.Models
                 this.createdOn = d.createdOn;
                 this.message = d.message;
                 this.msgType = (SysMessageType)d.msgType;
+
+                //时间格式化
+                DateTime thistime = DateTime.Now;
+                var s = thistime - this.createdOn;
+                if (s.TotalMinutes < 60)
+                {
+                    this.showTime = s.TotalMinutes.ToString("0") + "分钟前";
+                }
+                else if (s.TotalHours < 24)
+                {
+                    this.showTime = s.TotalHours.ToString("0") + "小时前";
+                }
+                else if (s.TotalDays < 4)
+                {
+                    this.showTime = s.TotalDays.ToString("0") + "天前";
+                }
+                else {
+                    this.showTime = this.createdOn.ToShortDateString();
+                }
             }
         }
 
@@ -401,6 +425,24 @@ namespace NewCyclone.Models
         }
 
         /// <summary>
+        /// 设置为已读
+        /// </summary>
+        /// <returns></returns>
+        public SysNotice setToRead() {
+            if (this.isRead) {
+                throw new SysException("该信息已是已读状态");
+            }
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysMsgSet.OfType<Db_SysNotice>().Single(p => p.Id == this.Id);
+                d.isRead = true;
+                d.readTime = DateTime.Now;
+                d.readUser = HttpContext.Current.User.Identity.Name;
+                db.SaveChanges();
+                return new SysNotice(this.Id);
+            }
+        }
+
+        /// <summary>
         /// 创建一个系统通知
         /// </summary>
         /// <param name="condtion"></param>
@@ -423,6 +465,32 @@ namespace NewCyclone.Models
                 SysNotice n = new SysNotice(newrow.Id);
                 return n;
             }
+        }
+
+        /// <summary>
+        /// 检索系统通知
+        /// </summary>
+        /// <param name="alert">是否只查询需要提示的消息</param>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponseList<SysNotice> queryNotice(bool alert, BaseRequest condtion) {
+            BaseResponseList<SysNotice> result = new BaseResponseList<SysNotice>();
+
+            using (var db = new SysModelContainer()) {
+                var rows = (from c in db.Db_SysMsgSet.OfType<Db_SysNotice>().AsEnumerable()
+                            where (alert ? c.alert : true)
+                            orderby c.alert, c.Id descending
+                            select c.Id
+                            );
+                result.total = rows.Count();
+                if (result.total > 0) {
+                    if (condtion.page != 0) {
+                        rows = rows.Skip(condtion.getSkip()).Take(condtion.pageSize);
+                    }
+                    result.rows = rows.Select(p => new SysNotice(p)).ToList();
+                }
+            }
+            return result;
         }
     }
 

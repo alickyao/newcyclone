@@ -157,6 +157,17 @@ namespace NewCyclone.Areas.Admin.Controllers
     {
 
         /// <summary>
+        /// 所有系统消息列表
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult sysMsgList(string pageId) {
+            setPageId(pageId);
+            return View();
+        }
+
+        /// <summary>
         /// 用户日志列表
         /// </summary>
         /// <param name="condtion"></param>
@@ -211,6 +222,16 @@ namespace NewCyclone.Areas.Admin.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 系统通知
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult sysNotice(string pageId) {
+            setPageId(pageId);
+            return View();
+        }
     }
 
     /// <summary>
