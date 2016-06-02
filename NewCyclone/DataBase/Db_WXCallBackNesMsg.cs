@@ -14,14 +14,5 @@ namespace NewCyclone.DataBase
     
     public partial class Db_WXCallBackNesMsg : Db_WXCallBackMsg
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Db_WXCallBackNesMsg()
-        {
-            this.Db_WXCallBackNesMsgDetail = new HashSet<Db_WXCallBackNesMsgDetail>();
-        }
-    
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Db_WXCallBackNesMsgDetail> Db_WXCallBackNesMsgDetail { get; set; }
     }
 }

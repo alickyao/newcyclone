@@ -1,5 +1,227 @@
 ﻿
 @{
     Layout = null;
+    string pageId = ViewBag.pageId;
+    WxQueryCallBackMsgRequest condtion = ViewBag.condtion;
+    string q = JsonConvert.SerializeObject(condtion);
 }
-图文消息
+<script>
+    $(document).ready(function () {
+        var request = $.parseJSON('@Html.Raw(q)');
+        var grid = $("#@(pageId)grid");
+
+        var dd = $("#@(pageId)dd");
+
+        dd.dialog({
+            buttons: [
+                {
+                    text: '保存',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        var btn = $(this);
+                        var form = $("#@(pageId)editform");
+
+                        if (btn.linkbutton("options").disabled == false) {
+                            var Reg = form.form('enableValidation').form('validate');
+                            if (Reg) {
+                                btn.linkbutton("disable");
+                                var d = form.serializeObject();
+                                console.log(d);
+                                var url = "/api/ApiWeiXinSet/editCallBackNewsMsg";
+                                $.post(url, d, function (json) {
+                                    showmsg(json);
+                                    btn.linkbutton("enable");
+                                    if (json.code == 0) {
+                                        //新增/编辑/删除图片
+                                        var filelist = $("#@(pageId)piclist").find("li");
+                                        var dellist = $("#@(pageId)dellist").find("li");
+
+                                        var oldfiles = [];
+                                        var newfiles = [];
+                                        var delfiles = [];
+
+                                        if (filelist.length > 0) {
+                                            $.each(filelist, function (i, n) {
+                                                var d = $(n).find("form").serializeObject();
+                                                d.sort = i;
+                                                if (d.fileId == "") {
+                                                    //新增
+                                                    newfiles.push(d);
+                                                }
+                                                else {
+                                                    //编辑
+                                                    oldfiles.push(d);
+                                                }
+                                            });
+                                            var addNewUrl = "/api/ApiSysDoc/appendinfopic";
+                                            var editOldUrl = "/api/ApiSysFile/editFilesInfo";
+
+                                            console.log(newfiles);
+                                            console.log(oldfiles);
+
+                                            if (newfiles.length > 0) {
+                                                $.post(addNewUrl, { docId: json.result.Id, rows: newfiles }, function (json) {
+                                                    console.log(json);
+                                                })
+                                            }
+                                            if (oldfiles.length > 0) {
+                                                $.post(editOldUrl, { rows: oldfiles }, function (json) {
+                                                    console.log(json);
+                                                });
+                                            }
+                                        }
+                                        //删除
+                                        if (dellist.length > 0) {
+                                            $.each(dellist, function (i, n) {
+                                                var d = $(n).find("form").serializeObject();
+                                                delfiles.push(d.fileId);
+                                            });
+                                            $.post("/api/ApiSysDoc/delpic", { rows: delfiles }, function (json) {
+                                                console.log(json);
+                                            });
+                                        }
+
+                                        dd.dialog("close");
+                                        loadGrid();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                },
+                {
+                    text: '取消',
+                    iconCls: 'icon-clear',
+                    handler: function () {
+                        dd.dialog("close");
+                    }
+                }
+            ]
+        });
+
+        function loadGrid() {
+            grid.datagrid("loading");
+            console.log(request);
+            $.post("/api/ApiWeiXinSet/queryCallBackMsg", request, function (json) {
+                console.log(json);
+                grid.datagrid("loaded");
+                gridLoadData(grid, json);
+            });
+        }
+
+        grid.datagrid({
+            fit: true,
+            border: false,
+            fitColumns: false,
+            striped: true,
+            pagination: true,
+            rownumbers: true,
+            pageNumber: request.page,
+            pageSize: request.pageSize,
+            singleSelect: true,
+            idField: "Id",
+            onDblClickRow: function (rowIndex, rowData) {
+                var url = "@Url.Action("editCallBackNewsMsg",new { pageId = pageId})";
+                url += "&Id=" + rowData.Id;
+                console.log(url);
+                dd.dialog({
+                    href: url,
+                    title: "编辑"
+                });
+                dd.dialog("open");
+            },
+            columns: [[
+                { field: 'caption', title: '标题', width: 200, editor: { type: "textbox", options: { required: true } } },
+                { field: 'key', title: 'key值', width: 80, editor: { type: "textbox", options: { required: true, validType: 'length[1,50]' } } },
+                {
+                    field: 'createdOn', title: '创建时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'createdBy', title: '创建者',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return value.showName;
+                        }
+                    }
+                },
+                {
+                    field: 'modifiedOn', title: '修改时间',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return new Date(value).Format("yyyy-MM-dd hh:mm");
+                        }
+                    }
+                },
+                {
+                    field: 'modifiedBy', title: '修改者',
+                    formatter: function (value, row, index) {
+                        if (value != null) {
+                            return value.showName;
+                        }
+                    }
+                },
+            ]],
+            toolbar: [
+                {
+                    text: "新增",
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        var url = "@Url.Action("editCallBackNewsMsg", new { pageId= pageId})";
+                        console.log(url);
+                        dd.dialog({
+                            href: url,
+                            title: "新增"
+                        });
+                        dd.dialog("open");
+                    }
+                },
+                {
+                    text: "删除",
+                    iconCls: 'icon-clear',
+                    handler: function () {
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('您的操作有误', "请选择一行", 'error');
+                            return;
+                        }
+                        if (row.Id == null) {
+                            grid.datagrid("deleteRow", grid.datagrid("getRowIndex", row));
+                        }
+                        else {
+                            $.messager.confirm('请确认', '删除' + row.caption + '？', function (r) {
+                                if (r) {
+                                    grid.datagrid("loading");
+                                    $.getJSON("/api/ApiSysDoc/delete/" + row.Id, function (json) {
+                                        showmsg(json);
+                                        loadGrid();
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            ]
+        });
+        loadGrid();
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <div id="@(pageId)dd" class="easyui-dialog dialogwin" data-options="inline:true,resizable:false,modal:true,closed:true,title:'新增/编辑'" style="width:90%;height:90%">
+        </div>
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center',border:false">
+                <table id="@(pageId)grid"></table>
+            </div>
+            <div data-options="region:'north',border:false,title:'说明',split:false,collapsed:false,iconCls:'icon-help'" style="height:93px;">
+                @Html.Partial("callbackHelp")
+            </div>
+        </div>
+    </div>
+</div>

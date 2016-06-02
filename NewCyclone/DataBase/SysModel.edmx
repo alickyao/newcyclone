@@ -13,7 +13,6 @@
     <EntitySet Name="Db_SysDocSet" EntityType="SysModel.Store.Db_SysDocSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysDocCatSet" EntityType="SysModel.Store.Db_SysDocCatSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysDocFileSet" EntityType="SysModel.Store.Db_SysDocFileSet" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Db_WXCallBackNesMsgDetailSet" EntityType="SysModel.Store.Db_WXCallBackNesMsgDetailSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysDocSet_Db_WXCallBackMsg" EntityType="SysModel.Store.Db_SysDocSet_Db_WXCallBackMsg" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysDocSet_Db_WXCallBackNesMsg" EntityType="SysModel.Store.Db_SysDocSet_Db_WXCallBackNesMsg" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysUserSet_Db_ManagerUser" EntityType="SysModel.Store.Db_SysUserSet_Db_ManagerUser" store:Type="Tables" Schema="dbo" />
@@ -35,10 +34,6 @@
     <AssociationSet Name="Db_SysDocDb_DocFile" Association="SysModel.Store.Db_SysDocDb_DocFile">
       <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
       <End Role="Db_DocFile" EntitySet="Db_SysDocFileSet" />
-    </AssociationSet>
-    <AssociationSet Name="Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail" Association="SysModel.Store.Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail">
-      <End Role="Db_WXCallBackNesMsg" EntitySet="Db_SysDocSet_Db_WXCallBackNesMsg" />
-      <End Role="Db_WXCallBackNesMsgDetail" EntitySet="Db_WXCallBackNesMsgDetailSet" />
     </AssociationSet>
     <AssociationSet Name="FK_Db_WXCallBackMsg_inherits_Db_SysDoc" Association="SysModel.Store.FK_Db_WXCallBackMsg_inherits_Db_SysDoc">
       <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
@@ -164,17 +159,6 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Db_SysDocId" Type="nvarchar" Nullable="false" MaxLength="50" />
     <Property Name="Db_SysFileId" Type="nvarchar" Nullable="false" MaxLength="50" />
-  </EntityType>
-  <EntityType Name="Db_WXCallBackNesMsgDetailSet">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Db_WXCallBackNesMsgId" Type="nvarchar" Nullable="false" MaxLength="50" />
-    <Property Name="title" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="description" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="picUrl" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="url" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="Db_SysDocSet_Db_WXCallBackMsg">
     <Key>
@@ -322,18 +306,6 @@
       </Principal>
       <Dependent Role="Db_DocFile">
         <PropertyRef Name="Db_SysDocId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail">
-    <End Role="Db_WXCallBackNesMsg" Type="SysModel.Store.Db_SysDocSet_Db_WXCallBackNesMsg" Multiplicity="1" />
-    <End Role="Db_WXCallBackNesMsgDetail" Type="SysModel.Store.Db_WXCallBackNesMsgDetailSet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Db_WXCallBackNesMsg">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Db_WXCallBackNesMsgDetail">
-        <PropertyRef Name="Db_WXCallBackNesMsgId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -553,11 +525,6 @@
             <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
             <End Role="Db_DocFile" EntitySet="Db_SysDocFileSet" />
           </AssociationSet>
-          <EntitySet Name="Db_WXCallBackNesMsgDetailSet" EntityType="SysModel.Db_WXCallBackNesMsgDetail" />
-          <AssociationSet Name="Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail" Association="SysModel.Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail">
-            <End Role="Db_WXCallBackNesMsg" EntitySet="Db_SysDocSet" />
-            <End Role="Db_WXCallBackNesMsgDetail" EntitySet="Db_WXCallBackNesMsgDetailSet" />
-          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Db_SysUser" Abstract="true">
           <Key>
@@ -725,32 +692,7 @@
           <Property Name="content" Type="String" Nullable="false" />
         </EntityType>
         <EntityType Name="Db_WXCallBackNesMsg" BaseType="SysModel.Db_WXCallBackMsg" >
-          <NavigationProperty Name="Db_WXCallBackNesMsgDetail" Relationship="SysModel.Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail" FromRole="Db_WXCallBackNesMsg" ToRole="Db_WXCallBackNesMsgDetail" />
         </EntityType>
-        <EntityType Name="Db_WXCallBackNesMsgDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Db_WXCallBackNesMsg" Relationship="SysModel.Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail" FromRole="Db_WXCallBackNesMsgDetail" ToRole="Db_WXCallBackNesMsg" />
-          <Property Name="Db_WXCallBackNesMsgId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="title" Type="String" Nullable="false" />
-          <Property Name="description" Type="String" Nullable="false" />
-          <Property Name="picUrl" Type="String" Nullable="false" />
-          <Property Name="url" Type="String" Nullable="false" />
-        </EntityType>
-        <Association Name="Db_WXCallBackNesMsgDb_WXCallBackNesMsgDetail">
-          <End Type="SysModel.Db_WXCallBackNesMsg" Role="Db_WXCallBackNesMsg" Multiplicity="1" />
-          <End Type="SysModel.Db_WXCallBackNesMsgDetail" Role="Db_WXCallBackNesMsgDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Db_WXCallBackNesMsg">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_WXCallBackNesMsgDetail">
-              <PropertyRef Name="Db_WXCallBackNesMsgId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -940,18 +882,6 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Db_SysDocId" ColumnName="Db_SysDocId" />
           <ScalarProperty Name="Db_SysFileId" ColumnName="Db_SysFileId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Db_WXCallBackNesMsgDetailSet">
-      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_WXCallBackNesMsgDetail)">
-        <MappingFragment StoreEntitySet="Db_WXCallBackNesMsgDetailSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Db_WXCallBackNesMsgId" ColumnName="Db_WXCallBackNesMsgId" />
-          <ScalarProperty Name="title" ColumnName="title" />
-          <ScalarProperty Name="description" ColumnName="description" />
-          <ScalarProperty Name="picUrl" ColumnName="picUrl" />
-          <ScalarProperty Name="url" ColumnName="url" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

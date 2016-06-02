@@ -899,17 +899,6 @@ namespace NewCyclone.Models.WeiXin
     }
 
     /// <summary>
-    /// 创建/编辑自动回复图文消息请求
-    /// </summary>
-    public class WxEditCallBackNewsMsgRequest : WxEditCallBackMsgRequst {
-        /// <summary>
-        /// 图文消息列表-最多不超过10个
-        /// </summary>
-        [Required]
-        public List<WeiXinCallBackNewsMsgDetail> detail { get; set; }
-    }
-
-    /// <summary>
     /// 查询文本请求
     /// </summary>
     public class WxQueryCallBackMsgRequest : BaseRequest
@@ -985,6 +974,23 @@ namespace NewCyclone.Models.WeiXin
             }
             return result;
         }
+
+        /// <summary>
+        /// 获取key出现的次数
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <param name="id">需要排除的id 编辑状态时排除自己</param>
+        /// <returns></returns>
+        public static int getKeyCount(string key, string id = null) {
+            using (var db = new SysModelContainer()) {
+                int count = (from c in db.Db_SysDocSet.OfType<Db_WXCallBackMsg>().AsEnumerable()
+                             where (!c.isDeleted)
+                             && (c.key == key)
+                             && (string.IsNullOrEmpty(id) ? true : (c.Id != id))
+                             select c.Id).Count();
+                return count;
+            }
+        }
     }
 
     /// <summary>
@@ -1016,6 +1022,9 @@ namespace NewCyclone.Models.WeiXin
         /// <returns></returns>
         public static WeiXinCallBackTestMsg editTextMsg(WxEditCallBackTextMsgReqest condtion) {
             SysValidata.valiData(condtion);
+            if (getKeyCount(condtion.key,condtion.Id) > 0) {
+                throw new SysException("key已被使用");
+            }
             using (var db = new SysModelContainer()) {
 
                 if (string.IsNullOrEmpty(condtion.Id))
@@ -1084,14 +1093,14 @@ namespace NewCyclone.Models.WeiXin
     /// </summary>
     public class WeiXinCallBackNewsMsg : WeiXinCallBackMsg {
 
-        private List<WeiXinCallBackNewsMsgDetail> _detail = new List<WeiXinCallBackNewsMsgDetail>();
+        private List<SysFileInfo> _files = new List<SysFileInfo>();
 
         /// <summary>
-        /// 详情
+        /// 图文详情
         /// </summary>
-        public List<WeiXinCallBackNewsMsgDetail> detail {
-            get { return _detail; }
-            set { detail = value; }
+        public List<SysFileInfo> files {
+            get { return _files; }
+            set { _files = value; }
         }
 
         /// <summary>
@@ -1101,13 +1110,8 @@ namespace NewCyclone.Models.WeiXin
         public WeiXinCallBackNewsMsg(string id) : base(id) {
             using (var db = new SysModelContainer()) {
                 var d = db.Db_SysDocSet.OfType<Db_WXCallBackNesMsg>().Single(p => p.Id == id);
-                if (d.Db_WXCallBackNesMsgDetail.Count > 0) {
-                    this.detail = d.Db_WXCallBackNesMsgDetail.Select(p => new WeiXinCallBackNewsMsgDetail() {
-                        description = p.description,
-                        picUrl = p.picUrl,
-                        title = p.title,
-                        url = p.url
-                    }).ToList();
+                if (d.Db_DocFile.Count > 0) {
+                    this.files = d.Db_DocFile.Select(p => new SysFileInfo(p.Db_SysFileId)).ToList();
                 }
             }
         }
@@ -1117,8 +1121,12 @@ namespace NewCyclone.Models.WeiXin
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        public static WeiXinCallBackNewsMsg editNewsMsg(WxEditCallBackNewsMsgRequest condtion) {
+        public static WeiXinCallBackNewsMsg editNewsMsg(WxEditCallBackMsgRequst condtion) {
             SysValidata.valiData(condtion);
+            if (getKeyCount(condtion.key,condtion.Id) > 0)
+            {
+                throw new SysException("key已被使用");
+            }
             using (var db = new SysModelContainer()) {
                 if (string.IsNullOrEmpty(condtion.Id)) {
                     condtion.Id = SysHelp.getNewId();
@@ -1138,70 +1146,19 @@ namespace NewCyclone.Models.WeiXin
                         modifiedOn = DateTime.Now,
                         Id = condtion.Id
                     };
-                    foreach (var l in condtion.detail) {
-                        d.Db_WXCallBackNesMsgDetail.Add(new Db_WXCallBackNesMsgDetail() {
-                            description = l.description,
-                            picUrl = l.picUrl,
-                            title = l.title,
-                            url = l.url
-                        });
-                    }
                     db.Db_SysDocSet.Add(d);
                 }
                 else {
                     //编辑
-                    db.Db_WXCallBackNesMsgDetailSet.RemoveRange(c.Db_WXCallBackNesMsgDetail);
-                    db.SaveChanges();
-
                     c.caption = condtion.caption;
                     c.key = condtion.key;
                     c.modifiedOn = DateTime.Now;
                     c.modifiedBy = HttpContext.Current.User.Identity.Name;
-                    foreach (var l in condtion.detail)
-                    {
-                        c.Db_WXCallBackNesMsgDetail.Add(new Db_WXCallBackNesMsgDetail()
-                        {
-                            description = l.description,
-                            picUrl = l.picUrl,
-                            title = l.title,
-                            url = l.url
-                        });
-                    }
                 }
                 db.SaveChanges();
                 return new WeiXinCallBackNewsMsg(condtion.Id);
             }
         }
-    }
-
-    /// <summary>
-    /// 被动回复的图文消息详情
-    /// </summary>
-    public class WeiXinCallBackNewsMsgDetail {
-
-        /// <summary>
-        /// 图文消息标题
-        /// </summary>
-        [Required]
-        public string title { get; set; }
-
-        /// <summary>
-        /// 图文消息描述
-        /// </summary>
-        [Required]
-        public string description { get; set; }
-
-        /// <summary>
-        /// 图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200
-        /// </summary>
-        [Required]
-        public string picUrl { get; set; }
-
-        /// <summary>
-        /// 点击图文消息跳转链接
-        /// </summary>
-        [Required]
-        public string url { get; set; }
     }
 
     #region -- 素材模型

@@ -116,23 +116,6 @@ namespace NewCyclone.Models
     }
 
     /// <summary>
-    /// 标准批量提交请求
-    /// </summary>
-    /// <typeparam name="T">参数的类型</typeparam>
-    public class BaseRequestList<T> {
-
-        private List<T> _rows = new List<T>();
-
-        /// <summary>
-        /// 参数集合
-        /// </summary>
-        public List<T> rows {
-            get { return _rows; }
-            set { _rows = value; }
-        }
-    }
-
-    /// <summary>
     /// 系统参数验证
     /// </summary>
     public class SysValidata {

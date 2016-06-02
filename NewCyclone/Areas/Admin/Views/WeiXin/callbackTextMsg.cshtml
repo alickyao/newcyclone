@@ -146,7 +146,7 @@
                             $.messager.confirm('请确认', '删除'+row.caption+'？', function (r) {
                                 if (r) {
                                     grid.datagrid("loading");
-                                    $.getJSON("/api/ApiWeiXinSet/delCallBackMsg/" + row.Id, function (json) {
+                                    $.getJSON("/api/ApiSysDoc/delete/" + row.Id, function (json) {
                                         showmsg(json);
                                         loadGrid();
                                     });

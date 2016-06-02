@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using NewCyclone.Models;
 using NewCyclone.Models.WeiXin;
 
 namespace NewCyclone.Areas.Admin.Controllers
@@ -60,7 +61,7 @@ namespace NewCyclone.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// 自定义回复图文消息管理
+        /// 自定义回复图文消息列表管理
         /// </summary>
         /// <param name="condtion"></param>
         /// <param name="pageId"></param>
@@ -69,6 +70,30 @@ namespace NewCyclone.Areas.Admin.Controllers
             setPageId(pageId);
             condtion.fun = "news";
             ViewBag.condtion = condtion;
+            return View();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult editCallBackNewsMsg(WxEditCallBackMsgRequst condtion, string pageId) {
+            setPageId(pageId);
+            List<SysFileInfo> files = new List<SysFileInfo>();
+            if (!string.IsNullOrEmpty(condtion.Id)) {
+                WeiXinCallBackNewsMsg msg = new WeiXinCallBackNewsMsg(condtion.Id);
+                condtion = new WxEditCallBackMsgRequst()
+                {
+                    caption = msg.caption,
+                    key = msg.key,
+                    Id = msg.Id
+                };
+                files = msg.files;
+            }
+            ViewBag.condtion = condtion;
+            ViewBag.files = files;
             return View();
         }
     }

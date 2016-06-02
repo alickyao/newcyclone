@@ -111,6 +111,43 @@ namespace NewCyclone.Models
             }
         }
 
+
+        /// <summary>
+        /// 新增可排序的图片集
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public List<SysFileSort> createFilesSort(List<VMCreateFileSortRequest> condtion)
+        {
+            List<SysFileSort> result = new List<SysFileSort>();
+            foreach (var f in condtion)
+            {
+                SysFileSort s = new SysFileSort(f);
+                SysFileSort newrow = s.create();
+                result.Add(newrow);
+                savefiles(newrow);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 新增带描述的图片集
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public List<SysFileInfo> createFilesInfo(List<VMCreateFileInfoRequest> condtion)
+        {
+            List<SysFileInfo> result = new List<SysFileInfo>();
+            foreach (var f in condtion)
+            {
+                SysFileInfo s = new SysFileInfo(f);
+                SysFileInfo newrow = s.create();
+                result.Add(newrow);
+                savefiles(newrow);
+            }
+            return result;
+        }
+
         /// <summary>
         /// 批量删除文件
         /// </summary>
@@ -246,39 +283,7 @@ namespace NewCyclone.Models
             }
         }
 
-        /// <summary>
-        /// 新增可排序的图片集
-        /// </summary>
-        /// <param name="condtion"></param>
-        /// <returns></returns>
-        public List<SysFileSort> createFilesSort(List<VMCreateFileSortRequest> condtion)
-        {
-            List<SysFileSort> result = new List<SysFileSort>();
-            foreach (var f in condtion) {
-                SysFileSort s = new SysFileSort(f);
-                SysFileSort newrow = s.create();
-                result.Add(newrow);
-                savefiles(newrow);
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 新增带描述的图片集
-        /// </summary>
-        /// <param name="condtion"></param>
-        /// <returns></returns>
-        public List<SysFileInfo> createFilesInfo(List<VMCreateFileInfoRequest> condtion) {
-            List<SysFileInfo> result = new List<SysFileInfo>();
-            foreach (var f in condtion)
-            {
-                SysFileInfo s = new SysFileInfo(f);
-                SysFileInfo newrow = s.create();
-                result.Add(newrow);
-                savefiles(newrow);
-            }
-            return result;
-        }
+        
     }
 
     /// <summary>

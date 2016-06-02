@@ -32,6 +32,5 @@ namespace NewCyclone.DataBase
         public virtual DbSet<Db_SysDoc> Db_SysDocSet { get; set; }
         public virtual DbSet<Db_SysDocCat> Db_SysDocCatSet { get; set; }
         public virtual DbSet<Db_SysDocFile> Db_SysDocFileSet { get; set; }
-        public virtual DbSet<Db_WXCallBackNesMsgDetail> Db_WXCallBackNesMsgDetailSet { get; set; }
     }
 }

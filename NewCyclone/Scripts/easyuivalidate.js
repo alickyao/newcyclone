@@ -110,5 +110,23 @@ $(document).ready(function () {
             },
             message: "该别名已使用"
         },
+        checkWeixinMsgKey: {//检查微信自动消息回复中的Key是否已使用
+            validator: function (value, param) {
+                var r = false;
+                var wid = param[0];
+                $.ajax({
+                    url: "/api/ApiWeiXinSet/getKeyCount?key=" + value + "&wid=" + wid,
+                    async: false,
+                    dataType: 'json',
+                    type: 'get',
+                    contentType: "application/json",
+                    success: function (data) {
+                        r = (data == 0);
+                    }
+                });
+                return r;
+            },
+            message: "该key已使用"
+        }
     });
 });

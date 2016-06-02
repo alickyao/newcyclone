@@ -134,7 +134,7 @@
             else {
                 $.messager.confirm('请确认', '确定删除文档:' + row.caption + "?", function (r) {
                     if (r) {
-                        $.getJSON("/api/ApiWebPages/delete/" + row.Id, function (json) {
+                        $.getJSON("/api/ApiSysDoc/delete/" + row.Id, function (json) {
                             showmsg(json);
                             loadGrid();
                         });
@@ -203,11 +203,11 @@
                                                     var addNewUrl = "";
                                                     var editOldUrl = "";
                                                     if (d.fun == "pic") {
-                                                        addNewUrl = "/api/ApiWebPages/appendsortpic";
+                                                        addNewUrl = "/api/ApiSysDoc/appendsortpic";
                                                         editOldUrl = "/api/ApiSysFile/editFilesSort";
                                                     }
                                                     else if (d.fun == "rote") {
-                                                        addNewUrl = "/api/ApiWebPages/appendinfopic";
+                                                        addNewUrl = "/api/ApiSysDoc/appendinfopic";
                                                         editOldUrl = "/api/ApiSysFile/editFilesInfo";
                                                     }
 
@@ -228,7 +228,7 @@
                                                         var d = $(n).find("form").serializeObject();
                                                         delfiles.push(d.fileId);
                                                     });
-                                                    $.post("/api/ApiWebPages/delpic", { rows: delfiles }, function (json) {
+                                                    $.post("/api/ApiSysDoc/delpic", { rows: delfiles }, function (json) {
                                                         console.log(json);
                                                     });
                                                 }

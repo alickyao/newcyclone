@@ -481,6 +481,7 @@
     <Content Include="Areas\Admin\Views\WeiXin\callbackTextMsg.cshtml" />
     <Content Include="Areas\Admin\Views\WeiXin\callbackNewsMsg.cshtml" />
     <Content Include="Areas\Admin\Views\WeiXin\callbackHelp.cshtml" />
+    <Content Include="Areas\Admin\Views\WeiXin\editCallBackNewsMsg.cshtml" />
     <None Include="Properties\PublishProfiles\ok.pubxml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
@@ -814,6 +815,7 @@
     <Compile Include="Areas\WxWeb\Controllers\AuthController.cs" />
     <Compile Include="Areas\WxWeb\Controllers\ResponseController.cs" />
     <Compile Include="Areas\WxWeb\WxWebAreaRegistration.cs" />
+    <Compile Include="Controllers\ApiSysDocController.cs" />
     <Compile Include="Controllers\ApiSysFileController.cs" />
     <Compile Include="Controllers\ApiSysMsgController.cs" />
     <Compile Include="Controllers\ApiSysCatTreeController.cs" />
@@ -881,9 +883,6 @@
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\Db_WXCallBackNesMsg.cs">
-      <DependentUpon>SysModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DataBase\Db_WXCallBackNesMsgDetail.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\Db_WXCallBackTextMsg.cs">

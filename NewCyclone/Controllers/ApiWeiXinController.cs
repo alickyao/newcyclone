@@ -10,7 +10,7 @@ using NewCyclone.Models.WeiXin;
 namespace NewCyclone.Controllers
 {
     /// <summary>
-    /// 微信-设置与资源，菜单、素材管理
+    /// 微信-设置与资源，菜单，自动回复管理（继承自基础文档服务）、素材管理
     /// </summary>
     public class ApiWeiXinSetController : ApiController
     {
@@ -104,6 +104,19 @@ namespace NewCyclone.Controllers
             return result;
         }
 
+
+        /// <summary>
+        /// 检查key出现的次数
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <param name="wid">需排除的id</param>
+        /// <returns></returns>
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        [HttpGet]
+        public int getKeyCount(string key, string wid = null) {
+            return WeiXinCallBackMsg.getKeyCount(key, wid);
+        }
+
         /// <summary>
         /// 查询 自动消息回复信息列表
         /// </summary>
@@ -158,7 +171,7 @@ namespace NewCyclone.Controllers
         /// <returns></returns>
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
-        public BaseResponse<List<WeiXinCallBackTestMsg>> editCallBackTextMsg(BaseRequestList<WxEditCallBackTextMsgReqest> condtion) {
+        public BaseResponse<List<WeiXinCallBackTestMsg>> editCallBackTextMsg(VMEditListRequest<WxEditCallBackTextMsgReqest> condtion) {
             BaseResponse<List<WeiXinCallBackTestMsg>> result = new BaseResponse<List<WeiXinCallBackTestMsg>>();
             try
             {
@@ -186,7 +199,7 @@ namespace NewCyclone.Controllers
         /// <returns></returns>
         [ApiAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
-        public BaseResponse<WeiXinCallBackNewsMsg> editCallBackNewsMsg(WxEditCallBackNewsMsgRequest condtion) {
+        public BaseResponse<WeiXinCallBackNewsMsg> editCallBackNewsMsg(WxEditCallBackMsgRequst condtion) {
             BaseResponse<WeiXinCallBackNewsMsg> result = new BaseResponse<WeiXinCallBackNewsMsg>();
             try
             {
@@ -204,30 +217,5 @@ namespace NewCyclone.Controllers
             return result;
         }
 
-        /// <summary>
-        /// 删除 自动回复的消息
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [ApiAuthorize(RoleType = SysRolesType.后台)]
-        [HttpGet]
-        public BaseResponse delCallBackMsg(string id) {
-            BaseResponse result = new BaseResponse();
-            try
-            {
-                WeiXinCallBackMsg msg = new WeiXinCallBackMsg(id);
-                msg.delete();
-                result.msg = "删除成功";
-            }
-            catch (SysException e)
-            {
-                result = e.getresult(result, true);
-            }
-            catch (Exception e)
-            {
-                result = SysException.getResult(result, e);
-            }
-            return result;
-        }
     }
 }
