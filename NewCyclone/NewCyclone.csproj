@@ -119,6 +119,8 @@
     <Content Include="App_Set\WxMenuType.xml" />
     <Content Include="App_Set\SysRole.xml" />
     <Content Include="Areas\Admin\Content\btn-upload.png" />
+    <Content Include="Areas\Admin\Content\music\prompt.mp3" />
+    <Content Include="Areas\Admin\Scripts\usercode.js" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />

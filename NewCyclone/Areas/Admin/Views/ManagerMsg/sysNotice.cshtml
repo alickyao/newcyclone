@@ -4,6 +4,11 @@
     string parentPageId = ViewBag.pageId;
     string pageId = SysHelp.getNewId();
 }
+<style>
+    .dsf {
+        color:#ffbf9b
+    }
+</style>
 <script>
     $(document).ready(function () {
         var grid = $("#@(pageId)noticeGrid");
@@ -19,6 +24,12 @@
                 grid.datagrid("loaded");
                 if (json.code == 0) {
                     grid.datagrid("loadData", json.result);
+                    //通知处理
+                    $.each(json.result.rows, function (i, n) {
+                        if (!n.isRead) {
+                            playSysNotice();
+                        }
+                    });
                 }
             });
         }
@@ -53,12 +64,33 @@
                     console.log(linkUrl);
                 }
                 else {
-                    console.log("为设置跳转的通知");
+                    console.log("未设置跳转");
                 }
             },
-            rowStyler: function (index, row) {
-                return row.isRead ? "" : "color:#ff6a00";
-            },
+            toolbar:[
+                {
+                    text: '全部设置为已读',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        var rows = grid.datagrid("getRows");
+                        if (rows.length > 0) {
+                            var unReadRows = [];
+                            $.each(rows, function (i, n) {
+                                if (!n.isRead) {
+                                    unReadRows.push(n.Id);
+                                }
+                            });
+                            console.log(unReadRows);
+                            grid.datagrid("loading");
+                            $.post("/api/ApiSysMsg/batchSetNoticeToReaded", { rows: unReadRows }, function (json) {
+                                console.log(json);
+                                showmsg(json);
+                                loadGrid();
+                            });
+                        }
+                    }
+                }
+            ],
             columns: [[
                 {
                     field: 'Id', title: 'ID',align:'right'
@@ -81,6 +113,9 @@
                 {
                     field: 'isRead', title: '已读', align:'center' , formatter: function (value, row, index) {
                         return value ? "是" : "否";
+                    },
+                    styler: function (value, row, index) {
+                        return value ? "" : "background:#ffbf9b";
                     }
                 },
                 {
@@ -109,7 +144,7 @@
                 request.pageSize = pPageSize;
                 loadGrid();
             },
-            layout: ['refresh', 'first', 'prev', 'next']
+            layout: ['refresh', 'first', 'prev', 'links', 'next', 'last']
         });
 
         loadGrid();

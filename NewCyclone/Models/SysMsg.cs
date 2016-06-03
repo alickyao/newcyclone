@@ -443,6 +443,26 @@ namespace NewCyclone.Models
         }
 
         /// <summary>
+        /// 批量设置为已读
+        /// </summary>
+        /// <param name="ids">消息的ID</param>
+        /// <returns>返回已成功设置为已读状态的消息的数量</returns>
+        public static int batchSetToRead(List<long> ids) {
+            if (ids.Count == 0) {
+                throw new SysException("消息的ID为必填项", ids);
+            }
+            int i = 0;
+            foreach (long id in ids) {
+                SysNotice n = new SysNotice(id);
+                if (!n.isRead) {
+                    n.setToRead();
+                    i++;
+                }
+            }
+            return i;
+        }
+
+        /// <summary>
         /// 创建一个系统通知
         /// </summary>
         /// <param name="condtion"></param>
@@ -479,7 +499,7 @@ namespace NewCyclone.Models
             using (var db = new SysModelContainer()) {
                 var rows = (from c in db.Db_SysMsgSet.OfType<Db_SysNotice>().AsEnumerable()
                             where (alert ? c.alert : true)
-                            orderby c.alert, c.Id descending
+                            orderby c.isRead ascending, c.Id descending
                             select c.Id
                             );
                 result.total = rows.Count();

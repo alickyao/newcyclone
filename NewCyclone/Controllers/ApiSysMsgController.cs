@@ -112,7 +112,7 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 设置通知为已读状态
+        /// 设置通知为已读状态（单个）
         /// </summary>
         /// <param name="id">通知的ID</param>
         /// <returns></returns>
@@ -132,6 +132,31 @@ namespace NewCyclone.Controllers
             catch (Exception e)
             {
                 result = SysException.getResult(result, e, id);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 设置通知为已读状态（批量）
+        /// </summary>
+        /// <param name="ids">消息的ID</param>
+        /// <returns>返回成功设置的消息的数量</returns>
+        [ApiAuthorize(RoleType = SysRolesType.后台)]
+        [HttpPost]
+        public BaseResponse<int> batchSetNoticeToReaded(VMEditListRequest<long> ids) {
+            BaseResponse<int> result = new BaseResponse<int>();
+            try
+            {
+                result.result = SysNotice.batchSetToRead(ids.rows);
+                result.msg = "已成功设置[" + result.result + "]条通知为已读状态";
+            }
+            catch (SysException e)
+            {
+                result = e.getresult(result);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, ids);
             }
             return result;
         }

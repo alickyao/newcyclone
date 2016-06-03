@@ -9,9 +9,12 @@
     <div data-options="region:'center',border:false">
         <div class="easyui-layout" data-options="fit:true,border:false">
             <div data-options="region:'center',border:false">
-                <div class="easyui-panel" data-options="href:'@Url.Action("sysNotice","ManagerMsg",new { pageId=pageId})',title:'需处理',border:false" style="height:400px;"></div>
+                <div class="easyui-layout" data-options="fit:true,border:false">
+                    <div data-options="region:'center',border:false,href:'@Url.Action("sysNotice","ManagerMsg",new { pageId=pageId})',title:'需处理'"></div>
+                    <div data-options="region:'south',split:true,border:false,collapsed:false,title:'运行状态'" style="height: 150px;"></div>
+                </div>
             </div>
-            <div data-options="region:'east',split:true,border:false,collapsed:false,title:'消息/日志/通知',href:'@Url.Action("sysMsgList","ManagerMsg",new { pageId=pageId})'" style="width: 400px;"></div>
+            <div data-options="region:'east',split:true,border:false,collapsed:false,title:'消息/日志/通知',href:'@Url.Action("sysMsgList","ManagerMsg",new { pageId=pageId})'" style="width: 350px;"></div>
         </div>
     </div>
 </div>
