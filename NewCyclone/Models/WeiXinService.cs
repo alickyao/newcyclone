@@ -80,6 +80,15 @@ namespace NewCyclone.Models.WeiXin
                             title = "微信接口"
                         });
                     }
+                    if (typeof(WxJsapi_ticket).Equals(t.GetType())) {
+                        //如果返回对象是 WxJsapi_ticket
+                        SysNotice.createNotice(new VMMsgCreateSysNoticeRequest()
+                        {
+                            alert = false,
+                            message = "服务器已获取了微信网页JSSDK凭证",
+                            title = "微信接口"
+                        });
+                    }
                 }
             }
         }
@@ -96,7 +105,7 @@ namespace NewCyclone.Models.WeiXin
     #region -- 基础模型
 
     /// <summary>
-    /// 查询凭证返回对象
+    /// 查询凭证返回对象 access_token
     /// </summary>
     public class WxAccess_token
     {
@@ -126,6 +135,20 @@ namespace NewCyclone.Models.WeiXin
         public string errmsg { get; set; }
     }
 
+    /// <summary>
+    /// 查询网页凭证返回对象 jsapi_ticket
+    /// </summary>
+    public class WxJsapi_ticket : WxBaseResponse {
+        /// <summary>
+        /// 凭证
+        /// </summary>
+        public string ticket { get; set; }
+        /// <summary>
+        /// 有效期
+        /// </summary>
+        public int expires_in { get; set; }
+    }
+
     #endregion
 
     /// <summary>
@@ -148,7 +171,7 @@ namespace NewCyclone.Models.WeiXin
         /// </summary>
         protected static string appId
         {
-            get { return System.Configuration.ConfigurationManager.AppSettings["appId"].ToString(); }
+            get { return System.Configuration.ConfigurationManager.AppSettings["wxAppId"].ToString(); }
         }
 
         /// <summary>
@@ -156,14 +179,14 @@ namespace NewCyclone.Models.WeiXin
         /// </summary>
         protected static string appSecret
         {
-            get { return System.Configuration.ConfigurationManager.AppSettings["appSecret"].ToString(); }
+            get { return System.Configuration.ConfigurationManager.AppSettings["wxAppSecret"].ToString(); }
         }
 
         /// <summary>
         /// 公众号原始ID
         /// </summary>
         protected static string originalId {
-            get { return System.Configuration.ConfigurationManager.AppSettings["originalId"].ToString(); }
+            get { return System.Configuration.ConfigurationManager.AppSettings["wxOriginalId"].ToString(); }
         }
 
         /// <summary>
@@ -201,7 +224,7 @@ namespace NewCyclone.Models.WeiXin
         }
 
         /// <summary>
-        /// 获取凭证
+        /// 获取凭证 access_token
         /// </summary>
         /// <returns></returns>
         public static WxAccess_token queryToken() {
@@ -216,6 +239,25 @@ namespace NewCyclone.Models.WeiXin
             //保存到缓存中
             HttpRuntime.Cache.Insert(cacheKey, t, null, DateTime.Now.AddSeconds(t.expires_in), TimeSpan.Zero);
             return t;
+        }
+
+        /// <summary>
+        /// 获取网页凭证 jsapi_ticket
+        /// </summary>
+        /// <returns></returns>
+        public static WxJsapi_ticket queryJsApiTicket() {
+            string cacheKey = "js_" + appId + appSecret;
+            if (HttpRuntime.Cache.Get(cacheKey) != null && HttpRuntime.Cache.Get(cacheKey).ToString().Length > 0)
+            {
+                return (WxJsapi_ticket)HttpRuntime.Cache.Get(cacheKey);
+            }
+            string url = geturl("ticket", "getticket", EnumHttpRequestType.https);
+            url += "&type=jsapi";
+            WxJsapi_ticket result = new WeiXinGetResponse<WxJsapi_ticket>(url, "get").getRetrun();
+
+            //保存到缓存中
+            HttpRuntime.Cache.Insert(cacheKey, result, null, DateTime.Now.AddSeconds(result.expires_in), TimeSpan.Zero);
+            return result;
         }
     }
 

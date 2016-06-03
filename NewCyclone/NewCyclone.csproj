@@ -132,6 +132,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\images\PCLogo.jpg" />
     <Content Include="Areas\Admin\Content\manager.css" />
+    <Content Include="Content\images\webLogo.jpg" />
     <Content Include="Content\themes\black\accordion.css" />
     <Content Include="Content\themes\black\calendar.css" />
     <Content Include="Content\themes\black\combo.css" />
@@ -832,6 +833,7 @@
     <Compile Include="Areas\WxWeb\Controllers\ShopController.cs" />
     <Compile Include="Areas\WxWeb\Controllers\UserController.cs" />
     <Compile Include="Areas\WxWeb\Controllers\UtilController.cs" />
+    <Compile Include="Areas\WxWeb\Models\ShareInfo.cs" />
     <Compile Include="Areas\WxWeb\WxWebAreaRegistration.cs" />
     <Compile Include="Controllers\ApiSysDocController.cs" />
     <Compile Include="Controllers\ApiSysFileController.cs" />
@@ -985,7 +987,6 @@
     <Folder Include="Areas\Web\Models\" />
     <Folder Include="Areas\Web\Views\Shared\" />
     <Folder Include="Areas\WxWeb\Content\images\" />
-    <Folder Include="Areas\WxWeb\Models\" />
     <Folder Include="Areas\WxWeb\Views\Auth\" />
     <Folder Include="Areas\WxWeb\Views\Page\" />
     <Folder Include="Areas\WxWeb\Views\Response\" />
