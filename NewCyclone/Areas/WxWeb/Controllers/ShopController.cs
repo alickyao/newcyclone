@@ -7,14 +7,11 @@ using System.Web.Mvc;
 namespace NewCyclone.Areas.WxWeb.Controllers
 {
     /// <summary>
-    /// 授权
+    /// 商城
     /// </summary>
-    public class AuthController : Controller
+    public class ShopController : Controller
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+        // GET: WxWeb/Shop
         public ActionResult Index()
         {
             return View();

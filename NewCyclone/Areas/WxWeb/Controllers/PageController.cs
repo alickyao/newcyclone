@@ -7,15 +7,15 @@ using System.Web.Mvc;
 namespace NewCyclone.Areas.WxWeb.Controllers
 {
     /// <summary>
-    /// 授权
+    /// 页面呈现
     /// </summary>
-    public class AuthController : Controller
+    public class PageController : Controller
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Index()
+        // GET: WxWeb/Page
+
+
+        
+        public ActionResult show()
         {
             return View();
         }

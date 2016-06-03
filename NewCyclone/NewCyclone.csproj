@@ -122,6 +122,10 @@
     <Content Include="Areas\Admin\Content\music\prompt.mp3" />
     <Content Include="Areas\Admin\Scripts\usercode.js" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
+    <Content Include="Areas\WxWeb\Content\css\webstyle.css" />
+    <Content Include="Areas\WxWeb\Content\css\weui.css" />
+    <Content Include="Areas\WxWeb\Content\css\weui.min.css" />
+    <Content Include="Areas\WxWeb\Scripts\publiccode.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -486,6 +490,7 @@
     <Content Include="Areas\Admin\Views\WeiXin\editCallBackNewsMsg.cshtml" />
     <Content Include="Areas\Admin\Views\ManagerMsg\sysMsgList.cshtml" />
     <Content Include="Areas\Admin\Views\ManagerMsg\sysNotice.cshtml" />
+    <Content Include="Areas\WxWeb\Views\Shared\Layout.cshtml" />
     <None Include="Properties\PublishProfiles\ok.pubxml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
@@ -817,7 +822,12 @@
     <Compile Include="Areas\Web\Controllers\HomeController.cs" />
     <Compile Include="Areas\Web\WebAreaRegistration.cs" />
     <Compile Include="Areas\WxWeb\Controllers\AuthController.cs" />
+    <Compile Include="Areas\WxWeb\Controllers\HomeController.cs" />
+    <Compile Include="Areas\WxWeb\Controllers\PageController.cs" />
     <Compile Include="Areas\WxWeb\Controllers\ResponseController.cs" />
+    <Compile Include="Areas\WxWeb\Controllers\ShopController.cs" />
+    <Compile Include="Areas\WxWeb\Controllers\UserController.cs" />
+    <Compile Include="Areas\WxWeb\Controllers\UtilController.cs" />
     <Compile Include="Areas\WxWeb\WxWebAreaRegistration.cs" />
     <Compile Include="Controllers\ApiSysDocController.cs" />
     <Compile Include="Controllers\ApiSysFileController.cs" />
@@ -919,6 +929,7 @@
     <Compile Include="Models\SysTree.cs" />
     <Compile Include="Models\SysUi.cs" />
     <Compile Include="Models\SysUser.cs" />
+    <Compile Include="Models\WeiXinMsgService.cs" />
     <Compile Include="Models\WeiXinService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -969,10 +980,15 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Web\Models\" />
     <Folder Include="Areas\Web\Views\Shared\" />
+    <Folder Include="Areas\WxWeb\Content\images\" />
     <Folder Include="Areas\WxWeb\Models\" />
     <Folder Include="Areas\WxWeb\Views\Auth\" />
+    <Folder Include="Areas\WxWeb\Views\Home\" />
+    <Folder Include="Areas\WxWeb\Views\Page\" />
     <Folder Include="Areas\WxWeb\Views\Response\" />
-    <Folder Include="Areas\WxWeb\Views\Shared\" />
+    <Folder Include="Areas\WxWeb\Views\Shop\" />
+    <Folder Include="Areas\WxWeb\Views\User\" />
+    <Folder Include="Areas\WxWeb\Views\Util\" />
     <Folder Include="Scripts\kindeditor\attached\" />
   </ItemGroup>
   <ItemGroup>

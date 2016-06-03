@@ -11,12 +11,12 @@ using NewCyclone.Models.WeiXin;
 namespace NewCyclone.Areas.WxWeb.Controllers
 {
     /// <summary>
-    /// 微信 响应与基础
+    /// 微信被动响应接口
     /// </summary>
     public class ResponseController : Controller
     {
         /// <summary>
-        /// 微信响应
+        /// 微信被动响应接口
         /// </summary>
         /// <returns></returns>
         public void response()

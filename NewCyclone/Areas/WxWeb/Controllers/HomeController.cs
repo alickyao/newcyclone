@@ -7,14 +7,12 @@ using System.Web.Mvc;
 namespace NewCyclone.Areas.WxWeb.Controllers
 {
     /// <summary>
-    /// 授权
+    /// 微信网站主界面
     /// </summary>
-    public class AuthController : Controller
+    public class HomeController : Controller
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+
+        // GET: WxWeb/Home
         public ActionResult Index()
         {
             return View();
