@@ -117,7 +117,7 @@ namespace NewCyclone.Areas.WxWeb.Controllers
         {
             //jsApiList //该属性默认设置了一些JS权限  可根据需要进行修改
 
-            getTicket();//需要使用微信JS接口的页面 比如设置右上角的分享等功能 必须调用本接口
+            getTicket();//需要使用微信JS接口的页面 比如设置右上角的分享等功能 必须调用本方法
 
             //设置分享 -- 可选
             //setShare(new ShareInfo()
