@@ -12,8 +12,12 @@ namespace NewCyclone.Areas.WxWeb.Controllers
     public class UserController : Controller
     {
         // GET: WxWeb/User
-        public ActionResult Index()
-        {
+
+        /// <summary>
+        /// 用户中心 -- 入口首页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult index() {
             return View();
         }
     }

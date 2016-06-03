@@ -491,6 +491,9 @@
     <Content Include="Areas\Admin\Views\ManagerMsg\sysMsgList.cshtml" />
     <Content Include="Areas\Admin\Views\ManagerMsg\sysNotice.cshtml" />
     <Content Include="Areas\WxWeb\Views\Shared\Layout.cshtml" />
+    <Content Include="Areas\WxWeb\Views\Home\index.cshtml" />
+    <Content Include="Areas\WxWeb\Views\User\index.cshtml" />
+    <Content Include="Areas\WxWeb\Views\Order\index.cshtml" />
     <None Include="Properties\PublishProfiles\ok.pubxml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
@@ -823,6 +826,7 @@
     <Compile Include="Areas\Web\WebAreaRegistration.cs" />
     <Compile Include="Areas\WxWeb\Controllers\AuthController.cs" />
     <Compile Include="Areas\WxWeb\Controllers\HomeController.cs" />
+    <Compile Include="Areas\WxWeb\Controllers\OrderController.cs" />
     <Compile Include="Areas\WxWeb\Controllers\PageController.cs" />
     <Compile Include="Areas\WxWeb\Controllers\ResponseController.cs" />
     <Compile Include="Areas\WxWeb\Controllers\ShopController.cs" />
@@ -983,11 +987,9 @@
     <Folder Include="Areas\WxWeb\Content\images\" />
     <Folder Include="Areas\WxWeb\Models\" />
     <Folder Include="Areas\WxWeb\Views\Auth\" />
-    <Folder Include="Areas\WxWeb\Views\Home\" />
     <Folder Include="Areas\WxWeb\Views\Page\" />
     <Folder Include="Areas\WxWeb\Views\Response\" />
     <Folder Include="Areas\WxWeb\Views\Shop\" />
-    <Folder Include="Areas\WxWeb\Views\User\" />
     <Folder Include="Areas\WxWeb\Views\Util\" />
     <Folder Include="Scripts\kindeditor\attached\" />
   </ItemGroup>

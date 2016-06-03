@@ -12,9 +12,8 @@ namespace NewCyclone.Areas.WxWeb.Controllers
     public class UtilController : Controller
     {
         // GET: WxWeb/Util
-        public ActionResult Index()
-        {
-            return View();
-        }
+        
+
+
     }
 }

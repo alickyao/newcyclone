@@ -12,6 +12,11 @@ using System.Collections;
 namespace NewCyclone.Models.WeiXin
 {
 
+    /*
+    * 微信基础与菜单
+    */
+
+
     /// <summary>
     /// 获取微信远程接口数据
     /// </summary>
@@ -383,8 +388,6 @@ namespace NewCyclone.Models.WeiXin
     }
 
 
-    
-
     #region -- 素材模型
     /// <summary>
     /// 查询永久素材总数返回对象
@@ -641,7 +644,4 @@ namespace NewCyclone.Models.WeiXin
             }
         }
     }
-
-
-    
 }

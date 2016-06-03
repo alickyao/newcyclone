@@ -12,9 +12,7 @@ namespace NewCyclone.Areas.WxWeb.Controllers
     public class ShopController : Controller
     {
         // GET: WxWeb/Shop
-        public ActionResult Index()
-        {
-            return View();
-        }
+        
+
     }
 }

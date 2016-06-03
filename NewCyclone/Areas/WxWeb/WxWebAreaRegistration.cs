@@ -17,7 +17,7 @@ namespace NewCyclone.Areas.WxWeb
             context.MapRoute(
                 "WxWeb_default",
                 "wx/{controller}/{action}/{id}",
-                new { controller = "Response", action = "response", id = UrlParameter.Optional }
+                new { controller = "Home", action = "index", id = UrlParameter.Optional }
             );
         }
     }

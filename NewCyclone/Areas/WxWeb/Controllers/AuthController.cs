@@ -11,13 +11,6 @@ namespace NewCyclone.Areas.WxWeb.Controllers
     /// </summary>
     public class AuthController : Controller
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Index()
-        {
-            return View();
-        }
+
     }
 }

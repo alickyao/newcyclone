@@ -10,6 +10,11 @@ using System.Text;
 
 namespace NewCyclone.Models.WeiXin
 {
+    /*
+    * 微信消息接收与回复服务 
+    */
+
+
     #region -- 消息模型
 
 
@@ -590,8 +595,6 @@ namespace NewCyclone.Models.WeiXin
             }
         }
     }
-
-
 
     #region -- 被动消息回复模型
 

@@ -7,15 +7,14 @@ using System.Web.Mvc;
 namespace NewCyclone.Areas.WxWeb.Controllers
 {
     /// <summary>
-    /// 微信网站主界面
+    /// 订单
     /// </summary>
-    public class HomeController : Controller
+    public class OrderController : Controller
     {
-
-        // GET: WxWeb/Home
+        // GET: WxWeb/Order
 
         /// <summary>
-        /// 微信网站主界面
+        /// 用户的订单 - 首页
         /// </summary>
         /// <returns></returns>
         public ActionResult index()
