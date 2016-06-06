@@ -366,6 +366,8 @@ namespace NewCyclone.Models
         }
     }
 
+    #region -- 全局枚举类型
+
     /// <summary>
     /// HTTP协议类型
     /// </summary>
@@ -379,4 +381,5 @@ namespace NewCyclone.Models
         /// </summary>
         https
     }
+    #endregion
 }

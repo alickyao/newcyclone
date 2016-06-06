@@ -26,6 +26,24 @@ namespace NewCyclone.Models
     }
 
     /// <summary>
+    /// 性别
+    /// </summary>
+    public enum SysUserSex {
+        /// <summary>
+        /// 
+        /// </summary>
+        未知,
+        /// <summary>
+        /// 
+        /// </summary>
+        男,
+        /// <summary>
+        /// 
+        /// </summary>
+        女
+    }
+
+    /// <summary>
     /// 角色
     /// </summary>
     public class SysRoles {
@@ -152,6 +170,11 @@ namespace NewCyclone.Models
         public bool isDisabled { get; set; }
 
         /// <summary>
+        /// 是否已删除
+        /// </summary>
+        public bool isDeleted { get; set; }
+
+        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="loginname"></param>
@@ -235,6 +258,7 @@ namespace NewCyclone.Models
             this.loginName = d.loginName;
             this.lastLoginTime = d.lastLoginTime;
             this.isDisabled = d.isDisabled;
+            this.isDeleted = d.isDeleted;
             this.role = d.role;
             this.createdOn = d.createdOn;
         }
@@ -256,14 +280,27 @@ namespace NewCyclone.Models
                 if (userrole.cat == 0)
                 {
                     //后台
-                    
                     showName = db.Db_SysUserSet.OfType<Db_ManagerUser>().Single(p => p.loginName == this.loginName).fullName;
                 }
                 else {
                     //其他,会员
-
+                    if (userrole.role == "weixin") {
+                        //微信
+                        showName = db.Db_SysUserSet.OfType<Db_MemberUser>().Single(p => p.loginName == this.loginName).nickName;
+                    }
                 }
                 this.showName = string.Format("{0}[{1},{2}]", showName, this.roleInfo.name, this.loginName);
+            }
+        }
+
+        /// <summary>
+        /// 刷新最后一次登录时间
+        /// </summary>
+        public void updateLastLoginTime() {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysUserSet.Single(p => p.loginName == this.loginName);
+                d.lastLoginTime = DateTime.Now;
+                db.SaveChanges();
             }
         }
 

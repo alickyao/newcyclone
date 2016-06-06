@@ -20,7 +20,7 @@
     <script src="~/Scripts/jquery-1.11.3.min.js" type="text/javascript"></script>
     <script src="~/Areas/WxWeb/Scripts/publiccode.js" type="text/javascript"></script>
     <script>
-        var sharedata = { //如果你不满意请自行在自己的页面重写该对象
+        var sharedata = {
             title: "@shareInfo.title",
             desc: "@shareInfo.desc",
             link: "@shareInfo.getLink()",
@@ -32,6 +32,16 @@
                 //用户取消分享后执行的回调函数
             }
         };
+
+        //通用设置分享
+        function setShare(WeiXin, sdata) {
+            WeiXin.onMenuShareTimeline(sharedata);
+            WeiXin.onMenuShareAppMessage(sharedata);
+            WeiXin.onMenuShareQQ(sharedata);
+            WeiXin.onMenuShareWeibo(sharedata);
+            WeiXin.onMenuShareQZone(sharedata);
+        }
+
         $(document).ready(function () {
             wx.config({
                 debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -44,12 +54,6 @@
             wx.ready(function () {
                 //提示一下 微信已就绪
                 console.log("WeiXinJsSdk is ok");
-                //注册分享
-                wx.onMenuShareTimeline(sharedata);
-                wx.onMenuShareAppMessage(sharedata);
-                wx.onMenuShareQQ(sharedata);
-                wx.onMenuShareWeibo(sharedata);
-                wx.onMenuShareQZone(sharedata);
             });
             wx.error(function (res) {
                 //console.log(res);

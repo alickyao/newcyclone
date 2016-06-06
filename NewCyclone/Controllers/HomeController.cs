@@ -25,11 +25,18 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <returns></returns>
         public ActionResult login(string ReturnUrl) {
-            if (ReturnUrl.IndexOf("Admin") > 0)
+            if (ReturnUrl.IndexOf("/Admin") != -1)
             {
+                //后台
                 return RedirectToAction("login", "Manager", new { area = "Admin", ReturnUrl = ReturnUrl });
             }
+            else if (ReturnUrl.IndexOf("/wx") != -1)
+            {
+                //微信
+                return RedirectToAction("snsapi_base", "Auth", new { area = "WxWeb", returnUrl = ReturnUrl });
+            }
             else {
+                //其他
                 return RedirectToAction("login", "Home", new { area = "Web", ReturnUrl = ReturnUrl });
             }
         }

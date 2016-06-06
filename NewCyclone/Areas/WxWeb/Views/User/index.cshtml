@@ -2,7 +2,10 @@
 @{
     ViewBag.Title = "用户中心";
     Layout = "~/Areas/WxWeb/Views/Shared/Layout.cshtml";
+    WeiXinUser userInfo = ViewBag.userInfo;
 }
 
 <h2>用户中心 - 首页</h2>
+<p>hello @userInfo.nickname</p>
+<p><a href="@Url.Action("singOut","Auth")">退出</a></p>
 

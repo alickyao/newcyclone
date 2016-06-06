@@ -16,7 +16,7 @@
     <RootNamespace>NewCyclone</RootNamespace>
     <AssemblyName>NewCyclone</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -495,6 +495,8 @@
     <Content Include="Areas\WxWeb\Views\Home\index.cshtml" />
     <Content Include="Areas\WxWeb\Views\User\index.cshtml" />
     <Content Include="Areas\WxWeb\Views\Order\index.cshtml" />
+    <Content Include="Areas\WxWeb\Views\Auth\authCancel.cshtml" />
+    <Content Include="Areas\WxWeb\Views\Auth\showAuthLoginError.cshtml" />
     <None Include="Properties\PublishProfiles\ok.pubxml" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\bootstrapValidator\bootstrapValidator.css" />
@@ -987,7 +989,6 @@
     <Folder Include="Areas\Web\Models\" />
     <Folder Include="Areas\Web\Views\Shared\" />
     <Folder Include="Areas\WxWeb\Content\images\" />
-    <Folder Include="Areas\WxWeb\Views\Auth\" />
     <Folder Include="Areas\WxWeb\Views\Page\" />
     <Folder Include="Areas\WxWeb\Views\Response\" />
     <Folder Include="Areas\WxWeb\Views\Shop\" />
@@ -1012,11 +1013,10 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>17208</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:17208/</IISUrl>
+          <IISUrl>http://127.0.0.1</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
+          <CustomServerUrl>http://127.0.0.1</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

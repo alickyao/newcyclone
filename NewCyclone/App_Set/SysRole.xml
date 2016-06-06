@@ -15,7 +15,13 @@
   <SysRoles>
     <role>member</role>
     <cat>1</cat>
-    <name>会员</name>
-    <discribe>系统会员用户</discribe>
+    <name>普通会员</name>
+    <discribe>普通会员用户</discribe>
+  </SysRoles>
+  <SysRoles>
+    <role>weixin</role>
+    <cat>1</cat>
+    <name>微信会员</name>
+    <discribe>来自微信的会员</discribe>
   </SysRoles>
 </ArrayOfSysRoles>

@@ -4,10 +4,13 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Web;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.Collections;
+using NewCyclone.DataBase;
+
 
 namespace NewCyclone.Models.WeiXin
 {
@@ -151,6 +154,76 @@ namespace NewCyclone.Models.WeiXin
 
     #endregion
 
+    #region --用户授权模型
+
+    /// <summary>
+    /// 网页授权
+    /// </summary>
+    public class WxAuthWebAccess_token {
+        /// <summary>
+        /// 网页授权接口调用凭证,注意：此access_token与基础支持的access_token不同
+        /// </summary>
+        public string access_token { get; set; }
+        /// <summary>
+        /// access_token接口调用凭证超时时间，单位（秒）
+        /// </summary>
+        public int expires_in { get; set; }
+        /// <summary>
+        /// 用户刷新access_token
+        /// </summary>
+        public string refresh_token { get; set; }
+        /// <summary>
+        /// 用户唯一标识，请注意，在未关注公众号时，用户访问公众号的网页，也会产生一个用户和公众号唯一的OpenID
+        /// </summary>
+        public string openid { get; set; }
+        /// <summary>
+        /// 用户授权的作用域，使用逗号（,）分隔
+        /// </summary>
+        public string scope { get; set; }
+    }
+
+    /// <summary>
+    /// 拉去微信用户信息返回对象
+    /// </summary>
+    public class WxAuthWebUserInfo:ItoSysLogMesable {
+        /// <summary>
+        /// 用户的唯一标识
+        /// </summary>
+        [Required]
+        public string openid { get; set; }
+        /// <summary>
+        /// 用户昵称
+        /// </summary>
+        public string nickname { get; set; }
+        /// <summary>
+        /// 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+        /// </summary>
+        public int sex { get; set; }
+        /// <summary>
+        /// 普通用户个人资料填写的城市
+        /// </summary>
+        public string city { get; set; }
+        /// <summary>
+        /// 用户个人资料填写的省份
+        /// </summary>
+        public string province { get; set; }
+        /// <summary>
+        /// 国家，如中国为CN
+        /// </summary>
+        public string country { get; set; }
+        /// <summary>
+        /// 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空。
+        /// </summary>
+        public string headimgurl { get; set; }
+
+        public string toLogString()
+        {
+            return string.Format("用户在微信中授权注册，用户昵称:{0}", this.nickname);
+        }
+    }
+
+    #endregion
+
     /// <summary>
     /// 微信接口-基础服务
     /// </summary>
@@ -257,6 +330,30 @@ namespace NewCyclone.Models.WeiXin
 
             //保存到缓存中
             HttpRuntime.Cache.Insert(cacheKey, result, null, DateTime.Now.AddSeconds(result.expires_in), TimeSpan.Zero);
+            return result;
+        }
+
+        /// <summary>
+        /// 获取网页授权信息
+        /// </summary>
+        /// <param name="code">获取的code参数</param>
+        /// <returns></returns>
+        public static WxAuthWebAccess_token getWebAccess_token(string code) {
+            string url = string.Format("https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code", appId, appSecret, code);
+            WxAuthWebAccess_token result = new WeiXinGetResponse<WxAuthWebAccess_token>(url, "get").getRetrun();
+            return result;
+        }
+
+        /// <summary>
+        /// 拉取微信用户的信息
+        /// </summary>
+        /// <param name="access_token">网页授权接口调用凭证,注意：此access_token与基础支持的access_token不同</param>
+        /// <param name="openid">用户的唯一标识</param>
+        /// <param name="lang">返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语  默认为 zh_CN</param>
+        /// <returns></returns>
+        public static WxAuthWebUserInfo getWebUserInfo(string access_token, string openid, string lang = "zh_CN") {
+            string url = string.Format("https://api.weixin.qq.com/sns/userinfo?access_token={0}&openid={1}&lang={2}", access_token, openid, lang);
+            WxAuthWebUserInfo result = new WeiXinGetResponse<WxAuthWebUserInfo>(url, "get").getRetrun();
             return result;
         }
     }
@@ -429,6 +526,145 @@ namespace NewCyclone.Models.WeiXin
         }
     }
 
+
+    /// <summary>
+    /// 微信用户信息 - 继承自SysUser
+    /// </summary>
+    public class WeiXinUser : SysUser {
+
+        /// <summary>
+        /// 用户的唯一标识
+        /// </summary>
+        public string openid { get; set; }
+        /// <summary>
+        /// 用户昵称
+        /// </summary>
+        public string nickname { get; set; }
+        /// <summary>
+        /// 用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+        /// </summary>
+        public SysUserSex sex { get; set; }
+        /// <summary>
+        /// 普通用户个人资料填写的城市
+        /// </summary>
+        public string city { get; set; }
+        /// <summary>
+        /// 用户个人资料填写的省份
+        /// </summary>
+        public string province { get; set; }
+        /// <summary>
+        /// 国家，如中国为CN
+        /// </summary>
+        public string country { get; set; }
+        /// <summary>
+        /// 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空。
+        /// </summary>
+        public string headimgurl { get; set; }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loginName"></param>
+        public WeiXinUser(string loginName) : base(loginName) {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysUserSet.OfType<Db_MemberUser>().Single(p => p.loginName == loginName);
+                this.nickname = d.nickName;
+                this.openid = d.openId;
+                this.sex = (SysUserSex)d.sex;
+                this.city = d.city;
+                this.province = d.province;
+                this.country = d.country;
+                this.headimgurl = d.headImgUrl;
+            }
+        }
+
+        /// <summary>
+        /// 获取OpenId出现的次数
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
+        public static int checkOpenId(string openId) {
+            using (var db = new SysModelContainer()) {
+                int c = (from x in db.Db_SysUserSet.OfType<Db_MemberUser>()
+                         where (x.openId == openId)
+                         select x.loginName
+                         ).Count();
+                return c;
+            }
+        }
+
+        /// <summary>
+        /// 根据用户的OpenId获取用户的登录名
+        /// </summary>
+        /// <param name="OpenId"></param>
+        /// <returns>如果没有该用户则返回空字符串</returns>
+        public static WeiXinUser getLoginNameByOpenId(string OpenId) {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysUserSet.OfType<Db_MemberUser>().SingleOrDefault(p => (p.openId == OpenId));
+                if (d != null) {
+                    return new WeiXinUser(d.loginName);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 将微信的用户数据记录到本地
+        /// </summary>
+        /// <param name="userInfo"></param>
+        public static WeiXinUser create(WxAuthWebUserInfo userInfo) {
+            SysValidata.valiData(userInfo);
+            if (checkOpenId(userInfo.openid) == 0)
+            {
+                //如果用户头像不为空，则需要下载用户的头像
+                string userface = null;
+                if (!string.IsNullOrEmpty(userInfo.headimgurl)) {
+                    WebClient mywebclient = new WebClient();
+                    string savePath = "/upload/userface/";
+                    DirectoryInfo savedir = new DirectoryInfo(HttpContext.Current.Server.MapPath(savePath));
+                    if (!savedir.Exists) {
+                        savedir.Create();
+                    }
+                    savePath = savePath + Guid.NewGuid().ToString() + ".jpg";
+                    try
+                    {
+                        mywebclient.DownloadFile(userInfo.headimgurl, HttpContext.Current.Server.MapPath(savePath));
+                        userface = savePath;
+                    }
+                    catch { }
+                }
+
+                Db_MemberUser d = new Db_MemberUser() {
+                    city = userInfo.city,
+                    country = userInfo.country,
+                    createdOn = DateTime.Now,
+                    isDeleted = false,
+                    isDisabled = false,
+                    loginName = SysHelp.getNewId(),
+                    nickName = userInfo.nickname,
+                    openId = userInfo.openid,
+                    passWord = SysUser.defaultPwd,
+                    role = "weixin",
+                    province = userInfo.province,
+                    sex = (byte)userInfo.sex,
+                    headImgUrl = userface,
+                    lastLoginTime = DateTime.Now
+                };
+                using (var db = new SysModelContainer()) {
+                    Db_SysUser newuser = db.Db_SysUserSet.Add(d);
+                    db.SaveChanges();
+                    //保存日志
+                    SysUserLog.saveLog(userInfo, SysUserLogType.注册, newuser.loginName);
+                    SysUserLog.saveLoginLog(newuser.loginName);
+                    return new WeiXinUser(newuser.loginName);
+                }
+            }
+            else {
+                throw new SysException("当前用户已存在不能重复添加到本地系统中", userInfo);
+            }
+        }
+    }
 
     #region -- 素材模型
     /// <summary>

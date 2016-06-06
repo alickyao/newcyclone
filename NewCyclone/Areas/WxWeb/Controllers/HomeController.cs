@@ -85,7 +85,6 @@ namespace NewCyclone.Areas.WxWeb.Controllers
                 ViewBag.signature = signature;
                 ViewBag.timestamp = timestamp;
                 ViewBag.nonceStr = nonceStr;
-                //设置默认的需要签名的JS列表
             }
             else {
                 RedirectToAction("wxJsSdkError");
@@ -116,15 +115,14 @@ namespace NewCyclone.Areas.WxWeb.Controllers
         public ActionResult index()
         {
             //jsApiList //该属性默认设置了一些JS权限  可根据需要进行修改
-
             getTicket();//需要使用微信JS接口的页面 比如设置右上角的分享等功能 必须调用本方法
 
             //设置分享 -- 可选
             //setShare(new ShareInfo()
             //{
-            //    title = "我们的网站",
-            //    desc = "请描述",
-            //    imgUrl = "/upload/asadf.jpg"
+            //    title = "分享的标题",
+            //    desc = "请描述该页面在分享到微信后的描述文本",
+            //    imgUrl = "/upload/asadf.jpg"//分享的图片链接地址
             //});
 
             return View();

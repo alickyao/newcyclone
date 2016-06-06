@@ -15,5 +15,11 @@ namespace NewCyclone.DataBase
     public partial class Db_MemberUser : Db_SysUser
     {
         public string nickName { get; set; }
+        public string openId { get; set; }
+        public byte sex { get; set; }
+        public string province { get; set; }
+        public string city { get; set; }
+        public string country { get; set; }
+        public string headImgUrl { get; set; }
     }
 }

@@ -7,9 +7,9 @@
       <Diagram DiagramId="18c7aa0d4e654162b4f8e15508ba929e" Name="Diagram1" >
         <EntityTypeShape EntityType="SysModel.Db_SysRole" Width="1.5" PointX="0.5" PointY="0.5" />
         <EntityTypeShape EntityType="SysModel.Db_SysUser" Width="1.75" PointX="0.5" PointY="0.5" />
-        <EntityTypeShape EntityType="SysModel.Db_ManagerUser" Width="2" PointX="3.125" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SysModel.Db_ManagerUser" Width="2" PointX="3.125" PointY="0.5" IsExpanded="true" />
         <InheritanceConnector EntityType="SysModel.Db_ManagerUser" />
-        <EntityTypeShape EntityType="SysModel.Db_MemberUser" Width="2" PointX="0.5" PointY="3.875" />
+        <EntityTypeShape EntityType="SysModel.Db_MemberUser" Width="2" PointX="0.5" PointY="3.375" />
         <InheritanceConnector EntityType="SysModel.Db_MemberUser" />
         <AssociationConnector Association="SysModel.Db_SysUserDb_SysRole" />
         <EntityTypeShape EntityType="SysModel.Db_SysMsg" Width="1.5" PointX="8.875" PointY="0.5" />
@@ -17,11 +17,11 @@
         <InheritanceConnector EntityType="SysModel.Db_SysExceptionLog" />
         <EntityTypeShape EntityType="SysModel.Db_SysUserLog" Width="2.25" PointX="5.75" PointY="0.5" />
         <InheritanceConnector EntityType="SysModel.Db_SysUserLog" />
-        <EntityTypeShape EntityType="SysModel.Db_SysTree" Width="1.5" PointX="0.5" PointY="5.875" />
+        <EntityTypeShape EntityType="SysModel.Db_SysTree" Width="1.5" PointX="0.5" PointY="8.375" />
         <EntityTypeShape EntityType="SysModel.Db_SysMenu" Width="1.5" PointX="0.5" PointY="4" />
         <InheritanceConnector EntityType="SysModel.Db_SysMenu" />
         <AssociationConnector Association="SysModel.Db_SysRoleDb_SysMenu" />
-        <EntityTypeShape EntityType="SysModel.Db_CatTree" Width="1.5" PointX="2.75" PointY="5.875" />
+        <EntityTypeShape EntityType="SysModel.Db_CatTree" Width="1.5" PointX="0.5" PointY="10.5" />
         <InheritanceConnector EntityType="SysModel.Db_CatTree" />
         <EntityTypeShape EntityType="SysModel.Db_SysFileSet" Width="1.5" PointX="0.5" PointY="12.625" />
         <EntityTypeShape EntityType="SysModel.Db_SysDoc" Width="1.5" PointX="5.5" PointY="8.375" />

@@ -4,7 +4,17 @@
     Layout = "~/Areas/WxWeb/Views/Shared/Layout.cshtml";
 }
 <script>
-
+    wx.ready(function () {
+        sharedata.success = function () {//可重写分享中的success方法
+            console.log("success");
+        }
+        sharedata.cancel = function () {//可重写分享中的cancel方法
+            console.log("cancel");
+        }
+        setShare(wx, sharedata);//可分享的页面必须调用该方法设置分享
+    });
 </script>
 <h2>优翔商城 HomePage</h2>
+<p><a href="@Url.Action("snsapi_base","Auth",new { returnUrl = Url.Action("index") })">登录</a></p>
+<p><a href="@Url.Action("index","User")">用户中心</a></p>
 
