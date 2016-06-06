@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "未授权";
+    Layout = "~/Areas/WxWeb/Views/Shared/Layout.cshtml";
+}
+<script>
+    wx.ready(function () {
+        console.log("wx is ready");
+        wx.hideOptionMenu();//隐藏右上角菜单
+    });
+</script>
+<h2>:(</h2>
+<p>对不起，需要您在微信中进行授权，才能进行接下来的操作</p>
+
