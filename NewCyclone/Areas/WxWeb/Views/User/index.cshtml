@@ -7,5 +7,8 @@
 
 <h2>用户中心 - 首页</h2>
 <p>hello @userInfo.nickname</p>
+<p>
+    <img src="@SysFile.getThumbnail(50,50,userInfo.headimgurl)" />
+</p>
 <p><a href="@Url.Action("singOut","Auth")">退出</a></p>
 
